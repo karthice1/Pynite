@@ -1,0 +1,27 @@
+\begin{abstract}
+Minimum-weight design of steel frames is usually performed against deterministic code checks,
+which leaves the reliability of the optimised system unknown. This paper presents an open,
+reproducible framework for reliability-constrained, multi-objective optimisation of steel
+moment frames built on the PyNite finite element library, and uses it to ask whether
+uncertainty-aware optimisation produces more economical designs while satisfying explicit
+reliability and serviceability constraints. Parameterised planar frames with discrete W-shape
+sections are designed to AISC 360-16 with the Direct Analysis Method. Five linear analyses per
+design, combined by superposition and amplified with the $B_1$--$B_2$ method, provide a
+Monte Carlo surrogate for the system ultimate limit state and for drift and deflection
+serviceability under 50-year load, material, fabrication and imperfection uncertainty. A sample
+average approximation makes the reliability constraints deterministic for a constrained genetic
+algorithm and NSGA-II, and every optimum is re-verified with $10^6$ independent samples. The
+structural models agree with closed-form solutions and with OpenSeesPy to machine precision for
+linear responses and within 2\% for P-$\Delta$ responses, and the surrogate agrees within about
+1\% (conservatively) with Monte Carlo simulation using full second-order re-analysis. For seven
+frames varying storeys, bay width and wind pressure, deterministic optima had system reliability
+indices of 2.88--3.66 but 50-year drift reliability indices as low as 0.89. Reliability-based
+optima with targets of 3.0 (ultimate) and 1.5 (serviceability) met both targets and were
+0.5--10.1\% heavier than the deterministic optima; when only the reliability implied by the code
+was required, the reliability-based optimum coincided with the deterministic one. Uncertainty-aware
+optimisation therefore did not reduce cost relative to code-based optimisation; it delivered the
+least-mass designs at a prescribed and uniform reliability, never heavier than deterministic
+designs with a tightened drift limit meeting the same targets. The cost--reliability fronts are
+strongly asymmetric: in drift-governed frames the ultimate reliability index rises from 3.1 to
+3.8 for about 4\% more steel, whereas serviceability reliability is costly.
+\end{abstract}

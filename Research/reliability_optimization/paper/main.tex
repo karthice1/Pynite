@@ -1,0 +1,49 @@
+\documentclass[preprint,12pt,authoryear]{elsarticle}
+
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[colorlinks=true,citecolor=blue,linkcolor=blue,urlcolor=blue]{hyperref}
+\usepackage{lineno}
+\usepackage{url}
+\newcommand{\fittable}[1]{\resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{#1}}
+
+\journal{Structural Safety}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{A reliability-constrained, multi-objective framework for cost-optimal design of steel
+frame structures under material and loading uncertainty}
+
+%% Author names and affiliations to be completed by the authors.
+\author[a]{[Author name]}
+\affiliation[a]{organization={[Affiliation]},country={[Country]}}
+
+\input{abstract.tex}
+
+\begin{keyword}
+Reliability-based design optimisation \sep Steel moment frames \sep Monte Carlo simulation
+\sep Direct Analysis Method \sep NSGA-II \sep Serviceability \sep PyNite
+\end{keyword}
+
+\end{frontmatter}
+
+\input{sec_intro_methods.tex}
+\input{sec_results.tex}
+
+\section*{Data and code availability}
+The framework, the input data, the scripts that produce every figure and table, and the raw
+results are openly available in the folder
+\path{Research/reliability_optimization} of the
+authors' fork of the PyNite repository.
+
+\section*{Declaration of competing interest}
+The authors declare that they have no known competing financial interests or personal
+relationships that could have appeared to influence the work reported in this paper.
+
+\bibliographystyle{elsarticle-harv}
+\bibliography{refs}
+
+\end{document}

@@ -1,0 +1,24 @@
+pareto base
+opt base RBDO 1,2
+opt S9 RBDO 1
+opt B10 RBDO 1
+opt W16 RBDO 1
+opt B6 RBDO 1
+opt W08 RBDO 1
+opt S3 RBDO 1
+opt base DDO 1,2,3
+opt S9 DDO 1,2
+opt B10 DDO 1,2
+opt W16 DDO 1,2
+opt B6 DDO 1,2
+opt W08 DDO 1,2
+opt S3 DDO 1,2
+opt base RBDO 1 3.0 1.0
+opt base RBDO 1 3.0 0.5
+opt base RBDO 1 3.5 1.5
+pareto3 base
+opt base DDO-h500 1
+opt S9 DDO-h500 1
+opt B6 DDO-h500 1
+opt B10 DDO-h500 1
+opt W16 DDO-h500 1

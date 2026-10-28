@@ -1,0 +1,92 @@
+{
+ "static": [
+  {
+   "case": "Cantilever tip deflection",
+   "pynite": 0.05333333333333334,
+   "analytical": 0.05333333333333334,
+   "unit": "m",
+   "rel_err": 0.0
+  },
+  {
+   "case": "Cantilever fixed-end moment",
+   "pynite": 200.0,
+   "analytical": 200.0,
+   "unit": "kN m",
+   "rel_err": 0.0
+  },
+  {
+   "case": "Fixed beam end moment",
+   "pynite": 213.33333333333343,
+   "analytical": 213.33333333333334,
+   "unit": "kN m",
+   "rel_err": 3.996802888650563e-16
+  },
+  {
+   "case": "Fixed beam mid-span moment",
+   "pynite": 106.66666666666679,
+   "analytical": 106.66666666666667,
+   "unit": "kN m",
+   "rel_err": 1.0658141036401502e-15
+  },
+  {
+   "case": "Fixed beam mid-span deflection",
+   "pynite": 0.01066666666666667,
+   "analytical": 0.010666666666666666,
+   "unit": "m",
+   "rel_err": 3.2526065174565133e-16
+  },
+  {
+   "case": "Portal sway",
+   "pynite": 0.012698531065150072,
+   "analytical": 0.0126984126984127,
+   "unit": "m",
+   "rel_err": 9.321380568022475e-06
+  },
+  {
+   "case": "Portal column base moment",
+   "pynite": 114.28653315870042,
+   "analytical": 114.28571428571429,
+   "unit": "kN m",
+   "rel_err": 7.165138628639767e-06
+  },
+  {
+   "case": "Portal column top moment",
+   "pynite": 85.71459183446254,
+   "analytical": 85.71428571428571,
+   "unit": "kN m",
+   "rel_err": 3.571402063021386e-06
+  }
+ ],
+ "pdelta_cantilever": [
+  {
+   "P/Pcr": 0.2,
+   "exact": 0.025972397033631505,
+   "first_order": 0.020833333333333332,
+   "pynite_1": 0.02596372413845471,
+   "pynite_2": 0.02597174721347415,
+   "pynite_4": 0.02597235477759161,
+   "pynite_8": 0.025972394367119643,
+   "B2": 0.024934971788396643
+  },
+  {
+   "P/Pcr": 0.4,
+   "exact": 0.0345337274146487,
+   "first_order": 0.020833333333333332,
+   "pynite_1": 0.0344707883952548,
+   "pynite_2": 0.03452909811587362,
+   "pynite_4": 0.034533427699803686,
+   "pynite_8": 0.034533708522043564,
+   "B2": 0.03104757663251397
+  },
+  {
+   "P/Pcr": 0.6,
+   "exact": 0.05165033485287857,
+   "first_order": 0.020833333333333332,
+   "pynite_1": 0.0513259538781547,
+   "pynite_2": 0.05162685268385094,
+   "pynite_4": 0.051648820278476434,
+   "pynite_8": 0.051650239471259754,
+   "B2": 0.041130345068801887
+  }
+ ]
+}
