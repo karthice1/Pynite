@@ -17,21 +17,30 @@ from .sections import COLUMN_SHAPES
 class Problem:
     """Weight minimisation of a frame under deterministic or reliability constraints.
 
-    mode = 'DDO'  : LRFD strength <= 1, drift <= h/400, deflection <= L/360
-    mode = 'RBDO' : beta_ULS >= beta_uls, beta_drift >= beta_sls, beta_defl >= beta_sls
-    Both modes add the constructability constraint that column areas do not
+    mode = 'DDO'    : LRFD strength <= 1, drift <= h/400, deflection <= L/360
+    mode = 'RBDO'   : beta_ULS >= beta_uls, beta_drift >= beta_sls, beta_defl >= beta_sls
+    mode = 'RBDO-C' : both sets of constraints (code-compliant RBDO)
+    All modes add the constructability constraint that column areas do not
     increase with height.
+
+    ``accept = 'point'`` imposes the reliability targets on the SAA point estimates
+    of beta; ``accept = 'lcb'`` imposes them on the one-sided 95 % lower confidence
+    bounds (exact binomial), i.e. a target is met only when the sample shows it with
+    95 % confidence. ``cache`` may be shared between problems with identical
+    constraints and samples (the evaluation is a deterministic function of x).
     """
 
     def __init__(self, spec, mode='DDO', pm=None, beta_uls=3.0, beta_sls=1.5,
-                 n_mc=50000, n_screen=10000, seed=12345):
+                 n_mc=50000, n_screen=10000, seed=12345, accept='point', cache=None):
         self.spec = spec
         self.mode = mode
         self.pm = pm or ProbModel()
         self.beta_uls = beta_uls
         self.beta_sls = beta_sls
         self.ub = spec.var_bounds()
-        self.cache = {}
+        self.cache = {} if cache is None else cache
+        self.accept = accept
+        self.requested = set()   # distinct designs requested by this problem instance
         self.n_eval = 0
         self.n_mc = n_mc
         self.n_screen = n_screen
@@ -55,20 +64,23 @@ class Problem:
 
     def evaluate(self, x):
         x = tuple(int(v) for v in x)
+        if x not in self.requested:
+            self.requested.add(x)
+            self.n_eval += 1
         if x in self.cache:
             return self.cache[x]
-        self.n_eval += 1
         t0 = time.time()
         r = analyse(self.spec, x)
         t = MemberTable(r)
         self.t_analysis += time.time() - t0
         mono = self._monotonic_violation(x)
         info = {'weight': r.weight}
-        if self.mode == 'DDO':
+        g = []
+        if self.mode in ('DDO', 'RBDO-C'):
             chk = deterministic_check(r, t, self.ddo_drift_limit)
-            g = np.array([chk['strength'] - 1, chk['drift'] - 1, chk['deflection'] - 1, mono])
+            g += [chk['strength'] - 1, chk['drift'] - 1, chk['deflection'] - 1]
             info.update({k: chk[k] for k in ('strength', 'drift', 'deflection', 'max_B2')})
-        else:
+        if self.mode in ('RBDO', 'RBDO-C'):
             t1 = time.time()
             if self.samples is None:
                 self.samples = draw(self.pm, self.n_mc, len(t.A), self.seed)
@@ -83,11 +95,13 @@ class Problem:
                 ind = {k: np.concatenate([ind[k], ind2[k]]) for k in ind}
                 est = estimate(ind)
             self.t_mc += time.time() - t1
-            g = np.array([(self.beta_uls - est['beta_uls']) / self.beta_uls,
-                          (self.beta_sls - est['beta_drift']) / self.beta_sls,
-                          (self.beta_sls - est['beta_defl']) / self.beta_sls, mono])
+            b = 'beta_lcb_' if self.accept == 'lcb' else 'beta_'
+            g = [(self.beta_uls - est[b + 'uls']) / self.beta_uls,
+                 (self.beta_sls - est[b + 'drift']) / self.beta_sls,
+                 (self.beta_sls - est[b + 'defl']) / self.beta_sls] + g
             info.update(est)
             info['screened'] = clear
+        g = np.array(g + [mono])
         viol = float(np.sum(np.maximum(g, 0)))
         res = {'x': x, 'weight': r.weight, 'g': g, 'viol': viol, 'feasible': viol <= 0, 'info': info}
         self.cache[x] = res

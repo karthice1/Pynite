@@ -22,3 +22,41 @@ opt S9 DDO-h500 1
 opt B6 DDO-h500 1
 opt B10 DDO-h500 1
 opt W16 DDO-h500 1
+opt base RBDO-C 1,2,3,4,5
+enumerate RBDO-C
+enumerate RBDO
+opt base RBDO-C 1 n_mc=100000
+opt S9 RBDO-C 1
+opt B6 RBDO-C 1
+opt B10 RBDO-C 1
+opt W16 RBDO-C 1
+opt W08 RBDO-C 1
+opt S3 RBDO-C 1
+opt base RBDO-C 1 saa_seed=24680
+opt base RBDO-C 1 saa_seed=13579
+opt base RBDO-C 1 n_mc=20000
+opt base RBDO-C 1 accept=lcb
+enumerate DDO
+opt base DDO 4,5,6,7,8,9,10
+opt base DDO-h450 1
+opt base DDO-h600 1
+opt S3 DDO-h450 1
+opt S3 DDO-h500 1
+opt S3 DDO-h600 1
+opt S9 DDO-h450 1
+opt S9 DDO-h600 1
+opt B6 DDO-h450 1
+opt B6 DDO-h600 1
+opt B10 DDO-h450 1
+opt B10 DDO-h600 1
+opt W08 DDO-h450 1
+opt W08 DDO-h500 1
+opt W08 DDO-h600 1
+opt W16 DDO-h450 1
+opt W16 DDO-h600 1
+opt W16 RBDO-C 2,3
+opt W08 RBDO-C 2
+opt B6 RBDO-C 2
+opt B10 RBDO-C 2
+opt S9 RBDO-C 2
+opt S3 RBDO-C 2

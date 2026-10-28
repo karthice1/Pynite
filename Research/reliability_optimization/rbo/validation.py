@@ -304,3 +304,105 @@ def full_reanalysis_mc(spec, x, pm, n, seed=7, wind_scale=1.0, member_E_cov=0.03
     U_sur = np.max(U_sur, axis=1)
     D_sur = np.max(dem['drift_ratio'], axis=1) / DRIFT_LIMIT
     return {'U_full': U_full, 'U_sur': U_sur, 'D_full': D_full, 'D_sur': D_sur}
+
+
+# ------------------------------------------- broad, tail-focused validation
+def _member_E_factors(rng, n, nm, cov):
+    s = np.sqrt(np.log(1 + cov ** 2))
+    return np.exp(s * rng.standard_normal((n, nm)) - s ** 2 / 2)
+
+
+def _full_sample(spec, x, t, s, s_E, k, scenario, wind_scale):
+    """PyNite P-Delta re-analysis of sample k in scenario S1 (D + L50) or S2
+    (D + Lapt + W50), each member with its own modulus and property factor.
+    Returns member demands (Pr, Mr, Vr) and the maximum drift ratio / limit."""
+    names = t.names
+    m, _, _ = build_model(spec, x, member_E=dict(zip(names, s_E[k])),
+                          member_prop_factor=dict(zip(names, s.fab[k])))
+    l = s.l50[k] if scenario == 'S1' else s.lapt[k]
+    w = 0.0 if scenario == 'S1' else s.w50[k] * wind_scale
+    m.add_load_combo('C', {'D': s.d[k], 'L': l, 'W': w, 'ND': s.th[k] * s.d[k], 'NL': s.th[k] * l})
+    m.analyze_PDelta(check_stability=False, combo_tags=None)
+    nm = len(names)
+    Pr, Mr, Vr = np.zeros(nm), np.zeros(nm), np.zeros(nm)
+    for q, nme in enumerate(names):
+        mem = m.members[nme]
+        L = mem.L()
+        xs = np.linspace(0, L, N_BEAM_PTS)
+        Mr[q] = np.max(np.abs(mem.moment_array('Mz', N_BEAM_PTS, 'C', x_array=xs)[1]))
+        f = mem.f('C').ravel()
+        Pr[q] = f[0] if nme.startswith('C') else mem.axial(L / 2, 'C')
+        Vr[q] = max(abs(f[1]), abs(f[7]))
+    nb, ns = spec.n_bays, spec.n_storeys
+    dx = np.array([np.mean([m.nodes[f'N{i}_{j}'].DX['C'] for i in range(nb + 1)]) for j in range(ns + 1)])
+    drift = np.max(np.abs(np.diff(dx)) / spec.heights) / DRIFT_LIMIT
+    return Pr, Mr, Vr, drift
+
+
+def broad_validation(spec, x, pm, n_random=600, n_pool=200_000, n_tail=250, u_tail=0.85,
+                     seed=2024, member_E_cov=0.03, log=None):
+    """Surrogate vs full P-Delta re-analysis for one design.
+
+    * Random set: ``n_random`` samples of scenario S2 at the nominal load model.
+      Compares U and drift and the drift-SLS failure classification at the actual
+      SLS reliability level of the design.
+    * Tail set: from a pool of ``n_pool`` samples, the surrogate selects the
+      stratum T = {U_sur >= u_tail}; ``n_tail`` samples of T are drawn at random
+      and both scenarios are re-analysed (a scenario only when its surrogate
+      range) in two strata of the pool: A = {U_sur >= 1} (surrogate failures) and
+      B = {u_tail <= U_sur < 1} (near misses). With the stratum probabilities
+      known from the pool, the system ULS failure probability of the full model is
+      estimated as P(A) f_A + P(B) f_B, f = fraction of full-model failures in the
+      stratum sample; failures with U_sur < u_tail are excluded by the observed
+      ratio U_full / U_sur.
+    """
+    from .reliability import evaluate_samples, Samples
+    from .limit_states import capacities
+    r = analyse(spec, x)
+    t = MemberTable(r)
+    nm = len(t.A)
+    rng = np.random.default_rng([seed, 7])
+    s = draw(pm, n_pool, nm, seed)
+    s_E = _member_E_factors(rng, n_pool, nm, member_E_cov)
+    s_bar = Samples(s.d, s.l50, s.lapt, s.w50, np.mean(s_E, axis=1), s.fy, s.fab, s.th)
+    ind = evaluate_samples(r, s_bar, t)   # surrogate, frame-wide modulus = member mean
+    out = {'weight': r.weight, 'n_pool': n_pool, 'u_tail': u_tail,
+           'pf_sur_pool': float(np.mean(ind['U'] >= 1)), 'nfail_sur_pool': int(np.sum(ind['U'] >= 1))}
+
+    def utilisation_full(idx, dem):
+        E_mem = E_STEEL * s_E[idx]
+        U, _ = utilisation(t, dem, FY_NOM * s.fy[idx], E_mem, s.fab[idx])
+        return np.max(U, axis=1)
+
+    # ---- random set (scenario S2)
+    idx_r = np.arange(n_random)
+    res = [_full_sample(spec, x, t, s, s_E, k, 'S2', 1.0) for k in idx_r]
+    dem = {'Pr': np.array([q[0] for q in res]), 'Mr': np.array([q[1] for q in res]),
+           'Vr': np.array([q[2] for q in res])}
+    out['random'] = {'U_full': utilisation_full(idx_r, dem), 'U_sur': ind['U2'][idx_r],
+                     'D_full': np.array([q[3] for q in res]), 'D_sur': ind['drift'][idx_r]}
+    if log:
+        log(f'random set done ({n_random})')
+    # ---- tail strata: A = surrogate failures, B = near misses u_tail <= U_sur < 1
+    out['tail'] = {}
+    for name, sel in (('A', ind['U'] >= 1.0), ('B', (ind['U'] >= u_tail) & (ind['U'] < 1.0))):
+        T = np.flatnonzero(sel)
+        pick = np.sort(rng.choice(T, size=min(n_tail, len(T)), replace=False))
+        U_full = np.zeros(len(pick))
+        n_an = 0
+        for q, k in enumerate(pick):
+            best = 0.0
+            gov = 'S1' if ind['U1'][k] >= ind['U2'][k] else 'S2'
+            for sc, us in (('S1', ind['U1'][k]), ('S2', ind['U2'][k])):
+                if us >= u_tail or sc == gov:
+                    Pr, Mr, Vr, _ = _full_sample(spec, x, t, s, s_E, k, sc, 1.0)
+                    dem = {'Pr': Pr[None], 'Mr': Mr[None], 'Vr': Vr[None]}
+                    best = max(best, float(utilisation_full([k], dem)[0]))
+                    n_an += 1
+            U_full[q] = best
+            if log and q % 50 == 0:
+                log(f'stratum {name} sample {q}/{len(pick)}')
+        out['tail'][name] = {'n_T': int(len(T)), 'p_T': len(T) / n_pool, 'idx': pick, 'U_full': U_full,
+                             'U_sur': ind['U'][pick], 'gov_S1': ind['U1'][pick] >= ind['U2'][pick],
+                             'n_analyses': n_an}
+    return out
