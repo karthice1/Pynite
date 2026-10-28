@@ -29,6 +29,10 @@ folder from seeded random streams.
 
 ## Reproducing the paper
 
+Manuscript versions: first revision (response to reviewers) = commit `d2715a1`
+(`d2715a1` contains all results, figures, tables and PDFs of that version).
+
+
 Environment: `requirements.txt` (Python 3.13, NumPy, SciPy, Matplotlib, OpenSeesPy, PyNite from
 this repository). Every stochastic stage uses fixed seeds stored with its results.
 
