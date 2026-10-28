@@ -1,8 +1,10 @@
-%% Sections 3 (body), 4-6
-The conclusions of an optimisation study are only as credible as the models it optimises.
-Three verification levels were therefore applied before any design comparison was made.
+%% Sections 3-6
+\section{Verification of the structural and reliability models}\label{sec:verification}
 
-\subsection{Closed-form benchmarks}
+The conclusions of an optimisation study are only as credible as the models it optimises.
+Four verification levels were therefore applied before any design comparison was made.
+
+\subsection{Closed-form benchmarks}\label{sec:closedform}
 
 Table~\ref{tab:closedform} compares PyNite with closed-form solutions for a cantilever, a
 fixed--fixed beam under uniform load, and a fixed-base portal frame under lateral load. The
@@ -29,7 +31,7 @@ stiffness also captures the member (P-$\delta$) effect.
 \fittable{\input{tables/closed_form.tex}}
 \end{table}
 
-\subsection{Independent solver}
+\subsection{Independent solver}\label{sec:opensees}
 
 The optimised designs were rebuilt in OpenSeesPy \citep{McKenna2010,Zhu2018} with
 elastic beam-column elements, element loads for the distributed gravity and self-weight
@@ -41,8 +43,12 @@ frames are themselves of the order of round-off and are not compared.) For the P
 analysis of the combination $1.2D+0.5L+1.6W$, OpenSees used the \texttt{PDelta} coordinate
 transformation and a load-controlled Newton solution. PyNite's second-order drifts differ from
 OpenSees by at most 0.8\%, and the $B_1$--$B_2$ amplified first-order drifts used by the
-surrogate by at most 1.8\%, always on the conservative side (Fig.~\ref{fig:pdelta}); column
-base moments behave similarly (at most 1.6\%).
+surrogate by at most 1.8\% (Fig.~\ref{fig:pdelta}). The largest differences occur in the upper
+storeys, where the drifts and hence the governing drift checks are small; in the lower storeys,
+which govern the drift limit state, the surrogate exceeds the P-$\Delta$ solution by up to 1.8\%,
+and it underestimates it by at most 1.0\% in any storey. Column base moments behave similarly (at
+most 1.6\%). These differences are an order of magnitude smaller than the sampling resolution
+of the reliability constraints at the SAA sample size (Section~\ref{sec:mcconv}).
 
 \begin{table}[!htbp]
 \centering
@@ -57,49 +63,103 @@ designs and two other frames: linear unit cases and P-$\Delta$ analysis of $1.2D
 \centering
 \includegraphics[width=\textwidth]{figures/pdelta.pdf}
 \caption{Inter-storey drift profiles of the base designs under $1.2D+0.5L+1.6W$: first-order
-PyNite, the $B_2$-amplified surrogate, PyNite P-$\Delta$ and OpenSees P-$\Delta$.}
+PyNite, the $B_2$-amplified surrogate, PyNite P-$\Delta$ and OpenSees P-$\Delta$. PyNite and
+OpenSees P-$\Delta$ differ by at most 0.8\%. The surrogate differs from them by at most 1.8\%, with the
+largest relative differences in the upper storeys; it underestimates the drift by at most 1.0\%.}
 \label{fig:pdelta}
 \end{figure}
 
-\subsection{Reliability surrogate versus full second-order re-analysis}
+\subsection{Reliability surrogate versus full second-order re-analysis}\label{sec:fullmc}
 
 The surrogate rests on three simplifications: second-order effects through $B_1$--$B_2$, a
 modulus that is uniform over the frame, and nominal section stiffness (the fabrication factor
-enters the resistance only). To quantify their combined effect, 1000 samples of the wind
-scenario $S_2$ were analysed for the base RBDO design with a full PyNite P-$\Delta$ analysis per
-sample, in which every member received its own modulus factor (c.o.v.\ 0.03) and its
-fabrication factor was applied to $A$ and $I$. The resulting system utilisation and maximum
-drift ratio are compared with the surrogate evaluated on the same samples (with the mean of the
-member modulus factors) in Fig.~\ref{fig:fullmc}. A second set of 1000 samples with the wind
-doubled was added as a stress test that produces failure probabilities large enough to be
-compared directly.
+enters the resistance only). In the full model, every sample is analysed with a PyNite
+P-$\Delta$ analysis in which every member receives its own modulus factor (c.o.v.\ 0.03) and its
+fabrication factor is applied to $A$ and $I$; the surrogate is evaluated on the same samples with
+the mean of the member modulus factors. Because agreement of mean responses does not guarantee
+agreement of small failure probabilities, the comparison was designed around the failure
+classification and the tail, for eight final designs from six frame configurations (the base
+DDO design and the RBDO-C designs of all seven frames, including nine storeys, 10-m bays and high
+wind):
+\begin{itemize}
+\item a \emph{random set} of 600 samples of scenario $S_2$, which compares utilisation and drift and,
+because $\beta_{drift}\approx1.5$ for these designs, the drift classification at the actual SLS
+constraint level;
+\item a \emph{tail-stratified set} drawn from a pool of $2\times10^5$ samples: stratum A contains
+all samples the surrogate classifies as ULS failures ($U_s\ge1$; up to 250 analysed), and stratum B
+the near misses $0.85\le U_s<1$ (250 analysed at random). Both scenarios are re-analysed when their
+surrogate utilisation is in the tail. With the stratum probabilities known from the pool, the
+full-model failure probability is estimated as $\hat P_f^{full} = P(A)\hat f_A + P(B)\hat f_B$,
+where $\hat f$ is the fraction of full-model failures in a stratum. Samples with $U_s<0.85$ cannot
+fail in the full model, since the largest observed ratio $U_{full}/U_s$ over all 8\,000 analysed
+samples is 1.049. A $95\%$ interval of $\hat P_f^{full}$, of the ratio $\hat P_f^{full}/\hat P_f^{sur}$
+and of the difference in $\beta$ is obtained by propagating Jeffreys posteriors of the stratum
+fractions and of the pool counts by simulation.
+\end{itemize}
+The base RBDO-C design was in addition analysed under doubled wind (1000 samples) as a stress test
+that produces failure fractions large enough to be compared directly.
 
-The surrogate overestimates the system utilisation by 0.9\% on average (standard deviation of
-the difference 1.0\%, correlation 0.997) under $W_{50}$ and by 1.5\% under $2W_{50}$; the
-corresponding failure fractions in the stress test are 2.1\% (surrogate) and 1.7\% (full
-analysis). The drift ratio is unbiased ($-0.6\%$ mean difference, 2.0\% standard deviation) and
-the drift exceedance fractions are 7.2\% and 7.1\%. The surrogate is thus slightly
-conservative for the ULS and accurate for the drift SLS, while being two to three orders of
-magnitude cheaper than a P-$\Delta$ re-analysis per sample.
+Table~\ref{tab:validation} and Fig.~\ref{fig:validation} summarise the results. Over all designs
+the surrogate overestimates the system utilisation by 0.4--1.1\% on average (standard deviation of
+the difference 1.0--1.6\%) and is unbiased for drift ($-1.0$ to $+1.4\%$, standard deviation
+1.9--3.1\%). In the random sets, 0 to 7 of 600 drift classifications differ (at most 1.2\%), and
+the numbers of drift exceedances agree within their sampling scatter. In the tail, 79--91\% of the
+surrogate failures are also failures of the full model and at most 4 of 250 near misses fail in
+the full model. The resulting full-model failure probabilities differ from the surrogate ones by
+$\Delta\beta_{ULS}$ between $-0.07$ and $+0.05$; for seven of the eight designs the $95\%$ interval of
+$\Delta\beta$ contains zero. The exception is the three-storey frame, for which the full model gives
+$\hat P_f^{full}=1.64\times10^{-3}$ against $1.31\times10^{-3}$ ($\Delta\beta=-0.07$, $95\%$
+interval $[-0.17,-0.01]$): in this strength-governed, low-rise frame, four near misses fail in the
+full model, so the surrogate is slightly unconservative. Under doubled wind (base design), the
+failure fractions are 2.1\% (surrogate) and 1.7\% (full analysis), and the drift exceedance
+fractions 68.1\% and 67.8\%.
+
+In summary, the surrogate reproduces the full second-order reliability within about $\pm0.07$ in
+$\beta_{ULS}$, which is of the order of the SAA resolution, and the drift reliability without
+detectable bias. Where it errs, it errs on the conservative side in six of eight designs. The
+three-storey result shows that the agreement is not guaranteed: a design accepted at the
+target by the surrogate may have a full-model index up to about 0.1 lower, and a validation of this
+kind should accompany any application of the surrogate to frame types outside the tested range.
+
+\begin{table}[!htbp]
+\centering
+\caption{Surrogate versus full P-$\Delta$ re-analysis with member-by-member random stiffness and
+section properties. Random set: 600 samples of $S_2$ (bias = mean $\pm$ standard deviation of
+surrogate/full $-1$; $k_{drift}$ = drift exceedances; discordant = samples classified differently).
+Tail strata (pool $2\times10^5$): full-model failures / samples analysed. $\hat P_f$ from the pool
+(surrogate) and the stratified estimator (full model); intervals from Jeffreys posteriors.}
+\label{tab:validation}
+\scriptsize
+\fittable{\input{tables/validation.tex}}
+\end{table}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/validation.pdf}
+\caption{Surrogate versus full P-$\Delta$ re-analysis for eight designs: (a) system utilisation of
+the tail-stratified samples (large dots: stratum A, small dots: stratum B); (b) drift of the random
+sets; (c) difference of the ULS reliability index with $95\%$ interval. Colours identify the designs
+as labelled in (c).}
+\label{fig:validation}
+\end{figure}
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/fullmc.pdf}
-\caption{Surrogate versus full P-$\Delta$ re-analysis with member-by-member random stiffness
-and section properties (base RBDO design, 1000 samples per wind level).}
+\caption{Surrogate versus full P-$\Delta$ re-analysis for the base RBDO-C design under the
+50-year wind and under doubled wind (1000 samples each).}
 \label{fig:fullmc}
 \end{figure}
 
-\subsection{Monte Carlo convergence}
+\subsection{Monte Carlo convergence and sampling resolution}\label{sec:mcconv}
 
-Fig.~\ref{fig:mcconv} shows the reliability indices of the base DDO and RBDO designs as
+Fig.~\ref{fig:mcconv} shows the reliability indices of the base DDO and RBDO-C designs as
 functions of the sample size for five independent random streams. At the SAA sample size
-($N=5\times10^4$) the scatter of $\hat\beta_{ULS}$ between streams is about $\pm0.1$, which is
-the resolution with which the optimiser can enforce $\beta_T=3$; at $N=10^6$ the streams agree
-within $\pm0.02$ (c.o.v.\ of $\hat P_f$ about 3\%). The drift index converges much faster
-because its failure probability is larger. These numbers justify the two-stage procedure of
-Section~\ref{sec:mc}: the SAA estimate guides the search and the independent $10^6$-sample
-estimate is the one reported.
+($N=5\times10^4$) the five streams give $\hat\beta_{ULS}$ between 2.97 and 3.16, i.e.\ a resolution
+of about $\pm0.1$ with which the optimiser can enforce $\beta_T=3$; at $N=10^6$ they agree within
+3.02--3.05 (c.o.v.\ of $\hat P_f$ about 3\%). The drift index converges much faster because its
+failure probability is larger. The SAA estimate therefore guides the search, and the independent
+$10^6$-sample estimate with its confidence interval is the one reported.
 
 \begin{figure}[!htbp]
 \centering
@@ -112,59 +172,104 @@ independent streams each). The dotted line marks the SAA sample size used in the
 %% ---------------------------------------------------------------------------
 \section{Results}\label{sec:results}
 
-\subsection{Optimiser performance}
+\subsection{Optimiser robustness and global-search credibility}\label{sec:robust}
 
-Table~\ref{tab:optruns} summarises the optimisation runs. Repeated DDO runs with different
-seeds converged to the same design or to designs within 0.6\% in mass, and the two RBDO runs of
-the base frame converged to the same design, which indicates that the GA with local search
-reliably locates the optimum of these nine-variable problems (Fig.~\ref{fig:ga}). A DDO run
-needs 6--12~min and an RBDO run 15--61~min on one CPU core, the reliability evaluation
-accounting for about 80\% of the RBDO time.
+Table~\ref{tab:robust} reports repeated runs. For the base frame, ten DDO runs gave the best mass
+of 18\,261~kg in eight runs and 18\,321~kg (+0.3\%) in two, and five RBDO-C runs with different
+GA seeds all returned the same design (18\,787~kg). For the other frames, two independent
+RBDO-C runs gave the same design in four of six frames; in the 6-m bay frame they differed by
+0.1\% and in the high-wind frame a third run was made because the first two differed: the three
+runs gave 21\,738, 21\,774 and 22\,078~kg (spread 1.6\%), the lightest coinciding with the design
+found by RBDO without code constraints. The GA with local search is thus robust within the
+tested budget for most frames, but not infallible; the reported optimum is always the lightest
+design found over all runs, and it is a local optimum with respect to the moves of the local search.
+
+For the reduced problem (one section group, three variables, 11\,200 designs), the exact optimum
+was obtained by evaluating the designs in order of increasing mass until the first feasible one
+(Table~\ref{tab:enum}). All ten GA runs of each formulation found the exact optimum, already
+before the local search, using about 700 of the 11\,200 designs. The DDO optimum (21\,289~kg) is
+preceded by 739 lighter, infeasible designs and the RBDO and RBDO-C optima (both 22\,383~kg,
++5.1\%) by 960. Grouping all storeys into one section group also shows the value of the design
+grouping: the six-storey frame with three groups is 14\% (DDO) and 16\% (RBDO-C) lighter.
+
+The SAA settings were varied for the base frame (Table~\ref{tab:saa}). With $N=2\times10^4$,
+$5\times10^4$ (three independent sample streams) and $10^5$, RBDO-C returned the same design, whose
+SAA estimates of $\beta_{ULS}$ ranged from 3.01 to 3.13 with the stream and size, while the
+independent verification gives $3.049$ $[3.03, 3.07]$. Imposing the targets on the one-sided
+$95\%$ lower confidence bounds in the SAA sample selected a heavier design (19\,079~kg, +1.6\%)
+with $\hat\beta_{ULS}=3.125$ $[3.11, 3.14]$ and $\hat\beta_{drift}=1.551$; this is the price of
+statistical conservatism at $N=5\times10^4$ for this frame.
+
+A DDO run took 2--12~min and an RBDO-C run 10--56~min (median 32~min) on one CPU core, the
+reliability evaluation accounting for a median of 83\% of the RBDO-C time.
 
 \begin{table}[!htbp]
 \centering
-\caption{Optimisation runs (best design reported; spread = range of the best masses over the
-seeds).}
-\label{tab:optruns}
+\caption{Repeated optimisation runs (masses in kg). Distinct finals = number of different final
+designs; runs at best = runs that returned the lightest design. Designs eval.\ = mean number of
+distinct designs evaluated per run.}
+\label{tab:robust}
 \small
-\fittable{\input{tables/opt_runs.tex}}
+\fittable{\input{tables/robustness.tex}}
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\caption{Reduced problem (base frame with one section group): exact optimum by mass-ordered
+enumeration and success of ten GA runs per formulation (with and without the final local search).}
+\label{tab:enum}
+\small
+\fittable{\input{tables/enumeration.tex}}
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\caption{Base frame RBDO-C: effect of the SAA sample size, the SAA sample stream and the acceptance
+rule (point estimate or one-sided $95\%$ lower confidence bound, LCB). Verified indices from $10^6$
+independent samples; vs.\ targets: a = above, w = within, b = below the target ($95\%$ interval),
+for ULS/drift.}
+\label{tab:saa}
+\scriptsize
+\fittable{\input{tables/saa.tex}}
 \end{table}
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/ga_history.pdf}
-\caption{Convergence of the GA for the base frame (best feasible mass); dots mark the final
-designs after local search.}
+\caption{Convergence of the GA for the base frame (best feasible mass; ten DDO and five RBDO-C
+runs); dots mark the final designs after local search.}
 \label{fig:ga}
 \end{figure}
 
-\subsection{Deterministic versus uncertainty-aware design of the base frame}
+\subsection{Deterministic versus code-compliant reliability-based design of the base frame}\label{sec:basedesign}
 
-Table~\ref{tab:designs} compares the DDO and RBDO optima of the base frame. The DDO design
-weighs 18.26~t; its governing LRFD ratio is 0.993 and its drift is 0.97 of the $h/400$ limit,
-so both strength and drift are active. Verified with $10^6$ independent samples, its system
-ULS reliability index is $\beta_{ULS}=3.03$, practically equal to the target, but its drift
-reliability over 50 years is only $\beta_{drift} = 0.96$ ($P_f = 0.17$): a drift check at the
-nominal 50-year wind leaves a one-in-six chance that the drift limit is exceeded during the
-reference period. The reason is that the 50-year maximum wind has a mean-to-nominal ratio of
-0.78 but a c.o.v.\ of 0.37, so the nominal wind is exceeded with a probability of about 0.19,
-and serviceability checks carry no load factor.
+Table~\ref{tab:designs} compares the DDO and RBDO-C optima of the base frame. The DDO design
+weighs 18\,261~kg; its governing LRFD ratio is 0.993 and its drift is 0.97 of the $h/400$ limit,
+so both strength and drift are active. Verified with $10^6$ independent samples, it has
+$k=1242$ ULS failures, $\hat\beta_{ULS}=3.025$ $[3.01, 3.04]$, statistically above the target,
+but its 50-year drift reliability is only $\hat\beta_{drift} = 0.962$ ($\hat P_f = 0.17$): a drift
+check at the nominal 50-year wind leaves about a one-in-six chance that the drift limit is
+exceeded during the reference period. The reason is that the 50-year maximum wind has a
+mean-to-nominal ratio of 0.78 but a c.o.v.\ of 0.37, so the nominal wind is exceeded with a
+probability of about 0.19, and serviceability checks carry no load factor.
 
-The RBDO design ($\beta_T = 3.0$, $\beta_{SLS}=1.5$) weighs 18.79~t (+2.9\%) and achieves
-$\beta_{ULS}=3.05$ and $\beta_{drift}=1.51$, i.e.\ both reliability constraints are active and
-satisfied in the independent verification. The additional steel is placed where it buys
-stiffness most cheaply: the lower-storey beams are deepened (W21$\times$50 to
-W24$\times$55) and the interior columns of storeys 3--4 increased, while the remaining sections
-are unchanged. Its deterministic drift ratio is 0.80 of $h/400$ (equivalent to $h/500$), and its
-LRFD strength ratio decreases slightly to 0.977. The exceedance curves of Fig.~\ref{fig:exceed}
-show that the two designs have virtually identical distributions of the system utilisation,
-whereas the drift distribution of the RBDO design is shifted to the left over its whole range.
+The RBDO-C design ($\beta_T = 3.0$, $\beta_{SLS}=1.5$) weighs 18\,787~kg (+2.88\%), satisfies all
+LRFD checks (strength ratio 0.977) and has $\hat\beta_{ULS}=3.049$ $[3.03, 3.07]$ ($k=1148$) and
+$\hat\beta_{drift}=1.507$ $[1.50, 1.51]$; both reliability constraints are active and both targets
+are met with $95\%$ confidence. It is the same design as found by RBDO without code constraints,
+so for the base frame the code checks are not binding once the reliability targets are imposed.
+The additional steel is placed where it buys stiffness most cheaply: the lower-storey beams are
+deepened (W21$\times$50 to W24$\times$55) and the interior columns of storeys 3--4 increased; its
+deterministic drift ratio is 0.80 of $h/400$, i.e.\ $h/500$. The exceedance curves of
+Fig.~\ref{fig:exceed} show that the two designs have virtually identical distributions of the
+system utilisation, whereas the drift distribution of the RBDO-C design is shifted to the left
+over its whole range.
 
 \begin{table}[!htbp]
 \centering
 \caption{Optimum designs of the base frame and their deterministic and probabilistic
-performance (reliability indices from $10^6$ independent samples; $>$ indicates no failure in
-the sample, i.e.\ a lower bound).}
+performance ($10^6$ independent samples; exact $95\%$ confidence intervals; for zero failures the
+one-sided $95\%$ lower confidence bound of $\beta$ is given).}
 \label{tab:designs}
 \small
 \fittable{\input{tables/designs.tex}}
@@ -174,22 +279,18 @@ the sample, i.e.\ a lower bound).}
 \centering
 \includegraphics[width=\textwidth]{figures/exceedance.pdf}
 \caption{Exceedance probabilities of the system utilisation (ULS) and of the maximum
-inter-storey drift (normalised by $h/400$) of the base DDO and RBDO designs over 50 years
+inter-storey drift (normalised by $h/400$) of the base DDO and RBDO-C designs over 50 years
 ($10^6$ samples).}
 \label{fig:exceed}
 \end{figure}
 
 Fig.~\ref{fig:memberutil} relates the member utilisations of the deterministic check to their
 probabilistic counterparts. The 99.9\% quantile of the member utilisation lies 5--15\% below the
-LRFD ratio for most members, which reflects the margin built into the partial factors. In
-96\% of the failed samples of both designs the governing member is a beam, mostly at floor
-levels 3--5 (79\% of failures for DDO, 96\% for RBDO), where the W21$\times$44 beams of the
-upper storey groups are highly utilised; the remainder are exterior ground-storey columns and,
-for DDO, first-floor beams. The gravity scenario $S_1$ with the 50-year live load causes 81\%
-(DDO) and 96\% (RBDO) of the failures, which is consistent with the dominant influence of the
-live-load c.o.v.\ found in the sensitivity study. Stiffening the frame against drift (RBDO)
-therefore removes most wind-scenario failures without changing the gravity-governed ULS
-reliability.
+LRFD ratio for most members, which reflects the margin built into the partial factors. In 96\% of
+the failed samples of both designs the governing member is a beam (Table~\ref{tab:members}),
+mostly the W21$\times$44 beams at floor levels 3--5. The gravity scenario $S_1$ alone causes 79\%
+(DDO) and 95\% (RBDO-C) of the failures; stiffening the frame against drift removes most
+wind-scenario failures without changing the gravity-governed ULS reliability.
 
 \begin{figure}[!htbp]
 \centering
@@ -200,218 +301,317 @@ $i$ in storey $s$, B$i\_s$ the beam in bay $i$ at floor $s$ (counted from 0).}
 \label{fig:memberutil}
 \end{figure}
 
-\subsection{Cost--reliability trade-off}
+\subsection{Cost--reliability trade-off}\label{sec:pareto}
 
 Fig.~\ref{fig:pareto} shows the non-dominated designs of the bi-objective problem (mass versus
 $\beta_{ULS}$, subject to $\beta_{drift},\beta_{defl}\ge1.5$), re-verified with $4\times10^5$
-independent samples, together with all feasible designs visited by NSGA-II. Because drift
-governs the mass of this frame once $\beta_{SLS}=1.5$ is imposed, the front is almost vertical:
-raising the ULS reliability from $\beta_{ULS}=3.06$ to 3.36, 3.64 and 3.83 costs only +1.3\%,
-+3.5\% and +4.2\% of steel (19.04, 19.45 and 19.57~t against 18.79~t), whereas lowering it to
-2.36 would save just 0.2\%. All front designs have $\beta_{drift}$ between 1.51 and 1.57
-(Fig.~\ref{fig:pareto}b). The front passes through the single-objective RBDO optimum, which is
-an independent check of both optimisers. The DDO optimum lies to the left of the front at a
-similar $\beta_{ULS}$, but it does not belong to the feasible set because its
-$\beta_{drift}=0.96$.
+independent samples and shown with their $95\%$ intervals, together with all feasible designs
+visited by NSGA-II (SAA estimates). The lightest front design (18\,747~kg) fails the LRFD strength
+check (ratio 1.10) and has $\hat\beta_{ULS}=2.36$; all other front designs are code-compliant.
+Because drift governs the mass once $\beta_{SLS}=1.5$ is imposed, the code-compliant front is
+steep: raising $\hat\beta_{ULS}$ from 3.06 to 3.36, 3.64 and 3.83 costs +1.3\%, +3.5\% and +4.2\% of
+steel (19\,039, 19\,452 and 19\,568~kg against 18\,787~kg). All front designs have $\hat\beta_{drift}$
+between 1.51 and 1.57. The verified indices of the high-reliability front designs are lower than
+their SAA estimates (3.83 against 4.26 for the heaviest), which illustrates the SAA optimisation
+bias at small failure counts: the SAA sample contains only a few failures there, and the
+optimiser selects designs for which the particular sample is favourable. The front passes through
+the RBDO-C optimum, which is an independent check of both optimisers. The DDO optimum lies to the
+left of the front but is infeasible for it because $\hat\beta_{drift}=0.96$.
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/pareto.pdf}
 \caption{Cost--reliability trade-off of the base frame. (a) Non-dominated designs of the
-bi-objective problem (independent re-verification) with all feasible designs visited by
-NSGA-II (SAA estimates; values at the top are capped by the sample size); (b) drift
-reliability of the same non-dominated designs. The DDO and RBDO optima are shown for
-reference.}
+bi-objective problem, re-verified with $4\times10^5$ independent samples ($95\%$ intervals; open
+marker: fails the LRFD strength check), and all feasible designs visited by NSGA-II (SAA estimates,
+$N=5\times10^4$; values at the top are capped by the sample size); (b) drift reliability of the
+same non-dominated designs. The DDO and RBDO-C optima ($10^6$ samples) are shown for reference.}
 \label{fig:pareto}
 \end{figure}
 
-\subsection{Effect of the reliability targets}
+\subsection{Effect of the reliability targets and of the deterministic drift limit}\label{sec:targets}
 
-Table~\ref{tab:targets} isolates the role of the two reliability targets for the base frame.
-With $\beta_T=3.0$ and a serviceability target of 0.5, RBDO returns \emph{exactly} the DDO
-design: the code-based optimum is also the reliability-based optimum when the reliability
-levels it implicitly provides are required. Raising $\beta_{SLS}$ to 1.0 and 1.5 costs +1.0\%
-and +2.9\% of steel, and raising $\beta_T$ to 3.5 at $\beta_{SLS}=1.5$ costs +6.5\% (the
-verified $\beta_{ULS}$ of that design, 3.67, exceeds the target because of the discreteness of
-the catalogue). A deterministic optimisation with the drift limit tightened from $h/400$ to
-$h/500$ finds the same design as RBDO with $(3.0, 1.5)$, i.e.\ for this frame a single
-calibrated drift limit reproduces the reliability-based optimum.
+Table~\ref{tab:targets} isolates the role of the targets for the base frame. With $\beta_T=3.0$ and
+$\beta_{SLS}=0.5$, RBDO returns \emph{exactly} the DDO design: the code-based optimum is also the
+reliability-based optimum when the reliability levels it implicitly provides are required. Raising
+$\beta_{SLS}$ to 1.0 and 1.5 costs +0.97\% and +2.88\% of steel, and raising $\beta_T$ to 3.5 at
+$\beta_{SLS}=1.5$ costs +6.52\% ($\hat\beta_{ULS}=3.67$, above the target because of the
+discreteness of the catalogue).
+
+Table~\ref{tab:driftlimits} and Fig.~\ref{fig:driftlimits} compare RBDO-C with deterministic
+optima for drift limits of $h/400$, $h/450$, $h/500$ and $h/600$, all with the same strength and
+deflection checks. Tightening the drift limit raises $\beta_{drift}$ of the drift-governed frames
+in a similar way (about 1.2--1.4 at $h/450$, 1.5 at $h/500$ and 2.0 at $h/600$), but it has no
+effect on frames governed by strength (three storeys, low wind) and cannot raise their
+$\beta_{ULS}$. Applying the acceptance rule of Section~\ref{sec:mc} to the verified indices, the
+lightest deterministic design that meets both targets is $h/500$ for the base, nine-storey, 6-m bay
+and high-wind frames and $h/600$ for the 10-m bay and low-wind frames; for the three-storey frame no
+drift limit meets $\beta_T$. Compared with that design, RBDO-C is equal (base), lighter by 0.10\%
+(nine storeys), 0.34\% (low wind), 1.14\% (high wind) and 4.99\% (10-m bays), and heavier by
+0.58\% for the 6-m bays. The last case is instructive: the $h/500$ design has
+$\hat\beta_{drift}=1.499$ $[1.495, 1.503]$, statistically indistinguishable from the target and
+therefore accepted in verification, but its SAA estimate (1.494) was below the target, so the
+point-estimate SAA constraint rejected it. Near-threshold classification can thus change the
+optimum by about 0.5\% of mass in either direction. No single drift limit delivers the target
+reliabilities in all frames, which is what the explicit reliability constraints achieve by
+construction.
 
 \begin{table}[!htbp]
 \centering
-\caption{Base frame: optimum mass for different reliability targets and drift limits
-(indices verified with $10^6$ independent samples; $\Delta$mass relative to DDO with $h/400$).}
+\caption{Base frame: optimum mass for different reliability targets and drift limits ($10^6$
+independent samples; $\Delta m$ from unrounded masses relative to DDO with $h/400$).}
 \label{tab:targets}
 \small
 \fittable{\input{tables/targets.tex}}
 \end{table}
 
-\subsection{Parametric study}
+\begin{table}[!htbp]
+\centering
+\caption{Optimum mass (kg) and verified $\hat\beta_{ULS}/\hat\beta_{drift}$ of deterministic
+designs with four drift limits and of RBDO-C. Bold: meets both targets under the acceptance rule
+(target not below the $95\%$ interval). Last column: RBDO-C relative to the lightest deterministic
+design meeting both targets.}
+\label{tab:driftlimits}
+\scriptsize
+\fittable{\input{tables/driftlimits.tex}}
+\end{table}
 
-Table~\ref{tab:parametric} and Fig.~\ref{fig:parametric} extend the comparison to the
-parametric family. Three observations stand out.
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/driftlimits.pdf}
+\caption{Deterministic optima with tightened drift limits: (a) verified drift reliability index;
+(b) mass increase relative to DDO with $h/400$, with the RBDO-C designs (diamonds) for comparison.}
+\label{fig:driftlimits}
+\end{figure}
 
-First, the reliability of deterministic optima is far from uniform. Although every DDO design
-has a governing strength or drift check within 3\% of its limit, the verified system indices range from
-$\beta_{ULS}=2.88$ (10-m bays) to 3.66 (6-m bays), and the drift indices from 0.89 (high wind)
-to 2.54 (three storeys). Frames whose mass is governed by drift (six- and nine-storey, short
-bays, high wind) carry excess ULS reliability; frames governed by strength (three storeys,
-long bays, low wind) fall slightly below $\beta_{ULS}=3.0$. Five of the seven DDO designs have
-$\beta_{drift}<1.5$, four of them $\beta_{drift}<1.0$.
+\subsection{Parametric study and statistical verification of all final designs}\label{sec:parametric}
 
-Second, RBDO equalises the reliability: all RBDO designs satisfy $\beta_{ULS}\ge2.99$ and
-$\beta_{drift}\ge1.51$ in the independent verification (the smallest values, 2.99 and 3.00, lie
-within the sampling resolution of the SAA, Fig.~\ref{fig:mcconv}). The price relative to DDO
-ranges from +0.5\% (low wind, where DDO already satisfies the SLS target) to +10.1\% (high wind,
-where the drift reliability of DDO is lowest). The extra mass is thus essentially the cost of
-raising $\beta_{drift}$ to 1.5, plus small ULS corrections in the strength-governed frames.
+Table~\ref{tab:verification} reports, for every frame, the DDO, RBDO and RBDO-C optima with their
+masses, LRFD ratios, failure counts and $95\%$ intervals, and Fig.~\ref{fig:parametric} shows the
+same results graphically. Four observations stand out.
 
-Third, where DDO has surplus ULS reliability, RBDO trades it for stiffness. For the 6-m bay
-frame, RBDO reduces $\beta_{ULS}$ from 3.66 to 3.22 while raising $\beta_{drift}$ from 0.95 to
-1.55; its LRFD strength ratio is 1.011, i.e.\ the reliability-optimal design would marginally
-fail the deterministic strength check. Compared with deterministic designs with the drift
-limit tightened to $h/500$ (last three columns of Table~\ref{tab:parametric}), RBDO is never heavier
-when both designs meet the targets (equal for the base frame, $-0.1\%$ for nine storeys,
-$-1.1\%$ for high wind), and in two of the five frames the $h/500$ design misses one target
-($\beta_{drift}=1.494$ in the SAA for 6-m bays; $\beta_{ULS}=2.92$ for 10-m bays). No single
-drift limit therefore delivers the target reliabilities in all frames, which is what the
-explicit reliability constraints achieve by construction.
+First, the reliability of deterministic optima is far from uniform. Although every DDO design has
+a governing strength or drift check within 7\% of its limit, the verified system indices range
+from $\hat\beta_{ULS}=2.880$ $[2.87, 2.89]$ (10-m bays) to 3.656 $[3.61, 3.70]$ (6-m bays), and the
+drift indices from 0.887 (high wind) to 2.544 (three storeys). Three DDO designs fall
+significantly below $\beta_T=3.0$ (three storeys, 10-m bays, low wind) and five have
+$\hat\beta_{drift}<1.5$, four of them below 1.0.
+
+Second, RBDO-C equalises the reliability. All seven RBDO-C designs satisfy every LRFD check and
+meet both targets under the acceptance rule: six are above both targets with $95\%$ confidence, and
+the three-storey design has $\hat\beta_{ULS}=2.995$ $[2.98, 3.01]$, within the interval of the target.
+The mass premium relative to DDO, computed from unrounded masses, ranges from +1.13\% (low wind)
+to +10.11\% (high wind). The premium is essentially the cost of raising $\beta_{drift}$ to 1.5 in
+the drift-governed frames and of raising $\beta_{ULS}$ to 3.0 in the strength-governed ones.
+
+Third, the code checks matter in two of seven frames. Without them, RBDO selects a 6-m bay design
+with an LRFD strength ratio of 1.011 and a low-wind design with 1.002, i.e.\ designs that meet the
+reliability targets but would marginally fail the mandatory strength check; in the 6-m bay frame
+RBDO trades the surplus ULS reliability of the DDO design ($\hat\beta_{ULS}=3.66$) for stiffness
+($\hat\beta_{ULS}=3.22$). Adding the code checks (RBDO-C) raises the mass by 0.32\% (6-m bays) and
+0.64\% (low wind) relative to RBDO. In the other five frames the RBDO optimum already satisfies the
+code checks and RBDO-C returns the same design. The conclusions on mass are therefore unchanged
+when all RBDO candidates must satisfy the deterministic LRFD checks; the premiums over DDO change
+from +6.67\% to +7.01\% (6-m bays) and from +0.48\% to +1.13\% (low wind).
+
+Fourth, the location of the extra steel explains the premiums (Tables~\ref{tab:members} and
+\ref{tab:cost}). In the drift-governed frames (base, nine storeys, high wind) RBDO-C adds steel to
+the beams of the lower storey groups and to the interior columns, which stiffens the frame; in the
+high-wind frame this adds 755~kg to columns and 1\,240~kg to beams. In the 10-m bay frame, where
+DDO falls below $\beta_T$ because the long beams are governed by the 50-year live load (95\% of
+failures in $S_1$, 95\% in beams), RBDO-C deepens the beams (+577~kg) and lightens the columns
+($-151$~kg), after which the remaining failures are shared between beams (57\%) and columns
+(43\%). In the 6-m bay frame, governed by drift but with short, lightly loaded beams, failures occur
+mostly in interior columns (77--79\%) in the wind scenario.
 
 \begin{table}[!htbp]
 \centering
-\caption{Parametric study: optimum mass and verified reliability indices ($10^6$ samples) of
-DDO and RBDO ($\beta_T=3.0$, $\beta_{SLS}=1.5$) designs, and deterministic designs with a
-drift limit of $h/500$ for the drift-governed frames.}
-\label{tab:parametric}
-\small
-\fittable{\input{tables/parametric.tex}}
+\caption{Statistical verification of all final designs ($N=10^6$ independent samples). $\Delta m$:
+mass relative to DDO (unrounded); LRFD: governing strength ratio; $k$: number of failures; vs.\
+targets: a = above, w = within, b = below the target, by the exact $95\%$ interval, for ULS/drift.
+No deflection failure occurred in any design ($\beta_{defl}\ge4.53$ with $95\%$ confidence).}
+\label{tab:verification}
+\scriptsize
+\fittable{\input{tables/verification.tex}}
 \end{table}
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/parametric.pdf}
 \caption{Parametric study: (a) optimum steel mass, (b) system ULS and (c) drift reliability
-indices of the DDO and RBDO designs (independent $10^6$-sample verification); dashed lines
-mark the targets.}
+indices with exact $95\%$ intervals of the DDO, RBDO and RBDO-C designs ($10^6$ independent
+samples); dashed lines mark the targets.}
 \label{fig:parametric}
 \end{figure}
 
-\subsection{Sensitivity to the probabilistic model}
+\begin{table}[!htbp]
+\centering
+\caption{Where ULS failures occur ($10^6$ samples): share of failures by governing member type and
+by scenario ($S_1$: gravity with $L_{50}$; $S_2$: wind).}
+\label{tab:members}
+\small
+\fittable{\input{tables/members.tex}}
+\end{table}
 
-Fig.~\ref{fig:sensitivity} shows how the verified reliability indices of the base designs
-change when one assumption of Table~\ref{tab:rv} is altered ($4\times10^5$ samples each). The
-system ULS index is most sensitive to the live-load model (c.o.v.\ 0.35 instead of 0.25:
-$\Delta\beta\approx-0.5$), the fabrication factor (removing it: $+0.3$) and the yield-stress
-model (mean-to-nominal 1.05 instead of 1.10, or c.o.v.\ 0.10 instead of 0.07: $-0.2$). Inter-member
-correlation of $F_y$ changes $\beta_{ULS}$ by less than 0.05 in either direction, and the
-out-of-plumbness and modulus variability are negligible. The drift index depends almost
-exclusively on the wind model: a mean-to-nominal ratio of 0.90 instead of 0.78 lowers it by
-0.4, and the c.o.v.\ changes it by about $\pm0.2$. The DDO and RBDO designs react in the same
-way, so the conclusions of the comparison are robust to these assumptions, whereas the
-\emph{absolute} indices, and hence the mass needed to meet a given target, are sensitive to the
-live- and wind-load statistics. This is an argument for stating the probabilistic model
-explicitly with any reliability-based design, as done here.
+\subsection{Sections and an illustrative cost model}\label{sec:cost}
+
+Table~\ref{tab:cost} lists the number of distinct sections of the DDO and RBDO-C designs, the
+change of column and beam mass, and the cost premium of RBDO-C under the cost
+index~\eqref{eq:cost} for $\tau$ between 0.25 and 1~t of steel per distinct section and $\kappa$ of
+0 or 0.25. RBDO-C uses one section more than DDO in three frames, one fewer in two and the same
+number in two. Accordingly, the non-mass terms increase the premium for the base, low- and
+high-wind frames (base: from 2.9\% to 4.9\% for $\tau=0.5$~t) and reduce it for the nine-storey and
+6-m bay frames; only for the 6-m bays with $\tau=1$~t and $\kappa=0$ does RBDO-C become marginally
+cheaper ($-0.2\%$). Within this range of cost ratios, the ranking of DDO and RBDO-C does not change
+in any other case, so the conclusions drawn from steel mass carry over to this broader, although
+uncalibrated, cost measure.
+
+\begin{table}[!htbp]
+\centering
+\caption{Distinct sections, change of column and beam mass, and cost premium of RBDO-C over DDO
+under the illustrative cost index $C = m + \tau n_{sec} + \kappa m_{beam}$ ($\tau$ in tonnes of steel
+per distinct section).}
+\label{tab:cost}
+\scriptsize
+\fittable{\input{tables/cost.tex}}
+\end{table}
+
+\subsection{Sensitivity to the probabilistic model and to model uncertainty}\label{sec:sensitivity}
+
+Fig.~\ref{fig:sensitivity} shows how the verified reliability indices of the base designs change
+when one assumption of Table~\ref{tab:rv} is altered ($4\times10^5$ samples each). Among the
+physical variables, the system ULS index is most sensitive to the live-load model (c.o.v.\ 0.35
+instead of 0.25: $\Delta\beta\approx-0.5$), the fabrication factor (removing it: $+0.3$) and the
+yield-stress model (mean-to-nominal 1.05 instead of 1.10, or c.o.v.\ 0.10 instead of 0.07: $-0.2$).
+Inter-member correlation of $F_y$ changes $\beta_{ULS}$ by $\pm0.05$, and the out-of-plumbness and
+modulus variability are negligible. The drift index depends almost exclusively on the wind model:
+a mean-to-nominal ratio of 0.90 instead of 0.78 lowers it by 0.4, and the c.o.v.\ changes it by
+about $\pm0.2$. The DDO and RBDO-C designs react in the same way, so the comparison between them is
+robust to these assumptions.
+
+Model uncertainty has a larger effect on the absolute ULS indices (Table~\ref{tab:modelunc}).
+Frame-wide model factors on resistance, load effect and drift with c.o.v.\ 0.05 lower $\beta_{ULS}$ by
+0.23--0.30 and with c.o.v.\ 0.10 by 0.82--0.90 in all frames, for DDO and RBDO-C alike, whereas
+$\beta_{drift}$ changes by at most 0.05 because the drift uncertainty is dominated by the wind. The
+baseline indices of this paper are therefore conditional on the structural and resistance models:
+with a model uncertainty of 0.10, a design meeting $\beta_T=3.0$ in the baseline model would have
+an index of about 2.1--2.3. Because the shift is almost uniform across frames and formulations,
+the \emph{relative} comparison of DDO and RBDO-C is not affected; a target that is to be met
+including model uncertainty would have to be raised by the corresponding amount, at the mass cost
+shown in Fig.~\ref{fig:pareto}.
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/sensitivity.pdf}
 \caption{Change of the reliability indices of the base designs when one assumption of the
-probabilistic model is changed (baseline indices in the legend).}
+probabilistic model is changed, including frame-wide model uncertainty factors (baseline indices
+in the legend).}
 \label{fig:sensitivity}
 \end{figure}
+
+\begin{table}[!htbp]
+\centering
+\caption{Verified reliability indices of the final designs without and with frame-wide model
+uncertainty factors $\theta_R$, $\theta_E$ and $\theta_\delta$ (lognormal, unit mean, common c.o.v.\
+0.05 or 0.10; $10^6$ samples).}
+\label{tab:modelunc}
+\small
+\fittable{\input{tables/modelunc.tex}}
+\end{table}
 
 %% ---------------------------------------------------------------------------
 \section{Discussion}\label{sec:discussion}
 
 \paragraph{Answer to the research question}
-For the frames studied, uncertainty-aware optimisation did \emph{not} produce lighter designs
-than deterministic optimisation against the LRFD checks; it produced designs that were 0.5--10\%
-heavier. The reason is not a weakness of RBDO but the fact that the deterministic optima are
-already close to the reliability-based optimum for the ULS ($\beta_{ULS}\approx2.9$--3.7 at a
-target of 3.0), while the conventional drift check at the nominal 50-year wind provides only
-$\beta_{drift}\approx0.9$--1.2 for the drift-governed frames. When the reliability levels
-implicit in the code are required, RBDO returns the DDO design exactly (Table~\ref{tab:targets}).
-When a serviceability reliability of 1.5 is required, RBDO is the least-mass way of providing
-it: it is never heavier than a deterministic design with a tightened drift limit that meets
-the same targets, and it can trade surplus ULS reliability for stiffness. Economy is therefore
-gained \emph{at a prescribed reliability}, not with respect to the code-based design, whose
-reliability is unknown and non-uniform. Savings with respect to code-based designs can only be
-expected where the code is conservative for the system considered, which in this study was
-the case for the ULS of drift-governed frames (e.g.\ $\beta_{ULS}=3.66$ for 6-m bays) but was
-masked by their serviceability deficit.
+For the frames studied, uncertainty-aware optimisation did \emph{not} produce lighter designs than
+deterministic optimisation against the LRFD checks; the code-compliant reliability-based designs
+were 1.1--10.1\% heavier. The deterministic optima are already close to the reliability-based
+optimum for the ULS ($\hat\beta_{ULS}\approx2.9$--3.7 at a target of 3.0), while the conventional
+drift check at the nominal 50-year wind provides only $\hat\beta_{drift}\approx0.9$--1.2 for the
+drift-governed frames. When the reliability levels implicit in the code are required, RBDO returns
+the DDO design exactly (Table~\ref{tab:targets}). RBDO therefore provides economy \emph{at a
+prescribed and uniform reliability}, not with respect to code-based design, whose reliability is
+unknown and non-uniform. Against deterministic designs with a tightened drift limit that meet the
+same targets, RBDO-C was lighter by up to 5.0\% in five frames, equal in one and 0.6\% heavier in
+one, the last because of near-threshold sampling classification. These conclusions agree in sign
+with the observation of \citet{Papadrakakis2004} that a reliability-based steel-frame design was
+heavier than its deterministic counterpart.
+
+\paragraph{What the reliability indices mean}
+$\beta_{ULS}$ is the index of the first attainment of a code-format member limit state in a
+second-order elastic analysis (Section~\ref{sec:resistance}). It is consistent with the
+component-based calibration of the LRFD factors, which is what makes the comparison with the code
+meaningful, but it is neither a collapse reliability nor an absolute measure of safety. Three
+omissions act in opposite directions. Inelastic redistribution in these redundant frames would
+raise the collapse reliability \citep{Buonopane2006,Zhang2016}. Residual stresses and member
+imperfections are represented only through the AISC column and LTB curves, not through an explicit
+imperfect model, and connection behaviour is not modelled. Model uncertainty, if included, lowers
+the indices by up to about 0.9 for a c.o.v.\ of 0.10 (Table~\ref{tab:modelunc}). The validation
+against full P-$\Delta$ re-analysis (Section~\ref{sec:fullmc}) removes the surrogate approximations
+but not these model-form choices. The reported indices should therefore be read as conditional,
+comparative measures, appropriate for comparing designs and formulations under one consistent
+model, and not as estimates of real-world failure rates.
+
+\paragraph{Statistical confidence and acceptance}
+With $N=10^6$ independent samples and 400--2000 ULS failures per final design, the $95\%$ intervals
+of $\beta_{ULS}$ are about $\pm0.02$--$0.05$, and of $\beta_{drift}$ about $\pm0.005$. The reliability
+constraints are imposed on SAA point estimates with $N=5\times10^4$, whose resolution is about
+$\pm0.1$ in $\beta_{ULS}$; designs found by the optimiser therefore lie up to about 0.1 on either
+side of the target in verification, and three of 21 final designs (Table~\ref{tab:verification})
+are statistically indistinguishable from the target. Requiring the SAA lower confidence bound to
+meet the target removes this ambiguity at a cost of 1.6\% of steel for the base frame
+(Table~\ref{tab:saa}). Which rule is appropriate depends on whether the target is understood as a
+point value (as in code calibration) or as a value to be demonstrated with confidence.
 
 \paragraph{Cost of reliability}
-The trade-off curves are strongly asymmetric. Once a frame is drift-governed, its ULS
-reliability can be raised from 3.0 to almost 3.9 for about 4\% more steel
-(Fig.~\ref{fig:pareto}), whereas the serviceability index is expensive to raise (2.9\% of steel to raise $\beta_{drift}$ from 0.96 to 1.51 in the base frame and 10.1\% from 0.89 to
-1.51 in the high-wind frame).
-Because the ULS and SLS indices of a given design are governed by different load scenarios
-(Fig.~\ref{fig:memberutil}) and different random variables (Fig.~\ref{fig:sensitivity}),
-a single global safety measure would hide these trade-offs; reporting both indices with
-the mass, as done here, makes them explicit for owners and code writers.
+The trade-off curves are strongly asymmetric. Once a frame is drift-governed, its ULS reliability
+can be raised from 3.0 to about 3.8 for 4\% more steel (Fig.~\ref{fig:pareto}), whereas the
+serviceability index is expensive to raise (2.9\% of steel from $\beta_{drift}=0.96$ to 1.51 in the
+base frame and 10.1\% from 0.89 to 1.51 in the high-wind frame). Because the ULS and SLS indices
+of a design are governed by different scenarios and random variables (Table~\ref{tab:members},
+Fig.~\ref{fig:sensitivity}), a single global safety measure would hide these trade-offs.
 
-\paragraph{Computational aspects}
-The superposition surrogate is the enabling element of the framework. Five linear PyNite
-analyses per design suffice to evaluate any number of load realisations and a global modulus
-factor exactly, and the $B_1$--$B_2$ amplification added second-order effects within 2\% of
-two independent P-$\Delta$ solvers. Full re-analysis Monte Carlo confirmed that ignoring
-member-to-member stiffness variability and the stiffness effect of fabrication tolerances makes
-the ULS estimate slightly conservative ($\approx1\%$ in utilisation). With common random numbers
-the RBDO runs converge as robustly as the deterministic runs (identical optima for different GA
-seeds). A three-objective NSGA-II run (mass, $\beta_{ULS}$, $\beta_{drift}$) with a comparable
-budget of about 3500 designs did not approach the single-objective optima (its lightest design
-with $\beta_{ULS}\ge3.0$ and $\beta_{drift}\ge1.5$ weighed 19.50~t against 18.79~t), so for
-discrete frame problems of this size an $\varepsilon$-constraint approach with a strong
-single-objective optimiser, complemented by a bi-objective front, is the more economical way
-to map the trade-off.
-
-\paragraph{Limitations}
-The study considers regular planar moment frames with a single wind direction, a three-variable
-grouping per storey group and a cost model proportional to steel mass; connection and
-fabrication costs, which favour fewer distinct sections, are not included. The ULS is defined
-by the first attainment of a member limit state in a second-order elastic analysis with the
-AISC interaction equations, i.e.\ a code-format component criterion without inelastic
-redistribution or model uncertainty of the interaction equations; system collapse
-reliabilities obtained by advanced inelastic analysis \citep{Buonopane2006,Zhang2016} would be
-higher. The live load on all floors and the frame-wide modulus are fully correlated, which is
-conservative for the former. The load statistics are the classical ones of
-\citet{Ellingwood1980}, and the mean-to-nominal ratio of $F_y$ is an assumption; the
-sensitivity study shows that the absolute indices depend on these choices by up to
-$\pm0.5$, although the comparison between DDO and RBDO does not. Finally, the drift SLS uses a
-deterministic limit of $h/400$; a probabilistic drift capacity of non-structural components
-\citep{Galambos1986} would refine the serviceability reliability.
+\paragraph{What has and has not been demonstrated}
+Demonstrated: for regular planar steel moment frames of three to nine storeys with 6--10-m bays under
+gravity and wind, with discrete W-shapes and the stated probabilistic model, (i) the superposition
+surrogate reproduces full second-order Monte Carlo results within about $\pm0.07$ in $\beta_{ULS}$; (ii)
+the GA with local search finds the exact optimum of a reduced problem in all runs and repeats its
+full-problem results in most frames; and (iii) code-compliant RBDO costs 1--10\% more steel than DDO
+and is generally the least-mass way to meet both targets. Not demonstrated: three-dimensional
+frames and torsion, multiple wind directions, seismic actions, inelastic collapse reliability,
+connection and foundation design, cost models calibrated to fabrication practice, and live-load
+models with spatial variability. A three-objective NSGA-II run (mass, $\beta_{ULS}$, $\beta_{drift}$)
+with about 3500 designs did not approach the single-objective optima (lightest design with both
+targets 19\,500~kg against 18\,787~kg), so for discrete frame problems of this size an
+$\varepsilon$-constraint approach with a strong single-objective optimiser, complemented by a
+bi-objective front, is the more economical way to map the trade-off.
 
 %% ---------------------------------------------------------------------------
 \section{Conclusions}\label{sec:conclusions}
 
-A reproducible framework for reliability-constrained, multi-objective optimisation of steel
-moment frames was developed on the open-source PyNite library and applied to a family of
-planar frames with discrete W-shape sections. The main conclusions are:
+A reproducible framework for reliability-constrained optimisation of steel moment frames was
+developed on the open-source PyNite library and applied to seven planar frames with discrete
+W-shape sections. The main conclusions are:
 \begin{enumerate}
-\item Five linear PyNite analyses per design combined by superposition, with AISC $B_1$--$B_2$
+\item Five linear analyses per design, combined by superposition with AISC $B_1$--$B_2$
 amplification, give a reliability surrogate that agrees with OpenSeesPy to machine precision for
-linear responses, within 2\% for P-$\Delta$ responses, and within about 1\% (conservatively)
-with Monte Carlo simulation using full P-$\Delta$ re-analysis and member-by-member random
-stiffness, at a cost that permits $5\times10^4$ samples per design inside a genetic algorithm.
-\item Deterministic minimum-weight designs that satisfy the LRFD checks have non-uniform
-reliability: system ULS indices between 2.88 and 3.66 and 50-year drift reliability indices
-between 0.89 and 2.54 across the seven frames. Drift checked at the nominal 50-year wind
-corresponds to $\beta_{drift}\approx1$ in drift-governed frames.
-\item With targets of $\beta_T=3.0$ (ULS) and $\beta_{SLS}=1.5$, RBDO designs met both targets
-in independent $10^6$-sample verification and were 0.5--10.1\% heavier than the deterministic
-optima. When only the reliability levels implicit in the code were required, RBDO reproduced
-the deterministic design exactly. Uncertainty-aware optimisation therefore did not yield more
-economical designs than code-based optimisation for these frames; it yielded the least-mass
-designs \emph{at an explicitly prescribed reliability}, and was never heavier than a
-deterministic design with a tightened drift limit meeting the same targets, a limit which in
-any case failed to meet them in two of five frames.
-\item The cost--reliability trade-off is strongly asymmetric: in drift-governed frames the ULS
-reliability index can be raised from about 3.0 to 3.8 for roughly 4\% more steel, while
-raising the drift reliability index from 0.9--1.2 to 1.5 costs 1.7--10.1\%.
-\item The absolute reliability indices are most sensitive to the live- and wind-load statistics
-and to the yield-stress and fabrication models; the relative comparison of DDO and RBDO is
-insensitive to them.
+linear responses and within 2\% for P-$\Delta$ responses. Against full P-$\Delta$ re-analysis with
+member-by-member random stiffness, tail-stratified for eight designs, it reproduces $\beta_{ULS}$
+within $-0.07$ to $+0.05$ and the drift reliability without detectable bias.
+\item Deterministic minimum-mass designs that satisfy the LRFD checks have non-uniform reliability:
+$\hat\beta_{ULS}$ between 2.88 and 3.66, three of seven significantly below 3.0, and 50-year
+$\hat\beta_{drift}$ between 0.89 and 2.54.
+\item Code-compliant RBDO with $\beta_T=3.0$ and $\beta_{SLS}=1.5$ met both targets in independent
+$10^6$-sample verification (six designs with $95\%$ confidence, one within the interval of the
+target) and was 1.1--10.1\% heavier than DDO. Without the code checks, RBDO selected two designs
+that marginally fail the LRFD strength check; enforcing the checks added 0.3--0.6\% of steel and did
+not change any conclusion. With code-implied targets, RBDO reproduces the DDO design.
+\item Uncertainty-aware optimisation therefore did not reduce steel mass relative to code-based
+optimisation; it delivered designs with prescribed, uniform reliability, generally at less steel
+than tightened deterministic drift limits that meet the same targets. These conclusions hold under
+an illustrative cost model with section-count and connection terms.
+\item The absolute indices are conditional on the structural model and the load statistics: model
+uncertainty with c.o.v.\ 0.10 lowers $\beta_{ULS}$ by about 0.9, and the live- and wind-load models
+change the indices by up to 0.5; the relative comparison of the formulations is insensitive to these
+choices.
 \end{enumerate}
-Future work will extend the framework to three-dimensional frames, multiple wind directions
-and seismic actions, a cost model including connections and fabrication, and inelastic system
-limit states.

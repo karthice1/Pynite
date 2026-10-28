@@ -1,0 +1,368 @@
+\documentclass[11pt]{article}
+\usepackage[margin=2.3cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{xr}
+\externaldocument{main}
+\usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue]{hyperref}
+\usepackage{enumitem}
+\usepackage{microtype}
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0pt}
+\newcounter{rc}
+\newenvironment{comment}[1]{\refstepcounter{rc}\par\medskip\noindent\textbf{Comment~#1.}\ \itshape}{\par}
+\newcommand{\resp}{\par\noindent\textbf{Response.}\ }
+\newcommand{\chg}{\par\noindent\textbf{Changes.}\ }
+
+\title{Response to the reviewer\\[0.3em]\large A reliability-constrained, multi-objective framework for
+minimum-mass design of steel frame structures under material and loading uncertainty}
+\author{[Author name]}
+\date{}
+
+\begin{document}
+\maketitle
+
+We thank the reviewer for a careful and constructive report. We have revised the software as well as the
+manuscript. Every number in the revised manuscript is regenerated from the seeded scripts in the public
+repository, and the earlier results were rerun, not edited. The reviewer's comments are summarised in
+italics, followed by our response and the changes made. Section, table, figure and equation numbers refer
+to the revised manuscript.
+
+\section*{Summary of the main changes}
+\begin{enumerate}[leftmargin=1.5em,itemsep=0.1em]
+\item A \emph{code-compliant} formulation, RBDO-C, now imposes the reliability targets \emph{and} all
+deterministic AISC 360-16 strength, drift and deflection checks (Section~\ref{sec:optimisation}). It is
+the main reliability-based formulation throughout the paper. The reliability-only formulation (RBDO) is
+kept for comparison.
+\item Every reliability estimate is reported with its failure count, an exact (Clopper--Pearson) 95\%
+confidence interval for $P_f$ and $\beta$, and a three-way acceptance rule (Section~\ref{sec:mc},
+Eq.~\eqref{eq:cp}).
+\item A literature comparison table with eight closely related studies and a precise statement of what
+is new (Section~\ref{sec:intro}, Table~\ref{tab:literature}).
+\item The surrogate is validated against full second-order re-analysis for eight designs. The
+validation includes 600 random samples and up to 500 targeted samples near the limit state per
+design, and it gives a confidence interval for the difference in $\beta$ (Section~\ref{sec:fullmc},
+Table~\ref{tab:validation}).
+\item A separate treatment of model (epistemic) uncertainty with frame-wide model factors
+(Section~\ref{sec:probmodel}, Table~\ref{tab:modelunc}).
+\item Optimiser robustness: 2--10 seeds per formulation and frame, SAA sizes from $2\times10^4$ to
+$10^5$ with three independent streams, and an exact enumeration of a reduced problem with 11\,200
+designs (Section~\ref{sec:robust}).
+\item Deterministic optima with drift limits $h/400$--$h/600$, section counts and an illustrative
+cost index (Sections~\ref{sec:targets} and~\ref{sec:cost}).
+\item A new title (``minimum-mass''), a rewritten abstract, a reproducibility statement with a
+one-command reproduction script, and consistent terminology for the ULS.
+\end{enumerate}
+
+\section*{Major comments}
+
+\begin{comment}{1 (code compliance)}
+The RBDO optimum of the 6-m bay frame has an LRFD strength ratio of 1.011. State whether the
+formulation includes the AISC checks, provide a code-compliant RBDO and report whether the conclusions
+change.
+\end{comment}
+\resp The original RBDO formulation imposed only the reliability targets (ULS, drift and deflection)
+and the column-continuity rule. It did not impose any deterministic check, including the LRFD strength
+check. The
+revised manuscript says so explicitly (Section~\ref{sec:optimisation}). We added RBDO-C, which
+additionally requires every deterministic check (LRFD strength ratio $\le 1$, drift $\le h/400$,
+deflection $\le L/360$). We reran it for all seven frames with at least two GA seeds each and
+verified every optimum with $10^6$ independent samples (Table~\ref{tab:verification}).
+
+The code checks are active in two of the seven frames. The 6-m bay RBDO design (LRFD ratio 1.011) is
+replaced by an RBDO-C design with ratio 0.914, which is 0.32\% heavier. The low-wind RBDO design (ratio
+1.002) is replaced by one that is 0.64\% heavier. In the other five frames RBDO and RBDO-C give the same
+design. All RBDO-C designs satisfy every LRFD check and meet both targets under the acceptance rule. The
+qualitative conclusions do not change. The mass premium of RBDO-C over DDO is $+1.13$\% to $+10.11$\%
+($+2.88$\% for the base frame). It is driven by the 50-year drift reliability of the deterministic
+optima ($\beta_{drift}=0.89$--$2.54$). Section~\ref{sec:discussion} explains how RBDO-C fits the code:
+it is a least-mass code-compliant design that also has a stated reliability.
+\chg Sections~\ref{sec:optimisation}, \ref{sec:basedesign}, \ref{sec:parametric};
+Tables~\ref{tab:designs}, \ref{tab:verification}; Fig.~\ref{fig:parametric}; all figures and tables now
+use RBDO-C.
+
+\begin{comment}{2 (statistical treatment)}
+Distinguish point estimates from confidence bounds, give binomial confidence intervals for $P_f$ and
+$\beta$, explain acceptance of designs near the threshold, and report failure counts. The ``0.5/N lower
+bound'' wording is not justified.
+\end{comment}
+\resp We agree. Section~\ref{sec:mc} now defines the point estimate $\hat P_f=k/N$ and the exact
+Clopper--Pearson interval (Eq.~\eqref{eq:cp}), with its mapping to $\beta$. For zero failures it uses
+the one-sided bound: with $N=10^6$, $P_f\le 3.0\times10^{-6}$ and $\beta\ge4.53$. The ``0.5/N''
+wording has been removed.
+
+Each verified design is reported with $N$, $k$, $\hat\beta$ and the 95\% interval
+(Tables~\ref{tab:designs}, \ref{tab:targets}, \ref{tab:driftlimits}, \ref{tab:verification}). A design is
+classified as \emph{above}, \emph{within} or \emph{below} the target, depending on whether the interval
+lies above the target, contains it or lies below it. ``Within'' is accepted, because the target cannot
+be resolved more finely at this sample size. This is stated as a convention, and its consequences are
+discussed in Section~\ref{sec:discussion}. Only one final design is ``within'': the 3-storey RBDO-C
+design, with $\beta_{ULS}=2.995$ [2.98, 3.01]. The others are above both targets.
+
+We also report the stricter alternative. In the base frame, imposing the target on the one-sided lower
+confidence bound inside the SAA costs 1.6\% more steel (Table~\ref{tab:saa}). Section~\ref{sec:mc}
+explains the risks of common random numbers (optimisation bias and correlated estimates) and how we
+control them: independent re-verification, other SAA sizes and streams, and the lower-bound variant.
+\chg Section~\ref{sec:mc}; Tables~\ref{tab:designs}, \ref{tab:saa}, \ref{tab:targets},
+\ref{tab:driftlimits}, \ref{tab:verification}; Figs.~\ref{fig:pareto}, \ref{fig:parametric},
+\ref{fig:driftlimits}.
+
+\begin{comment}{3 (novelty)}
+Add a comparison table of 5--10 close studies and state precisely what is new.
+\end{comment}
+\resp Table~\ref{tab:literature} compares eight studies on reliability-based or probabilistic
+optimisation of steel frames, ordered by year, with our study. Its columns are the structural model,
+design variables, reliability formulation, optimiser, verification and reproducibility. The
+introduction then states the contribution in four points. We do not claim novelty for any single
+ingredient. The new elements are:
+\begin{enumerate}[label=(\roman*),itemsep=0.1em]
+\item a like-for-like comparison of DDO, DDO with tightened drift limits, RBDO and code-compliant RBDO
+on the same frames, catalogue and optimiser, with interval-verified reliability;
+\item serviceability reliability treated together with a system ULS;
+\item a verification chain that ends in a stratified full second-order Monte Carlo validation for
+several designs;
+\item an open release with a one-command reproduction.
+\end{enumerate}
+The table entries are based on the abstracts and bibliographic records available to us; ``n.r.''
+means not reported there. We have checked the bibliographic data of the six references added to the
+reference list.
+\chg Section~\ref{sec:intro}, Table~\ref{tab:literature}; six references added.
+
+\begin{comment}{4 (validation breadth)}
+Validate several designs (9 storeys, 10-m bays, high wind), compare failure classifications, report
+the uncertainty of the difference in $P_f$ and show the accuracy near the constraints.
+\end{comment}
+\resp Section~\ref{sec:fullmc} now validates eight designs: the base DDO design and the RBDO-C
+designs of all seven frames, including the 9-storey, 10-m bay and high-wind frames. For each design
+it uses two sets of samples:
+\begin{enumerate}[label=(\alph*),itemsep=0.1em]
+\item 600 random samples of the wind scenario, which give the bias and scatter of the utilisation and
+drift and the agreement of the drift classification;
+\item a stratified tail estimator. From a pool of $2\times10^5$ samples, all samples with surrogate
+utilisation $U\ge1$ (up to 250) and 250 samples with $0.85\le U<1$ are re-analysed with a full P-$\Delta$
+PyNite model with member-wise random modulus and fabrication factors. This gives $P_f$ of the full
+model, its ratio to the surrogate and the difference in $\beta$, with Bayesian (Jeffreys) 95\%
+intervals.
+\end{enumerate}
+The results are in Table~\ref{tab:validation} and Fig.~\ref{fig:validation}:
+\begin{itemize}[itemsep=0.1em]
+\item The utilisation bias is $+0.4$ to $+1.1$\% (s.d.\ 1.0--1.6\%) and the drift bias is $-1.0$ to
+$+1.4$\%.
+\item 0--7 of the 600 drift classifications disagree.
+\item 79--91\% of the surrogate failures also fail in the full model, and 0--4 of the 250 near misses
+fail in the full model.
+\item $\Delta\beta=\beta_{full}-\beta_{sur}$ lies between $-0.07$ and $+0.05$, and its interval contains
+zero for seven of the eight designs.
+\end{itemize}
+The exception is the 3-storey RBDO-C design. There, $\Delta\beta=-0.07$ [$-0.17$, $-0.01$]; the
+surrogate is slightly unconservative and the design's full-model $\beta_{ULS}$ is about 2.93. We report
+this and discuss it rather than hiding it. Accuracy near the constraints is shown by the near-miss
+stratum and by the largest full-to-surrogate utilisation ratio (at most 1.049).
+\chg Section~\ref{sec:fullmc}; Table~\ref{tab:validation}; Figs.~\ref{fig:validation}, \ref{fig:fullmc};
+new function \texttt{broad\_validation} and stage \texttt{validate}.
+
+\begin{comment}{5 (types of uncertainty)}
+Separate aleatory from epistemic and model-form uncertainty, justify the dependence assumptions, discuss
+the omissions (residual stresses, imperfections, connections, inelastic redistribution) and limit the
+interpretation of the system ULS.
+\end{comment}
+\resp
+\begin{itemize}[itemsep=0.1em]
+\item \emph{Uncertainty types.} Section~\ref{sec:probmodel} now distinguishes the aleatory variables
+of Table~\ref{tab:rv} from model-form uncertainty. Model-form uncertainty is represented by frame-wide
+lognormal factors on resistance, load effect and drift. Because the baseline indices are conditional
+on a perfect model, these factors are \emph{not} part of the baseline. Their effect is quantified
+separately (Table~\ref{tab:modelunc}): a c.o.v.\ of 0.05 lowers $\beta_{ULS}$ by 0.23--0.30, a c.o.v.\
+of 0.10 lowers it by 0.82--0.90, and $\beta_{drift}$ changes by at most 0.05.
+\item \emph{Dependence.} Section~\ref{sec:resistance} explains how the system event is built: the
+union over all members and both Turkstra scenarios. Dependence enters through the shared loads,
+modulus, partly correlated yield stresses ($\rho=0.5$, assumed), fabrication factor and imperfection,
+and it is represented exactly by joint sampling. Section~\ref{sec:sensitivity} tests the assumed
+values.
+\item \emph{Omissions and interpretation.} We list the omissions (residual stresses and member
+imperfections only through the AISC column curves and $\tau_b$; no inelastic redistribution; rigid,
+non-failing connections). The ULS is defined consistently as ``first attainment of a member limit
+state in a second-order elastic analysis, not collapse'' in the abstract, Section~\ref{sec:resistance}
+and the Discussion.
+\end{itemize}
+\chg Sections~\ref{sec:resistance}, \ref{sec:probmodel}, \ref{sec:sensitivity},
+\ref{sec:discussion}; Table~\ref{tab:rv} (new Basis/Status columns and a model-factor row);
+Table~\ref{tab:modelunc}; Fig.~\ref{fig:sensitivity}.
+
+\begin{comment}{6 (robustness of the optimiser)}
+Use more seeds; report best, median and worst results; count distinct designs; use an alternative
+search or reduced-space enumeration; state the stopping criterion; show the effect of the SAA size on
+feasibility; do not claim global optimality.
+\end{comment}
+\resp
+\begin{itemize}[itemsep=0.1em]
+\item \emph{Seeds.} Table~\ref{tab:robust} reports best, median and worst masses, the number of
+distinct final designs and the number of designs evaluated for every frame and formulation. The base
+frame was run with 10 seeds (DDO) and 5 seeds (RBDO-C); the other frames with 2--3 seeds. For the base
+frame, 8 of 10 DDO runs found the best design (the other two were 0.3\% heavier) and all five RBDO-C
+runs found the same design. The largest spread is 1.6\%, for the high-wind RBDO-C runs, and we report
+the lightest.
+\item \emph{Enumeration.} A reduced problem with three variables and 11\,200 designs was solved
+exactly by enumeration in order of mass (Table~\ref{tab:enum}). The GA found the exact optimum in 10 of
+10 runs for each formulation, after evaluating about 700 designs.
+\item \emph{SAA size.} $N=2\times10^4$, $5\times10^4$ (three independent streams) and $10^5$ all give
+the same base-frame RBDO-C design (Table~\ref{tab:saa}).
+\item \emph{Stopping and optimality.} The stopping criterion is stated in
+Section~\ref{sec:optimisation}. We no longer claim global optimality; the reported designs are the
+best found.
+\end{itemize}
+\chg Sections~\ref{sec:optimisation}, \ref{sec:robust}; Tables~\ref{tab:robust}, \ref{tab:enum},
+\ref{tab:saa}; Fig.~\ref{fig:ga}.
+
+\begin{comment}{7 (economics)}
+Use mass as the objective and cost only as a proxy; report section counts; add a simple cost
+sensitivity; examine several drift limits, not only $h/500$.
+\end{comment}
+\resp The objective is now called steel mass throughout, including the title. Cost is discussed only
+through an illustrative cost index (Section~\ref{sec:costmodel}, Eq.~\eqref{eq:cost}). The index adds
+a per-section penalty and a beam-mass term for connection work, evaluated for five parameter pairs.
+Table~\ref{tab:cost} gives the number of distinct sections and the index. The ranking of DDO and
+RBDO-C changes in only one case (6-m bays with a high section penalty, $-0.19$\%).
+
+Deterministic optima were computed for drift limits $h/400$, $h/450$, $h/500$ and $h/600$ for every
+frame (Table~\ref{tab:driftlimits}, Fig.~\ref{fig:driftlimits}). The lightest deterministic design
+that meets both targets is $h/500$ in four frames and $h/600$ in two. In the 3-storey frame none of
+these limits is enough, because that frame is strength-governed. RBDO-C is within $-5.0$\% to $+0.6$\%
+of that design. It is $+0.58$\% heavier in the 6-m bay frame, because the $h/500$ design meets the
+drift target only within the confidence interval and was rejected by the SAA estimate. The
+manuscript reports this.
+\chg Title; Sections~\ref{sec:costmodel}, \ref{sec:targets}, \ref{sec:cost};
+Tables~\ref{tab:driftlimits}, \ref{tab:cost}; Fig.~\ref{fig:driftlimits}.
+
+\section*{Additional technical issues}
+
+\begin{comment}{T1 ($B_1$--$B_2$)}
+Explain how $B_1$ and $B_2$ are recomputed and what is assumed.
+\end{comment}
+\resp Section~\ref{sec:superposition} now states that $B_1$ and $B_2$ are recomputed for every sample:
+$P_{story}$, $P_r$ and $C_m$ follow the sampled gravity loads, and $P_{e,story}$ and $P_{e1}$ follow the
+sampled modulus factor. It lists four assumptions:
+\begin{enumerate}[label=(\alph*),itemsep=0.1em]
+\item storey stiffness scales with the frame-wide modulus factor;
+\item gravity load is distributed as in the first-order analysis;
+\item there is no stiffness loss before the first member limit state;
+\item the storey amplification is the same for all columns of a storey.
+\end{enumerate}
+Assumptions (a) and (b) are removed in the full re-analysis of Section~\ref{sec:fullmc}, and (c) is
+part of the elastic ULS definition. The comparison with OpenSeesPy and PyNite P-$\Delta$
+(Table~\ref{tab:opensees}, Fig.~\ref{fig:pdelta}) shows that the amplified drifts are within 1.8\% of
+the second-order solution. We corrected the earlier statement that they were ``always conservative'':
+the surrogate underestimates the drift by up to 1.0\%.
+
+\begin{comment}{T2 (dependence and system event)}
+Explain the dependence between scenarios and members and how the system event is built.
+\end{comment}
+\resp See the response to Comment~5 and Section~\ref{sec:resistance}. We also report the share of
+failures by member type and scenario (Table~\ref{tab:members}).
+
+\begin{comment}{T3 (distribution table)}
+Separate sourced parameters from assumed ones.
+\end{comment}
+\resp Table~\ref{tab:rv} now has a ``Basis'' column with the source and a ``Status'' column (sourced /
+assumed / adapted). The assumed values (bias of the yield stress 1.10, correlation 0.5,
+fabrication c.o.v., model factors) are flagged and tested in Section~\ref{sec:sensitivity}.
+
+\begin{comment}{T4 (common random numbers)}
+Discuss the risks of using common random numbers.
+\end{comment}
+\resp Section~\ref{sec:mc}; see the response to Comment~2.
+
+\begin{comment}{T5 (unrounded values, counts, intervals, tolerance)}
+\end{comment}
+\resp Percentages are now computed from unrounded masses (in kg). Indices are given to three
+decimals with failure counts and intervals. The acceptance tolerance is the confidence interval
+itself (Section~\ref{sec:mc}).
+
+\begin{comment}{T6 (load paths and member-level results for more frames)}
+\end{comment}
+\resp Table~\ref{tab:members} reports, for all seven frames and both DDO and RBDO-C, where the failures
+occur (beams, exterior or interior columns) and in which scenario. Section~\ref{sec:parametric}
+explains where RBDO-C adds steel, e.g.\ $+577$\,kg in beams and $-151$\,kg in columns for 10-m bays.
+Fig.~\ref{fig:memberutil} shows member utilisations of the base frame.
+
+\begin{comment}{T7 (reproducibility)}
+Give the repository URL, commit, environment and a one-command reproduction.
+\end{comment}
+\resp The ``Data and code availability'' statement gives the URL, folder, branch and environment
+(\texttt{requirements.txt}). The script \texttt{reproduce.sh} reruns every stage and rebuilds the
+manuscript. The exact commit is recorded in the repository. We will create a release tag with a
+DOI on acceptance.
+
+\section*{Terminology, figures and numerical consistency}
+
+\begin{comment}{ULS terminology}
+\end{comment}
+\resp ``Component-based, second-order elastic ULS (first attainment of a member limit state, not
+collapse)'' is now used consistently in the abstract, Section~\ref{sec:resistance}, the Discussion and
+the Conclusions.
+
+\begin{comment}{Fig.~2 (P-$\Delta$ comparison)}
+State where the largest differences are.
+\end{comment}
+\resp The caption of Fig.~\ref{fig:pdelta} and the text in Section~\ref{sec:opensees} now say that
+the largest differences occur in the upper storeys and that the surrogate underestimates the drift by
+at most 1\%.
+
+\begin{comment}{Fig.~3 (full Monte Carlo)}
+Add classification statistics and confidence intervals.
+\end{comment}
+\resp These statistics are now in Table~\ref{tab:validation} and Fig.~\ref{fig:validation}. The
+caption of Fig.~\ref{fig:fullmc} gives the sample sizes.
+
+\begin{comment}{Fig.~8 (Pareto front)}
+Separate verified designs from SAA estimates and show confidence intervals.
+\end{comment}
+\resp In Fig.~\ref{fig:pareto} the non-dominated designs are re-verified with $4\times10^5$
+independent samples and shown with 95\% intervals. Designs that fail the LRFD check are drawn with
+open markers. SAA-only values are drawn in grey, and the DDO and RBDO-C optima ($10^6$ samples) are
+marked separately.
+
+\begin{comment}{Numerical audit}
+The 2.99 index, the 1.011 ratio, counts consistent with $\beta$, percentages from unrounded masses,
+and consistent notation.
+\end{comment}
+\resp
+\begin{itemize}[itemsep=0.1em]
+\item The index 2.99 is the verified $\beta_{ULS}$ of the reliability-only (RBDO) low-wind design. It is
+now reported unrounded with its count and interval: 2.986 [2.97, 3.00] ($k=1415$ in $N=10^6$). This
+interval contains the target, so the design is ``within'' under the acceptance rule. The code-compliant
+design for this frame has 3.019 [3.00, 3.04] (Table~\ref{tab:verification}).
+\item The 1.011 ratio is explained under Comment~1.
+\item The tables are generated by \texttt{make\_figures.py} directly from the result files, so counts,
+indices and intervals are consistent by construction.
+\item Percentages are computed from unrounded masses.
+\item Notation: P-$\Delta$ denotes the storey (sway) effect and P-$\delta$ the member effect; both are
+used consistently.
+\end{itemize}
+
+\section*{Minor comments}
+\begin{itemize}[itemsep=0.1em]
+\item \emph{Title.} Changed to ``\ldots minimum-mass design\ldots''.
+\item \emph{Abstract.} Rewritten. It states the component-based second-order elastic ULS and the
+model-uncertainty treatment, and it contains fewer numbers.
+\item \emph{Author placeholders.} The author names and affiliations remain placeholders in this
+version and will be completed before resubmission.
+\item \emph{Reproducibility statement.} See T7.
+\item \emph{Units and notation.} See the numerical audit above.
+\item \emph{References.} Six references were added, with bibliographic data checked against publisher
+or indexing records.
+\item \emph{Figures and captions.} All figures were regenerated from the result files. Legends were
+moved so that they do not overlap the data, and the captions state the sample sizes.
+\item \emph{Repetition.} The Results and Discussion were restructured to state each finding once.
+\end{itemize}
+
+\section*{Limitations acknowledged in the revision}
+\begin{itemize}[itemsep=0.1em]
+\item The surrogate is slightly unconservative for the 3-storey design ($\Delta\beta=-0.07$).
+\item RBDO-C is 0.58\% heavier than the $h/500$ deterministic design in the 6-m bay frame.
+\item The GA spread is 1.6\% for the high-wind RBDO-C runs.
+\item The literature table relies on abstracts and records.
+\item The conclusions are limited to regular planar frames under gravity and wind.
+\end{itemize}
+These limitations are stated in the manuscript.
+
+\end{document}

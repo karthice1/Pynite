@@ -371,7 +371,6 @@ def fig_parametric():
     for m, lab, c, mk in MODES3:
         ax.bar(x + off[m], [v[f'{f}_{m}']['weight'] / 1000 for f in frames], 0.25, color=c, label=lab)
     ax.set_ylabel('Steel mass (t)'); ax.set_title('(a) optimum mass', loc='left')
-    ax.legend(loc='upper left', fontsize=6)
     for ax, k, lab, t in ((axs[1], 'uls', r'$\beta_{ULS}$', '(b) system ULS reliability'),
                           (axs[2], 'drift', r'$\beta_{drift}$', '(c) drift SLS reliability')):
         for m, l, c, mk in MODES3:
@@ -384,7 +383,9 @@ def fig_parametric():
         ax.set_ylabel(lab); ax.set_title(t, loc='left')
     for ax in axs:
         ax.set_xticks(x); ax.set_xticklabels([FRAME_LABEL[f] for f in frames], rotation=45, ha='right')
-    fig.tight_layout()
+    handles = [plt.Line2D([], [], marker=mk, color=c, ls='none', ms=5, label=lab) for m, lab, c, mk in MODES3]
+    fig.legend(handles=handles, loc='lower center', ncol=3, frameon=False)
+    fig.tight_layout(rect=(0, 0.08, 1, 1))
     savefig(fig, 'parametric')
 
 
@@ -419,7 +420,8 @@ def fig_pareto():
     axs[1].set_xlim(18.0, 21.5)
     axs[0].set_ylabel(r'System ULS reliability index $\beta_{ULS}$')
     axs[1].set_ylabel(r'Drift SLS reliability index $\beta_{drift}$')
-    axs[0].legend(loc='lower right', fontsize=5.5)
+    h, l = axs[0].get_legend_handles_labels()
+    fig.legend(h, l, loc='upper center', bbox_to_anchor=(0.5, 0.0), ncol=2, fontsize=6)
     axs[0].set_title('(a) mass vs. ultimate reliability', loc='left')
     axs[1].set_title('(b) drift reliability of the same designs', loc='left')
     savefig(fig, 'pareto')
@@ -699,7 +701,7 @@ def tab_driftlimits():
                 cells.append('--')
                 continue
             s = e['est']
-            ok = s['beta_uls'] >= BETA_ULS and s['beta_drift'] >= BETA_SLS
+            ok = verdict(s, 'uls') != 'below' and verdict(s, 'drift') != 'below'   # acceptance rule
             txt = f"{e['weight']:.0f} ({s['beta_uls']:.2f}/{s['beta_drift']:.2f})"
             cells.append(('\\textbf{' + txt + '}') if ok else txt)
             if ok and (best_ok is None or e['weight'] < best_ok):

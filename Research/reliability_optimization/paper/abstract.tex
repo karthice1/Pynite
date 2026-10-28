@@ -1,27 +1,25 @@
 \begin{abstract}
-Minimum-weight design of steel frames is usually performed against deterministic code checks,
-which leaves the reliability of the optimised system unknown. This paper presents an open,
-reproducible framework for reliability-constrained, multi-objective optimisation of steel
-moment frames built on the PyNite finite element library, and uses it to ask whether
-uncertainty-aware optimisation produces more economical designs while satisfying explicit
-reliability and serviceability constraints. Parameterised planar frames with discrete W-shape
-sections are designed to AISC 360-16 with the Direct Analysis Method. Five linear analyses per
-design, combined by superposition and amplified with the $B_1$--$B_2$ method, provide a
-Monte Carlo surrogate for the system ultimate limit state and for drift and deflection
-serviceability under 50-year load, material, fabrication and imperfection uncertainty. A sample
-average approximation makes the reliability constraints deterministic for a constrained genetic
-algorithm and NSGA-II, and every optimum is re-verified with $10^6$ independent samples. The
-structural models agree with closed-form solutions and with OpenSeesPy to machine precision for
-linear responses and within 2\% for P-$\Delta$ responses, and the surrogate agrees within about
-1\% (conservatively) with Monte Carlo simulation using full second-order re-analysis. For seven
-frames varying storeys, bay width and wind pressure, deterministic optima had system reliability
-indices of 2.88--3.66 but 50-year drift reliability indices as low as 0.89. Reliability-based
-optima with targets of 3.0 (ultimate) and 1.5 (serviceability) met both targets and were
-0.5--10.1\% heavier than the deterministic optima; when only the reliability implied by the code
-was required, the reliability-based optimum coincided with the deterministic one. Uncertainty-aware
-optimisation therefore did not reduce cost relative to code-based optimisation; it delivered the
-least-mass designs at a prescribed and uniform reliability, never heavier than deterministic
-designs with a tightened drift limit meeting the same targets. The cost--reliability fronts are
-strongly asymmetric: in drift-governed frames the ultimate reliability index rises from 3.1 to
-3.8 for about 4\% more steel, whereas serviceability reliability is costly.
+Minimum-mass design of steel frames is usually carried out against deterministic code checks,
+which leaves the reliability of the optimised frame unquantified. This paper presents an open,
+reproducible framework for reliability-constrained, multi-objective optimisation of planar steel
+moment frames built on the PyNite finite element library. Discrete W-shape sections are checked
+against AISC 360-16 with the Direct Analysis Method. The ultimate limit state is defined at
+component level: it is the first attainment of a member strength limit state in a second-order
+elastic analysis ($B_1$--$B_2$ amplification of superposed linear responses), not structural
+collapse. Fifty-year drift and deflection serviceability are treated alongside it under load,
+material, fabrication and imperfection uncertainty, with model-form uncertainty examined
+separately. A sample average approximation with common random numbers turns the reliability
+constraints into deterministic ones for a genetic algorithm and NSGA-II. Every optimum is
+re-verified with $10^6$ independent samples and reported with exact binomial confidence
+intervals, and a code-compliant variant requires the deterministic AISC and drift checks in
+addition to the reliability targets. The surrogate is validated against OpenSeesPy and against
+full second-order re-analysis for eight designs, including targeted samples near the limit
+state; reliability indices differ by at most 0.07. For seven frames that vary the number of
+storeys, the bay width and the wind pressure, the code-compliant reliability-based optima met
+targets of 3.0 (ultimate) and 1.5 (serviceability) and were 1.1--10.1\% heavier than the
+deterministic optima, mainly because the deterministic optima had low drift reliability. Where a deterministic design with a tightened
+drift limit (up to $h/600$) met the same targets, the reliability-based optimum was within
+$-5.0$ to $+0.6$\% of the lightest such design. Uncertainty-aware optimisation did not reduce the steel mass relative
+to code-based optimisation. Its benefit is a least-mass design at a stated and uniform
+reliability.
 \end{abstract}

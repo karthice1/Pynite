@@ -6,6 +6,8 @@
 \usepackage[colorlinks=true,citecolor=blue,linkcolor=blue,urlcolor=blue]{hyperref}
 \usepackage{lineno}
 \usepackage{url}
+\usepackage{microtype}
+\emergencystretch=2em
 \newcommand{\fittable}[1]{\resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{#1}}
 
 \journal{Structural Safety}
@@ -14,7 +16,7 @@
 
 \begin{frontmatter}
 
-\title{A reliability-constrained, multi-objective framework for cost-optimal design of steel
+\title{A reliability-constrained, multi-objective framework for minimum-mass design of steel
 frame structures under material and loading uncertainty}
 
 %% Author names and affiliations to be completed by the authors.
@@ -25,7 +27,7 @@ frame structures under material and loading uncertainty}
 
 \begin{keyword}
 Reliability-based design optimisation \sep Steel moment frames \sep Monte Carlo simulation
-\sep Direct Analysis Method \sep NSGA-II \sep Serviceability \sep PyNite
+\sep Direct Analysis Method \sep NSGA-II \sep Serviceability \sep Model uncertainty \sep PyNite
 \end{keyword}
 
 \end{frontmatter}
@@ -35,9 +37,15 @@ Reliability-based design optimisation \sep Steel moment frames \sep Monte Carlo 
 
 \section*{Data and code availability}
 The framework, the input data, the scripts that produce every figure and table, and the raw
-results are openly available in the folder
-\path{Research/reliability_optimization} of the
-authors' fork of the PyNite repository.
+results are openly available at \url{https://github.com/karthice1/Pynite} in the folder
+\path{Research/reliability_optimization} (branch \path{claude/project-thread-o7hjbo}; the commit
+used for this manuscript is recorded in the folder's \path{README.md}). The software environment is
+listed in \path{requirements.txt} (Python 3.13, NumPy, SciPy, Matplotlib, OpenSeesPy 3.8 and
+PyNite from the same repository). Every stochastic computation uses fixed seeds that are stored
+with its results. The single command \path{./reproduce.sh} reruns all optimisations, verifications
+and validations, and regenerates every figure, table and this manuscript; the stages can also be
+run individually with \path{run_experiments.py}. A persistent archive (release tag and DOI) will be
+created on acceptance.
 
 \section*{Declaration of competing interest}
 The authors declare that they have no known competing financial interests or personal

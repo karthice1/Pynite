@@ -1,13 +1,1935 @@
 {
+ "B10_DDO-h450": {
+  "mass_kg": 26034.6,
+  "n_types": 5,
+  "beta_uls": 2.935,
+  "ci_beta_uls": [
+   2.92,
+   2.95
+  ],
+  "nfail_uls": 1670,
+  "beta_drift": 1.224,
+  "ci_beta_drift": [
+   1.22,
+   1.227
+  ],
+  "nfail_drift": 110543,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9842,
+  "drift_det": 0.8846,
+  "B2": 1.215,
+  "verdict": [
+   "below",
+   "below"
+  ],
+  "runs": [
+   [
+    1,
+    26034.6
+   ]
+  ]
+ },
+ "B10_RBDO-C": {
+  "mass_kg": 26065.5,
+  "n_types": 6,
+  "beta_uls": 3.119,
+  "ci_beta_uls": [
+   3.1,
+   3.139
+  ],
+  "nfail_uls": 906,
+  "beta_drift": 1.665,
+  "ci_beta_drift": [
+   1.661,
+   1.669
+  ],
+  "nfail_drift": 47974,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9531,
+  "drift_det": 0.7536,
+  "B2": 1.181,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    26065.5
+   ],
+   [
+    2,
+    26065.5
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.142,
+   "beta_drift": 1.659,
+   "beta_defl": 4.265,
+   "beta_sls": 1.659
+  },
+  "governing": {
+   "C0_0": 97,
+   "C1_0": 25,
+   "C2_0": 16,
+   "C3_0": 117,
+   "C0_1": 15,
+   "C3_1": 8,
+   "C0_2": 3,
+   "C1_2": 46,
+   "C2_2": 43,
+   "C3_2": 2,
+   "C0_4": 5,
+   "C3_4": 12,
+   "B0_2": 84,
+   "B1_2": 24,
+   "B2_2": 86,
+   "B0_3": 70,
+   "B1_3": 26,
+   "B2_3": 58,
+   "B0_4": 77,
+   "B1_4": 26,
+   "B2_4": 66
+  },
+  "scenario": [
+   847,
+   59,
+   0
+  ]
+ },
+ "B6_DDO-h600": {
+  "mass_kg": 15960.4,
+  "n_types": 8,
+  "beta_uls": 4.119,
+  "ci_beta_uls": [
+   4.015,
+   4.235
+  ],
+  "nfail_uls": 19,
+  "beta_drift": 2.028,
+  "ci_beta_drift": [
+   2.022,
+   2.033
+  ],
+  "nfail_drift": 21305,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.822,
+  "drift_det": 0.6603,
+  "B2": 1.091,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    15960.4
+   ]
+  ]
+ },
+ "S3_DDO-h450": {
+  "mass_kg": 7994.5,
+  "n_types": 4,
+  "beta_uls": 2.928,
+  "ci_beta_uls": [
+   2.913,
+   2.943
+  ],
+  "nfail_uls": 1707,
+  "beta_drift": 2.544,
+  "ci_beta_drift": [
+   2.535,
+   2.553
+  ],
+  "nfail_drift": 5481,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9907,
+  "drift_det": 0.5471,
+  "B2": 1.099,
+  "verdict": [
+   "below",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    7994.5
+   ]
+  ]
+ },
+ "S3_RBDO-C": {
+  "mass_kg": 8187.9,
+  "n_types": 4,
+  "beta_uls": 2.995,
+  "ci_beta_uls": [
+   2.979,
+   3.012
+  ],
+  "nfail_uls": 1370,
+  "beta_drift": 2.711,
+  "ci_beta_drift": [
+   2.699,
+   2.722
+  ],
+  "nfail_drift": 3357,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9777,
+  "drift_det": 0.5158,
+  "B2": 1.093,
+  "verdict": [
+   "within",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    8187.9
+   ],
+   [
+    2,
+    8187.9
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.002,
+   "beta_drift": 2.687,
+   "beta_defl": 4.265,
+   "beta_sls": 2.687
+  },
+  "governing": {
+   "C1_0": 237,
+   "C2_0": 221,
+   "B0_0": 298,
+   "B1_0": 61,
+   "B2_0": 249,
+   "B0_1": 131,
+   "B1_1": 39,
+   "B2_1": 130,
+   "B0_2": 1,
+   "B1_2": 1,
+   "B2_2": 2
+  },
+  "scenario": [
+   1323,
+   46,
+   1
+  ]
+ },
+ "S9_DDO-h600": {
+  "mass_kg": 38783.7,
+  "n_types": 8,
+  "beta_uls": 3.164,
+  "ci_beta_uls": [
+   3.144,
+   3.185
+  ],
+  "nfail_uls": 777,
+  "beta_drift": 2.046,
+  "ci_beta_drift": [
+   2.04,
+   2.052
+  ],
+  "nfail_drift": 20381,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9517,
+  "drift_det": 0.6561,
+  "B2": 1.122,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    38783.7
+   ]
+  ]
+ },
+ "W08_DDO-h450": {
+  "mass_kg": 17788.4,
+  "n_types": 5,
+  "beta_uls": 2.918,
+  "ci_beta_uls": [
+   2.904,
+   2.933
+  ],
+  "nfail_uls": 1760,
+  "beta_drift": 1.777,
+  "ci_beta_drift": [
+   1.772,
+   1.781
+  ],
+  "nfail_drift": 37801,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9986,
+  "drift_det": 0.7237,
+  "B2": 1.21,
+  "verdict": [
+   "below",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    17788.4
+   ]
+  ]
+ },
+ "W08_RBDO-C": {
+  "mass_kg": 17989.2,
+  "n_types": 6,
+  "beta_uls": 3.019,
+  "ci_beta_uls": [
+   3.003,
+   3.036
+  ],
+  "nfail_uls": 1267,
+  "beta_drift": 1.608,
+  "ci_beta_drift": [
+   1.604,
+   1.612
+  ],
+  "nfail_drift": 53870,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9981,
+  "drift_det": 0.7691,
+  "B2": 1.225,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    17989.2
+   ],
+   [
+    2,
+    17989.2
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.073,
+   "beta_drift": 1.603,
+   "beta_defl": 4.265,
+   "beta_sls": 1.603
+  },
+  "governing": {
+   "C1_0": 84,
+   "C2_0": 66,
+   "C1_2": 376,
+   "C2_2": 336,
+   "B2_0": 1,
+   "B0_2": 67,
+   "B1_2": 48,
+   "B2_2": 76,
+   "B0_3": 50,
+   "B1_3": 36,
+   "B2_3": 30,
+   "B0_4": 38,
+   "B1_4": 31,
+   "B2_4": 28
+  },
+  "scenario": [
+   1239,
+   27,
+   1
+  ]
+ },
+ "W16_DDO-h600": {
+  "mass_kg": 23385.5,
+  "n_types": 8,
+  "beta_uls": 3.359,
+  "ci_beta_uls": [
+   3.332,
+   3.387
+  ],
+  "nfail_uls": 391,
+  "beta_drift": 2.018,
+  "ci_beta_drift": [
+   2.013,
+   2.024
+  ],
+  "nfail_drift": 21778,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9343,
+  "drift_det": 0.6624,
+  "B2": 1.092,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    23385.5
+   ]
+  ]
+ },
+ "base_DDO-h450": {
+  "mass_kg": 18625.6,
+  "n_types": 5,
+  "beta_uls": 3.079,
+  "ci_beta_uls": [
+   3.061,
+   3.097
+  ],
+  "nfail_uls": 1039,
+  "beta_drift": 1.41,
+  "ci_beta_drift": [
+   1.406,
+   1.413
+  ],
+  "nfail_drift": 79334,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9729,
+  "drift_det": 0.8264,
+  "B2": 1.157,
+  "verdict": [
+   "above",
+   "below"
+  ],
+  "runs": [
+   [
+    1,
+    18625.6
+   ]
+  ]
+ },
+ "base_RBDO-C": {
+  "mass_kg": 18787.3,
+  "n_types": 6,
+  "beta_uls": 3.049,
+  "ci_beta_uls": [
+   3.032,
+   3.067
+  ],
+  "nfail_uls": 1148,
+  "beta_drift": 1.507,
+  "ci_beta_drift": [
+   1.503,
+   1.51
+  ],
+  "nfail_drift": 65968,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9774,
+  "drift_det": 0.7975,
+  "B2": 1.151,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    18787.3
+   ],
+   [
+    2,
+    18787.3
+   ],
+   [
+    3,
+    18787.3
+   ],
+   [
+    4,
+    18787.3
+   ],
+   [
+    5,
+    18787.3
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.067,
+   "beta_drift": 1.503,
+   "beta_defl": 4.265,
+   "beta_sls": 1.503
+  },
+  "governing": {
+   "C1_0": 3,
+   "C3_0": 23,
+   "C0_2": 13,
+   "C3_2": 8,
+   "B0_2": 245,
+   "B1_2": 76,
+   "B2_2": 222,
+   "B0_3": 136,
+   "B1_3": 41,
+   "B2_3": 133,
+   "B0_4": 113,
+   "B1_4": 41,
+   "B2_4": 94
+  },
+  "scenario": [
+   1093,
+   55,
+   0
+  ]
+ },
+ "base_RBDO-C_saa13579": {
+  "mass_kg": 18787.3,
+  "n_types": 6,
+  "beta_uls": 3.049,
+  "ci_beta_uls": [
+   3.032,
+   3.067
+  ],
+  "nfail_uls": 1148,
+  "beta_drift": 1.507,
+  "ci_beta_drift": [
+   1.503,
+   1.51
+  ],
+  "nfail_drift": 65968,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9774,
+  "drift_det": 0.7975,
+  "B2": 1.151,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    18787.3
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.128,
+   "beta_drift": 1.509,
+   "beta_defl": 4.265,
+   "beta_sls": 1.509
+  }
+ },
+ "base_RBDO_bu3.0_bs1.0": {
+  "mass_kg": 18437.5,
+  "n_types": 6,
+  "beta_uls": 3.058,
+  "ci_beta_uls": [
+   3.041,
+   3.076
+  ],
+  "nfail_uls": 1113,
+  "beta_drift": 1.005,
+  "ci_beta_drift": [
+   1.002,
+   1.007
+  ],
+  "nfail_drift": 157562,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9823,
+  "drift_det": 0.9572,
+  "B2": 1.183,
+  "verdict": [
+   "above",
+   "below"
+  ],
+  "runs": [
+   [
+    1,
+    18437.5
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.073,
+   "beta_drift": 1.01,
+   "beta_defl": 4.265,
+   "beta_sls": 1.01
+  }
+ },
+ "B10_DDO-h500": {
+  "mass_kg": 26035.1,
+  "n_types": 7,
+  "beta_uls": 2.918,
+  "ci_beta_uls": [
+   2.903,
+   2.932
+  ],
+  "nfail_uls": 1763,
+  "beta_drift": 1.665,
+  "ci_beta_drift": [
+   1.661,
+   1.669
+  ],
+  "nfail_drift": 47972,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9945,
+  "drift_det": 0.7536,
+  "B2": 1.181,
+  "verdict": [
+   "below",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    26035.1
+   ]
+  ]
+ },
+ "B10_RBDO": {
+  "mass_kg": 26065.5,
+  "n_types": 6,
+  "beta_uls": 3.119,
+  "ci_beta_uls": [
+   3.1,
+   3.139
+  ],
+  "nfail_uls": 906,
+  "beta_drift": 1.665,
+  "ci_beta_drift": [
+   1.661,
+   1.669
+  ],
+  "nfail_drift": 47974,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9531,
+  "drift_det": 0.7536,
+  "B2": 1.181,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    26065.5
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.142,
+   "beta_drift": 1.659,
+   "beta_defl": 4.265,
+   "beta_sls": 1.659
+  }
+ },
+ "B6_DDO": {
+  "mass_kg": 13707.5,
+  "n_types": 7,
+  "beta_uls": 3.656,
+  "ci_beta_uls": [
+   3.612,
+   3.702
+  ],
+  "nfail_uls": 128,
+  "beta_drift": 0.953,
+  "ci_beta_drift": [
+   0.95,
+   0.956
+  ],
+  "nfail_drift": 170283,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9358,
+  "drift_det": 0.9742,
+  "B2": 1.137,
+  "verdict": [
+   "above",
+   "below"
+  ],
+  "runs": [
+   [
+    1,
+    13707.5
+   ],
+   [
+    2,
+    13707.5
+   ]
+  ],
+  "governing": {
+   "C1_0": 58,
+   "C2_0": 41,
+   "C3_0": 10,
+   "B2_2": 3,
+   "B0_4": 6,
+   "B1_4": 8,
+   "B2_4": 2
+  },
+  "scenario": [
+   18,
+   110,
+   0
+  ]
+ },
+ "S3_DDO-h500": {
+  "mass_kg": 7994.5,
+  "n_types": 4,
+  "beta_uls": 2.928,
+  "ci_beta_uls": [
+   2.913,
+   2.943
+  ],
+  "nfail_uls": 1707,
+  "beta_drift": 2.544,
+  "ci_beta_drift": [
+   2.535,
+   2.553
+  ],
+  "nfail_drift": 5481,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9907,
+  "drift_det": 0.5471,
+  "B2": 1.099,
+  "verdict": [
+   "below",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    7994.5
+   ]
+  ]
+ },
+ "S3_RBDO": {
+  "mass_kg": 8187.9,
+  "n_types": 4,
+  "beta_uls": 2.995,
+  "ci_beta_uls": [
+   2.979,
+   3.012
+  ],
+  "nfail_uls": 1370,
+  "beta_drift": 2.711,
+  "ci_beta_drift": [
+   2.699,
+   2.722
+  ],
+  "nfail_drift": 3357,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9777,
+  "drift_det": 0.5158,
+  "B2": 1.093,
+  "verdict": [
+   "within",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    8187.9
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.002,
+   "beta_drift": 2.687,
+   "beta_defl": 4.265,
+   "beta_sls": 2.687
+  }
+ },
+ "S9_DDO": {
+  "mass_kg": 32987.3,
+  "n_types": 8,
+  "beta_uls": 3.271,
+  "ci_beta_uls": [
+   3.247,
+   3.296
+  ],
+  "nfail_uls": 535,
+  "beta_drift": 0.896,
+  "ci_beta_drift": [
+   0.893,
+   0.899
+  ],
+  "nfail_drift": 185169,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.987,
+  "drift_det": 0.9956,
+  "B2": 1.19,
+  "verdict": [
+   "above",
+   "below"
+  ],
+  "runs": [
+   [
+    1,
+    32987.3
+   ],
+   [
+    2,
+    32987.3
+   ]
+  ],
+  "governing": {
+   "C1_0": 105,
+   "C2_0": 90,
+   "C3_0": 6,
+   "C0_3": 1,
+   "C1_3": 73,
+   "C2_3": 71,
+   "C3_6": 1,
+   "B0_6": 13,
+   "B1_6": 69,
+   "B2_6": 22,
+   "B0_7": 11,
+   "B1_7": 60,
+   "B2_7": 13
+  },
+  "scenario": [
+   322,
+   213,
+   0
+  ]
+ },
+ "W08_DDO-h500": {
+  "mass_kg": 17788.4,
+  "n_types": 5,
+  "beta_uls": 2.918,
+  "ci_beta_uls": [
+   2.904,
+   2.933
+  ],
+  "nfail_uls": 1760,
+  "beta_drift": 1.777,
+  "ci_beta_drift": [
+   1.772,
+   1.781
+  ],
+  "nfail_drift": 37801,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9986,
+  "drift_det": 0.7237,
+  "B2": 1.21,
+  "verdict": [
+   "below",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    17788.4
+   ]
+  ]
+ },
+ "W08_RBDO": {
+  "mass_kg": 17873.8,
+  "n_types": 6,
+  "beta_uls": 2.986,
+  "ci_beta_uls": [
+   2.97,
+   3.002
+  ],
+  "nfail_uls": 1415,
+  "beta_drift": 1.982,
+  "ci_beta_drift": [
+   1.976,
+   1.987
+  ],
+  "nfail_drift": 23753,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 1.0022,
+  "drift_det": 0.6718,
+  "B2": 1.194,
+  "verdict": [
+   "within",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    17873.8
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.021,
+   "beta_drift": 1.977,
+   "beta_defl": 4.265,
+   "beta_sls": 1.977
+  }
+ },
+ "W16_DDO": {
+  "mass_kg": 19742.6,
+  "n_types": 6,
+  "beta_uls": 3.109,
+  "ci_beta_uls": [
+   3.09,
+   3.128
+  ],
+  "nfail_uls": 940,
+  "beta_drift": 0.887,
+  "ci_beta_drift": [
+   0.885,
+   0.89
+  ],
+  "nfail_drift": 187435,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9953,
+  "drift_det": 0.9975,
+  "B2": 1.141,
+  "verdict": [
+   "above",
+   "below"
+  ],
+  "runs": [
+   [
+    1,
+    19742.6
+   ],
+   [
+    2,
+    19862.5
+   ]
+  ],
+  "governing": {
+   "C1_0": 12,
+   "C2_0": 8,
+   "C3_0": 79,
+   "B0_2": 170,
+   "B1_2": 102,
+   "B2_2": 196,
+   "B0_3": 66,
+   "B1_3": 62,
+   "B2_3": 46,
+   "B0_4": 74,
+   "B1_4": 60,
+   "B2_4": 65
+  },
+  "scenario": [
+   598,
+   340,
+   2
+  ]
+ },
+ "base_DDO-h500": {
+  "mass_kg": 18787.3,
+  "n_types": 6,
+  "beta_uls": 3.049,
+  "ci_beta_uls": [
+   3.032,
+   3.067
+  ],
+  "nfail_uls": 1148,
+  "beta_drift": 1.507,
+  "ci_beta_drift": [
+   1.503,
+   1.51
+  ],
+  "nfail_drift": 65968,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9774,
+  "drift_det": 0.7975,
+  "B2": 1.151,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    18787.3
+   ]
+  ]
+ },
+ "base_RBDO-C_lcb": {
+  "mass_kg": 19079.3,
+  "n_types": 6,
+  "beta_uls": 3.125,
+  "ci_beta_uls": [
+   3.106,
+   3.145
+  ],
+  "nfail_uls": 888,
+  "beta_drift": 1.551,
+  "ci_beta_drift": [
+   1.547,
+   1.554
+  ],
+  "nfail_drift": 60506,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9614,
+  "drift_det": 0.7851,
+  "B2": 1.149,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    19079.3
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.128,
+   "beta_drift": 1.545,
+   "beta_defl": 4.265,
+   "beta_sls": 1.545
+  }
+ },
+ "base_RBDO-C_saa24680": {
+  "mass_kg": 18787.3,
+  "n_types": 6,
+  "beta_uls": 3.049,
+  "ci_beta_uls": [
+   3.032,
+   3.067
+  ],
+  "nfail_uls": 1148,
+  "beta_drift": 1.507,
+  "ci_beta_drift": [
+   1.503,
+   1.51
+  ],
+  "nfail_drift": 65968,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9774,
+  "drift_det": 0.7975,
+  "B2": 1.151,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    18787.3
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.084,
+   "beta_drift": 1.509,
+   "beta_defl": 4.265,
+   "beta_sls": 1.509
+  }
+ },
+ "base_RBDO_bu3.5_bs1.5": {
+  "mass_kg": 19452.2,
+  "n_types": 5,
+  "beta_uls": 3.673,
+  "ci_beta_uls": [
+   3.627,
+   3.72
+  ],
+  "nfail_uls": 120,
+  "beta_drift": 1.518,
+  "ci_beta_drift": [
+   1.514,
+   1.522
+  ],
+  "nfail_drift": 64506,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.8937,
+  "drift_det": 0.7942,
+  "B2": 1.15,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    19452.2
+   ]
+  ],
+  "saa": {
+   "beta_uls": 4.107,
+   "beta_drift": 1.515,
+   "beta_defl": 4.265,
+   "beta_sls": 1.515
+  }
+ },
+ "B10_DDO-h600": {
+  "mass_kg": 27434.5,
+  "n_types": 6,
+  "beta_uls": 3.15,
+  "ci_beta_uls": [
+   3.13,
+   3.171
+  ],
+  "nfail_uls": 815,
+  "beta_drift": 2.024,
+  "ci_beta_drift": [
+   2.018,
+   2.029
+  ],
+  "nfail_drift": 21501,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.95,
+  "drift_det": 0.6617,
+  "B2": 1.157,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    27434.5
+   ]
+  ]
+ },
+ "B6_DDO-h450": {
+  "mass_kg": 14139.6,
+  "n_types": 7,
+  "beta_uls": 3.437,
+  "ci_beta_uls": [
+   3.406,
+   3.469
+  ],
+  "nfail_uls": 294,
+  "beta_drift": 1.306,
+  "ci_beta_drift": [
+   1.303,
+   1.309
+  ],
+  "nfail_drift": 95788,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9897,
+  "drift_det": 0.8575,
+  "B2": 1.12,
+  "verdict": [
+   "above",
+   "below"
+  ],
+  "runs": [
+   [
+    1,
+    14139.6
+   ]
+  ]
+ },
+ "B6_RBDO-C": {
+  "mass_kg": 14667.7,
+  "n_types": 6,
+  "beta_uls": 3.732,
+  "ci_beta_uls": [
+   3.681,
+   3.785
+  ],
+  "nfail_uls": 95,
+  "beta_drift": 1.548,
+  "ci_beta_drift": [
+   1.544,
+   1.552
+  ],
+  "nfail_drift": 60850,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9142,
+  "drift_det": 0.7854,
+  "B2": 1.108,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    14679.9
+   ],
+   [
+    2,
+    14667.7
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.846,
+   "beta_drift": 1.541,
+   "beta_defl": 4.265,
+   "beta_sls": 1.541
+  },
+  "governing": {
+   "C1_0": 40,
+   "C2_0": 19,
+   "C3_0": 5,
+   "C1_2": 5,
+   "C2_2": 11,
+   "B0_4": 5,
+   "B1_4": 6,
+   "B2_4": 4
+  },
+  "scenario": [
+   24,
+   71,
+   0
+  ]
+ },
+ "S3_DDO-h600": {
+  "mass_kg": 7994.5,
+  "n_types": 4,
+  "beta_uls": 2.928,
+  "ci_beta_uls": [
+   2.913,
+   2.943
+  ],
+  "nfail_uls": 1707,
+  "beta_drift": 2.544,
+  "ci_beta_drift": [
+   2.535,
+   2.553
+  ],
+  "nfail_drift": 5481,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9907,
+  "drift_det": 0.5471,
+  "B2": 1.099,
+  "verdict": [
+   "below",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    7994.5
+   ]
+  ]
+ },
+ "S9_DDO-h450": {
+  "mass_kg": 34664.6,
+  "n_types": 8,
+  "beta_uls": 3.292,
+  "ci_beta_uls": [
+   3.267,
+   3.317
+  ],
+  "nfail_uls": 497,
+  "beta_drift": 1.275,
+  "ci_beta_drift": [
+   1.272,
+   1.278
+  ],
+  "nfail_drift": 101154,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9653,
+  "drift_det": 0.8679,
+  "B2": 1.164,
+  "verdict": [
+   "above",
+   "below"
+  ],
+  "runs": [
+   [
+    1,
+    34664.6
+   ]
+  ]
+ },
+ "S9_RBDO-C": {
+  "mass_kg": 35449.8,
+  "n_types": 7,
+  "beta_uls": 3.351,
+  "ci_beta_uls": [
+   3.324,
+   3.378
+  ],
+  "nfail_uls": 403,
+  "beta_drift": 1.53,
+  "ci_beta_drift": [
+   1.527,
+   1.534
+  ],
+  "nfail_drift": 62958,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9654,
+  "drift_det": 0.7911,
+  "B2": 1.148,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    35449.8
+   ],
+   [
+    2,
+    35449.8
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.367,
+   "beta_drift": 1.531,
+   "beta_defl": 4.265,
+   "beta_sls": 1.531
+  },
+  "governing": {
+   "C1_0": 75,
+   "C2_0": 63,
+   "C3_0": 3,
+   "C3_6": 1,
+   "B0_6": 32,
+   "B1_6": 77,
+   "B2_6": 42,
+   "B0_7": 17,
+   "B1_7": 70,
+   "B2_7": 23
+  },
+  "scenario": [
+   284,
+   119,
+   0
+  ]
+ },
+ "W08_DDO-h600": {
+  "mass_kg": 18050.3,
+  "n_types": 6,
+  "beta_uls": 3.007,
+  "ci_beta_uls": [
+   2.99,
+   3.023
+  ],
+  "nfail_uls": 1320,
+  "beta_drift": 2.024,
+  "ci_beta_drift": [
+   2.018,
+   2.03
+  ],
+  "nfail_drift": 21484,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9985,
+  "drift_det": 0.6617,
+  "B2": 1.19,
+  "verdict": [
+   "within",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    18050.3
+   ]
+  ]
+ },
+ "W16_DDO-h450": {
+  "mass_kg": 20679.5,
+  "n_types": 7,
+  "beta_uls": 3.366,
+  "ci_beta_uls": [
+   3.338,
+   3.395
+  ],
+  "nfail_uls": 381,
+  "beta_drift": 1.21,
+  "ci_beta_drift": [
+   1.206,
+   1.213
+  ],
+  "nfail_drift": 113225,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.922,
+  "drift_det": 0.8881,
+  "B2": 1.125,
+  "verdict": [
+   "above",
+   "below"
+  ],
+  "runs": [
+   [
+    1,
+    20679.5
+   ]
+  ]
+ },
+ "W16_RBDO-C": {
+  "mass_kg": 21737.6,
+  "n_types": 7,
+  "beta_uls": 3.189,
+  "ci_beta_uls": [
+   3.168,
+   3.21
+  ],
+  "nfail_uls": 714,
+  "beta_drift": 1.511,
+  "ci_beta_drift": [
+   1.507,
+   1.515
+  ],
+  "nfail_drift": 65403,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9626,
+  "drift_det": 0.7959,
+  "B2": 1.111,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    21774.2
+   ],
+   [
+    2,
+    22078.4
+   ],
+   [
+    3,
+    21737.6
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.212,
+   "beta_drift": 1.506,
+   "beta_defl": 4.265,
+   "beta_sls": 1.506
+  },
+  "governing": {
+   "C3_0": 19,
+   "C0_2": 2,
+   "C3_2": 3,
+   "B0_4": 308,
+   "B1_4": 71,
+   "B2_4": 311
+  },
+  "scenario": [
+   693,
+   21,
+   0
+  ]
+ },
+ "base_DDO-h600": {
+  "mass_kg": 20663.7,
+  "n_types": 7,
+  "beta_uls": 3.152,
+  "ci_beta_uls": [
+   3.132,
+   3.173
+  ],
+  "nfail_uls": 810,
+  "beta_drift": 2.009,
+  "ci_beta_drift": [
+   2.003,
+   2.014
+  ],
+  "nfail_drift": 22292,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.949,
+  "drift_det": 0.6649,
+  "B2": 1.124,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    20663.7
+   ]
+  ]
+ },
+ "base_RBDO-C_n100000": {
+  "mass_kg": 18787.3,
+  "n_types": 6,
+  "beta_uls": 3.049,
+  "ci_beta_uls": [
+   3.032,
+   3.067
+  ],
+  "nfail_uls": 1148,
+  "beta_drift": 1.507,
+  "ci_beta_drift": [
+   1.503,
+   1.51
+  ],
+  "nfail_drift": 65968,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9774,
+  "drift_det": 0.7975,
+  "B2": 1.151,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    18787.3
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.041,
+   "beta_drift": 1.502,
+   "beta_defl": 4.417,
+   "beta_sls": 1.502
+  }
+ },
+ "base_RBDO": {
+  "mass_kg": 18787.3,
+  "n_types": 6,
+  "beta_uls": 3.049,
+  "ci_beta_uls": [
+   3.032,
+   3.067
+  ],
+  "nfail_uls": 1148,
+  "beta_drift": 1.507,
+  "ci_beta_drift": [
+   1.503,
+   1.51
+  ],
+  "nfail_drift": 65968,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9774,
+  "drift_det": 0.7975,
+  "B2": 1.151,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    18787.3
+   ],
+   [
+    2,
+    18787.3
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.067,
+   "beta_drift": 1.503,
+   "beta_defl": 4.265,
+   "beta_sls": 1.503
+  }
+ },
+ "B10_DDO": {
+  "mass_kg": 25639.5,
+  "n_types": 6,
+  "beta_uls": 2.88,
+  "ci_beta_uls": [
+   2.866,
+   2.894
+  ],
+  "nfail_uls": 1986,
+  "beta_drift": 1.147,
+  "ci_beta_drift": [
+   1.144,
+   1.15
+  ],
+  "nfail_drift": 125645,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9931,
+  "drift_det": 0.9092,
+  "B2": 1.222,
+  "verdict": [
+   "below",
+   "below"
+  ],
+  "runs": [
+   [
+    1,
+    25639.5
+   ],
+   [
+    2,
+    25639.5
+   ]
+  ],
+  "governing": {
+   "C0_0": 4,
+   "C1_0": 20,
+   "C2_0": 12,
+   "C3_0": 11,
+   "C0_1": 1,
+   "C3_1": 1,
+   "C0_2": 2,
+   "C1_2": 24,
+   "C2_2": 18,
+   "C3_2": 2,
+   "C3_4": 1,
+   "B0_0": 238,
+   "B1_0": 41,
+   "B2_0": 169,
+   "B0_1": 65,
+   "B1_1": 18,
+   "B2_1": 56,
+   "B0_2": 38,
+   "B1_2": 11,
+   "B2_2": 47,
+   "B0_3": 33,
+   "B1_3": 9,
+   "B2_3": 21,
+   "B0_4": 474,
+   "B1_4": 175,
+   "B2_4": 495
+  },
+  "scenario": [
+   1889,
+   95,
+   2
+  ]
+ },
+ "B6_DDO-h500": {
+  "mass_kg": 14583.4,
+  "n_types": 7,
+  "beta_uls": 3.76,
+  "ci_beta_uls": [
+   3.706,
+   3.816
+  ],
+  "nfail_uls": 85,
+  "beta_drift": 1.499,
+  "ci_beta_drift": [
+   1.495,
+   1.503
+  ],
+  "nfail_drift": 66964,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9134,
+  "drift_det": 0.7994,
+  "B2": 1.111,
+  "verdict": [
+   "above",
+   "within"
+  ],
+  "runs": [
+   [
+    1,
+    14583.4
+   ]
+  ]
+ },
+ "B6_RBDO": {
+  "mass_kg": 14621.2,
+  "n_types": 7,
+  "beta_uls": 3.22,
+  "ci_beta_uls": [
+   3.197,
+   3.242
+  ],
+  "nfail_uls": 642,
+  "beta_drift": 1.547,
+  "ci_beta_drift": [
+   1.543,
+   1.551
+  ],
+  "nfail_drift": 60925,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 1.0109,
+  "drift_det": 0.7856,
+  "B2": 1.109,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    14621.2
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.195,
+   "beta_drift": 1.541,
+   "beta_defl": 4.265,
+   "beta_sls": 1.541
+  }
+ },
+ "S3_DDO": {
+  "mass_kg": 7994.5,
+  "n_types": 4,
+  "beta_uls": 2.928,
+  "ci_beta_uls": [
+   2.913,
+   2.943
+  ],
+  "nfail_uls": 1707,
+  "beta_drift": 2.544,
+  "ci_beta_drift": [
+   2.535,
+   2.553
+  ],
+  "nfail_drift": 5481,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9907,
+  "drift_det": 0.5471,
+  "B2": 1.099,
+  "verdict": [
+   "below",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    7994.5
+   ],
+   [
+    2,
+    7994.5
+   ]
+  ],
+  "governing": {
+   "C1_0": 298,
+   "C2_0": 269,
+   "B0_0": 410,
+   "B1_0": 54,
+   "B2_0": 336,
+   "B0_1": 151,
+   "B1_1": 34,
+   "B2_1": 151,
+   "B0_2": 1,
+   "B1_2": 1,
+   "B2_2": 2
+  },
+  "scenario": [
+   1612,
+   94,
+   1
+  ]
+ },
+ "S9_DDO-h500": {
+  "mass_kg": 35484.4,
+  "n_types": 8,
+  "beta_uls": 3.184,
+  "ci_beta_uls": [
+   3.163,
+   3.205
+  ],
+  "nfail_uls": 726,
+  "beta_drift": 1.527,
+  "ci_beta_drift": [
+   1.523,
+   1.531
+  ],
+  "nfail_drift": 63356,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.996,
+  "drift_det": 0.792,
+  "B2": 1.149,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    35484.4
+   ]
+  ]
+ },
+ "S9_RBDO": {
+  "mass_kg": 35449.8,
+  "n_types": 7,
+  "beta_uls": 3.351,
+  "ci_beta_uls": [
+   3.324,
+   3.378
+  ],
+  "nfail_uls": 403,
+  "beta_drift": 1.53,
+  "ci_beta_drift": [
+   1.527,
+   1.534
+  ],
+  "nfail_drift": 62958,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9654,
+  "drift_det": 0.7911,
+  "B2": 1.148,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    35449.8
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.367,
+   "beta_drift": 1.531,
+   "beta_defl": 4.265,
+   "beta_sls": 1.531
+  }
+ },
+ "W08_DDO": {
+  "mass_kg": 17788.4,
+  "n_types": 5,
+  "beta_uls": 2.918,
+  "ci_beta_uls": [
+   2.904,
+   2.933
+  ],
+  "nfail_uls": 1760,
+  "beta_drift": 1.777,
+  "ci_beta_drift": [
+   1.772,
+   1.781
+  ],
+  "nfail_drift": 37801,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9986,
+  "drift_det": 0.7237,
+  "B2": 1.21,
+  "verdict": [
+   "below",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    17788.4
+   ],
+   [
+    2,
+    17788.4
+   ]
+  ],
+  "governing": {
+   "C1_0": 47,
+   "C2_0": 39,
+   "C0_2": 18,
+   "C1_2": 311,
+   "C2_2": 275,
+   "C3_2": 18,
+   "B0_0": 276,
+   "B1_0": 76,
+   "B2_0": 194,
+   "B0_1": 91,
+   "B1_1": 46,
+   "B2_1": 79,
+   "B0_2": 53,
+   "B1_2": 37,
+   "B2_2": 61,
+   "B0_3": 32,
+   "B1_3": 26,
+   "B2_3": 16,
+   "B0_4": 24,
+   "B1_4": 24,
+   "B2_4": 17
+  },
+  "scenario": [
+   1661,
+   97,
+   2
+  ]
+ },
+ "W16_DDO-h500": {
+  "mass_kg": 21988.8,
+  "n_types": 7,
+  "beta_uls": 3.125,
+  "ci_beta_uls": [
+   3.106,
+   3.145
+  ],
+  "nfail_uls": 889,
+  "beta_drift": 1.528,
+  "ci_beta_drift": [
+   1.525,
+   1.532
+  ],
+  "nfail_drift": 63204,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9739,
+  "drift_det": 0.7909,
+  "B2": 1.111,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    21988.8
+   ]
+  ]
+ },
+ "W16_RBDO": {
+  "mass_kg": 21737.6,
+  "n_types": 7,
+  "beta_uls": 3.189,
+  "ci_beta_uls": [
+   3.168,
+   3.21
+  ],
+  "nfail_uls": 714,
+  "beta_drift": 1.511,
+  "ci_beta_drift": [
+   1.507,
+   1.515
+  ],
+  "nfail_drift": 65403,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9626,
+  "drift_det": 0.7959,
+  "B2": 1.111,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    21737.6
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.212,
+   "beta_drift": 1.506,
+   "beta_defl": 4.265,
+   "beta_sls": 1.506
+  }
+ },
  "base_DDO": {
-  "mass_t": 18.261,
+  "mass_kg": 18261.0,
+  "n_types": 5,
   "beta_uls": 3.025,
+  "ci_beta_uls": [
+   3.008,
+   3.042
+  ],
   "nfail_uls": 1242,
   "beta_drift": 0.962,
-  "beta_defl": 4.892,
-  "lrfd": 0.993,
-  "drift_det": 0.972,
+  "ci_beta_drift": [
+   0.959,
+   0.965
+  ],
+  "nfail_drift": 167961,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9932,
+  "drift_det": 0.9718,
   "B2": 1.186,
+  "verdict": [
+   "above",
+   "below"
+  ],
+  "runs": [
+   [
+    1,
+    18261.0
+   ],
+   [
+    2,
+    18321.0
+   ],
+   [
+    3,
+    18261.0
+   ],
+   [
+    4,
+    18321.0
+   ],
+   [
+    5,
+    18261.0
+   ],
+   [
+    6,
+    18261.0
+   ],
+   [
+    7,
+    18261.0
+   ],
+   [
+    8,
+    18261.0
+   ],
+   [
+    9,
+    18261.0
+   ],
+   [
+    10,
+    18261.0
+   ]
+  ],
   "governing": {
    "C1_0": 2,
    "C3_0": 17,
@@ -28,246 +1950,83 @@
    "B0_4": 92,
    "B1_4": 44,
    "B2_4": 77
-  }
+  },
+  "scenario": [
+   986,
+   255,
+   1
+  ]
  },
- "base_RBDO": {
-  "mass_t": 18.787,
+ "base_RBDO-C_n20000": {
+  "mass_kg": 18787.3,
+  "n_types": 6,
   "beta_uls": 3.049,
+  "ci_beta_uls": [
+   3.032,
+   3.067
+  ],
   "nfail_uls": 1148,
   "beta_drift": 1.507,
-  "beta_defl": 4.892,
-  "lrfd": 0.977,
-  "drift_det": 0.798,
+  "ci_beta_drift": [
+   1.503,
+   1.51
+  ],
+  "nfail_drift": 65968,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9774,
+  "drift_det": 0.7975,
   "B2": 1.151,
-  "governing": {
-   "C1_0": 3,
-   "C3_0": 23,
-   "C0_2": 13,
-   "C3_2": 8,
-   "B0_2": 245,
-   "B1_2": 76,
-   "B2_2": 222,
-   "B0_3": 136,
-   "B1_3": 41,
-   "B2_3": 133,
-   "B0_4": 113,
-   "B1_4": 41,
-   "B2_4": 94
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    18787.3
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.011,
+   "beta_drift": 1.506,
+   "beta_defl": 4.056,
+   "beta_sls": 1.506
   }
- },
- "base_DDO-h500": {
-  "mass_t": 18.787,
-  "beta_uls": 3.049,
-  "nfail_uls": 1148,
-  "beta_drift": 1.507,
-  "beta_defl": 4.892,
-  "lrfd": 0.977,
-  "drift_det": 0.798,
-  "B2": 1.151,
-  "governing": {
-   "C1_0": 3,
-   "C3_0": 23,
-   "C0_2": 13,
-   "C3_2": 8,
-   "B0_2": 245,
-   "B1_2": 76,
-   "B2_2": 222,
-   "B0_3": 136,
-   "B1_3": 41,
-   "B2_3": 133,
-   "B0_4": 113,
-   "B1_4": 41,
-   "B2_4": 94
-  }
- },
- "S3_DDO": {
-  "mass_t": 7.995,
-  "beta_uls": 2.928,
-  "nfail_uls": 1707,
-  "beta_drift": 2.544,
-  "beta_defl": 4.892,
-  "lrfd": 0.991,
-  "drift_det": 0.547,
-  "B2": 1.099
- },
- "S3_RBDO": {
-  "mass_t": 8.188,
-  "beta_uls": 2.995,
-  "nfail_uls": 1370,
-  "beta_drift": 2.711,
-  "beta_defl": 4.892,
-  "lrfd": 0.978,
-  "drift_det": 0.516,
-  "B2": 1.093
- },
- "S9_DDO": {
-  "mass_t": 32.987,
-  "beta_uls": 3.271,
-  "nfail_uls": 535,
-  "beta_drift": 0.896,
-  "beta_defl": 4.892,
-  "lrfd": 0.987,
-  "drift_det": 0.996,
-  "B2": 1.19
- },
- "S9_RBDO": {
-  "mass_t": 35.45,
-  "beta_uls": 3.351,
-  "nfail_uls": 403,
-  "beta_drift": 1.53,
-  "beta_defl": 4.892,
-  "lrfd": 0.965,
-  "drift_det": 0.791,
-  "B2": 1.148
- },
- "S9_DDO-h500": {
-  "mass_t": 35.484,
-  "beta_uls": 3.184,
-  "nfail_uls": 726,
-  "beta_drift": 1.527,
-  "beta_defl": 4.892,
-  "lrfd": 0.996,
-  "drift_det": 0.792,
-  "B2": 1.149
- },
- "B6_DDO": {
-  "mass_t": 13.707,
-  "beta_uls": 3.656,
-  "nfail_uls": 128,
-  "beta_drift": 0.953,
-  "beta_defl": 4.892,
-  "lrfd": 0.936,
-  "drift_det": 0.974,
-  "B2": 1.137
- },
- "B6_RBDO": {
-  "mass_t": 14.621,
-  "beta_uls": 3.22,
-  "nfail_uls": 642,
-  "beta_drift": 1.547,
-  "beta_defl": 4.892,
-  "lrfd": 1.011,
-  "drift_det": 0.786,
-  "B2": 1.109
- },
- "B6_DDO-h500": {
-  "mass_t": 14.583,
-  "beta_uls": 3.76,
-  "nfail_uls": 85,
-  "beta_drift": 1.499,
-  "beta_defl": 4.892,
-  "lrfd": 0.913,
-  "drift_det": 0.799,
-  "B2": 1.111
- },
- "B10_DDO": {
-  "mass_t": 25.639,
-  "beta_uls": 2.88,
-  "nfail_uls": 1986,
-  "beta_drift": 1.147,
-  "beta_defl": 4.892,
-  "lrfd": 0.993,
-  "drift_det": 0.909,
-  "B2": 1.222
- },
- "B10_RBDO": {
-  "mass_t": 26.065,
-  "beta_uls": 3.119,
-  "nfail_uls": 906,
-  "beta_drift": 1.665,
-  "beta_defl": 4.892,
-  "lrfd": 0.953,
-  "drift_det": 0.754,
-  "B2": 1.181
- },
- "B10_DDO-h500": {
-  "mass_t": 26.035,
-  "beta_uls": 2.918,
-  "nfail_uls": 1763,
-  "beta_drift": 1.665,
-  "beta_defl": 4.892,
-  "lrfd": 0.994,
-  "drift_det": 0.754,
-  "B2": 1.181
- },
- "W08_DDO": {
-  "mass_t": 17.788,
-  "beta_uls": 2.918,
-  "nfail_uls": 1760,
-  "beta_drift": 1.777,
-  "beta_defl": 4.892,
-  "lrfd": 0.999,
-  "drift_det": 0.724,
-  "B2": 1.21
- },
- "W08_RBDO": {
-  "mass_t": 17.874,
-  "beta_uls": 2.986,
-  "nfail_uls": 1415,
-  "beta_drift": 1.982,
-  "beta_defl": 4.892,
-  "lrfd": 1.002,
-  "drift_det": 0.672,
-  "B2": 1.194
- },
- "W16_DDO": {
-  "mass_t": 19.743,
-  "beta_uls": 3.109,
-  "nfail_uls": 940,
-  "beta_drift": 0.887,
-  "beta_defl": 4.892,
-  "lrfd": 0.995,
-  "drift_det": 0.998,
-  "B2": 1.141
- },
- "W16_RBDO": {
-  "mass_t": 21.738,
-  "beta_uls": 3.189,
-  "nfail_uls": 714,
-  "beta_drift": 1.511,
-  "beta_defl": 4.892,
-  "lrfd": 0.963,
-  "drift_det": 0.796,
-  "B2": 1.111
- },
- "W16_DDO-h500": {
-  "mass_t": 21.989,
-  "beta_uls": 3.125,
-  "nfail_uls": 889,
-  "beta_drift": 1.528,
-  "beta_defl": 4.892,
-  "lrfd": 0.974,
-  "drift_det": 0.791,
-  "B2": 1.111
  },
  "base_RBDO_bu3.0_bs0.5": {
-  "mass_t": 18.261,
+  "mass_kg": 18261.0,
+  "n_types": 5,
   "beta_uls": 3.025,
+  "ci_beta_uls": [
+   3.008,
+   3.042
+  ],
   "nfail_uls": 1242,
   "beta_drift": 0.962,
-  "beta_defl": 4.892,
-  "lrfd": 0.993,
-  "drift_det": 0.972,
-  "B2": 1.186
- },
- "base_RBDO_bu3.0_bs1.0": {
-  "mass_t": 18.438,
-  "beta_uls": 3.058,
-  "nfail_uls": 1113,
-  "beta_drift": 1.005,
-  "beta_defl": 4.892,
-  "lrfd": 0.982,
-  "drift_det": 0.957,
-  "B2": 1.183
- },
- "base_RBDO_bu3.5_bs1.5": {
-  "mass_t": 19.452,
-  "beta_uls": 3.673,
-  "nfail_uls": 120,
-  "beta_drift": 1.518,
-  "beta_defl": 4.892,
-  "lrfd": 0.894,
-  "drift_det": 0.794,
-  "B2": 1.15
+  "ci_beta_drift": [
+   0.959,
+   0.965
+  ],
+  "nfail_drift": 167961,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9932,
+  "drift_det": 0.9718,
+  "B2": 1.186,
+  "verdict": [
+   "above",
+   "below"
+  ],
+  "runs": [
+   [
+    1,
+    18261.0
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.016,
+   "beta_drift": 0.968,
+   "beta_defl": 4.265,
+   "beta_sls": 0.968
+  }
  }
 }

@@ -1,6 +1,6 @@
 \begin{tabular}{lllllll}
 \toprule
- & \multicolumn{3}{c}{DDO} & \multicolumn{3}{c}{RBDO} \\
+ & \multicolumn{3}{c}{DDO} & \multicolumn{3}{c}{RBDO-C} \\
 \cmidrule(lr){2-4}\cmidrule(lr){5-7}
 Storeys & Ext. col. & Int. col. & Beam & Ext. col. & Int. col. & Beam \\
 \midrule
@@ -8,14 +8,17 @@ Storeys & Ext. col. & Int. col. & Beam & Ext. col. & Int. col. & Beam \\
 3-4 & W14X48 & W14X61 & W21X44 & W14X48 & W14X68 & W21X44 \\
 5-6 & W14X48 & W14X48 & W21X44 & W14X48 & W14X48 & W21X44 \\
 \midrule
-Steel mass (t) & \multicolumn{3}{l}{18.26} & \multicolumn{3}{l}{18.79} \\
+Steel mass (kg) & \multicolumn{3}{l}{18261} & \multicolumn{3}{l}{18787} \\
+Distinct sections & \multicolumn{3}{l}{5} & \multicolumn{3}{l}{6} \\
 LRFD strength ratio & \multicolumn{3}{l}{0.993} & \multicolumn{3}{l}{0.977} \\
 Drift ratio / limit (D+0.5L+W) & \multicolumn{3}{l}{0.972} & \multicolumn{3}{l}{0.798} \\
 Deflection / limit (L) & \multicolumn{3}{l}{0.156} & \multicolumn{3}{l}{0.156} \\
 Max. $B_2$ (DAM) & \multicolumn{3}{l}{1.186} & \multicolumn{3}{l}{1.151} \\
-$\beta_{ULS}$ ($N=10^6$) & \multicolumn{3}{l}{3.03} & \multicolumn{3}{l}{3.05} \\
-$P_{f,ULS}$ & \multicolumn{3}{l}{1.24e-03} & \multicolumn{3}{l}{1.15e-03} \\
-$\beta_{drift}$ & \multicolumn{3}{l}{0.96} & \multicolumn{3}{l}{1.51} \\
-$\beta_{defl}$ & \multicolumn{3}{l}{$>$4.89} & \multicolumn{3}{l}{$>$4.89} \\
+ULS failures $k$ in $N=10^6$ & \multicolumn{3}{l}{1242} & \multicolumn{3}{l}{1148} \\
+$\hat P_{f,ULS}$ [95\% CI] & \multicolumn{3}{l}{1.242e-03 [1.174e-03, 1.313e-03]} & \multicolumn{3}{l}{1.148e-03 [1.083e-03, 1.216e-03]} \\
+$\hat\beta_{ULS}$ [95\% CI] & \multicolumn{3}{l}{3.025 [3.01, 3.04]} & \multicolumn{3}{l}{3.049 [3.03, 3.07]} \\
+Drift failures $k$ & \multicolumn{3}{l}{167961} & \multicolumn{3}{l}{65968} \\
+$\hat\beta_{drift}$ [95\% CI] & \multicolumn{3}{l}{0.962 [0.96, 0.97]} & \multicolumn{3}{l}{1.507 [1.50, 1.51]} \\
+Deflection failures $k$; $\beta_{defl}$ & \multicolumn{3}{l}{0; $\geq$4.53} & \multicolumn{3}{l}{0; $\geq$4.53} \\
 \bottomrule
 \end{tabular}

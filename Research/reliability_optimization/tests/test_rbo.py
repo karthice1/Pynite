@@ -73,3 +73,14 @@ def test_reliability_monotonic_in_size():
     assert bh['beta_uls'] >= bl['beta_uls']
     assert bh['beta_drift'] > bl['beta_drift']
     assert deterministic_check(heavy)['strength'] < deterministic_check(light)['strength']
+
+
+def test_clopper_pearson_bounds():
+    from scipy.stats import norm
+    from rbo.reliability import clopper_pearson, pf_upper
+    # zero failures in 10^6 samples: one-sided 95 % bound -ln(0.05)/N, beta >= 4.53
+    up = pf_upper(0, 10**6, 0.95)
+    assert abs(up - 2.996e-6) < 2e-9
+    assert abs(-norm.ppf(up) - 4.53) < 0.01
+    lo, hi = clopper_pearson(1000, 10**6, 0.95)
+    assert lo < 1e-3 < hi and hi - lo < 1.3e-4
