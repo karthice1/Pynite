@@ -1,0 +1,59 @@
+\documentclass[preprint,12pt,authoryear]{elsarticle}
+
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[colorlinks=true,citecolor=blue,linkcolor=blue,urlcolor=blue]{hyperref}
+\usepackage{lineno}
+\usepackage{url}
+\usepackage{microtype}
+\emergencystretch=2em
+\newcommand{\fittable}[1]{\resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{#1}}
+
+\journal{Structural Safety}
+\newcommand{\resultscommit}{c66d4fd3a8ae}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{A reliability-constrained, multi-objective framework for minimum-mass design of steel
+frame structures under material and loading uncertainty}
+
+%% Author names and affiliations to be completed by the authors.
+\author[a]{[Author name]}
+\affiliation[a]{organization={[Affiliation]},country={[Country]}}
+
+\input{abstract.tex}
+
+\begin{keyword}
+Reliability-based design optimisation \sep Steel moment frames \sep Monte Carlo simulation
+\sep Direct Analysis Method \sep NSGA-II \sep Serviceability \sep Model uncertainty \sep PyNite
+\end{keyword}
+
+\end{frontmatter}
+
+\input{sec_intro_methods.tex}
+\input{sec_results.tex}
+
+\section*{Data and code availability}
+The framework, the input data, the scripts that produce every figure and table, and the raw
+results are openly available at \url{https://github.com/karthice1/Pynite} in the folder
+\path{Research/reliability_optimization}. The results, figures and tables of this version of the
+manuscript were produced by commit \texttt{\resultscommit} of branch
+\path{claude/project-thread-o7hjbo}, which an independent researcher can check out to reproduce them.
+The software environment is listed in \path{requirements.txt} (Python 3.13, NumPy, SciPy,
+Matplotlib, OpenSeesPy 3.8 and PyNite from the same repository). Every stochastic computation uses
+fixed seeds that are stored with its results. The single command \path{./reproduce.sh} reruns all
+optimisations, verifications and validations (about 10--12~h on four cores), and regenerates every
+figure, table and this manuscript. The stages can also be run individually with
+\path{run_experiments.py}. A persistent archive (release tag and DOI) will be created on acceptance.
+
+\section*{Declaration of competing interest}
+The authors declare that they have no known competing financial interests or personal
+relationships that could have appeared to influence the work reported in this paper.
+
+\bibliographystyle{elsarticle-harv}
+\bibliography{refs}
+
+\end{document}

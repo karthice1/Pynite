@@ -1,0 +1,7 @@
+# Environment used to produce the results of the paper (Python 3.13.17).
+# PyNite itself is installed from this repository: pip install -e ../..   (PyNiteFEA 3.2.0)
+numpy==2.5.3
+scipy==1.18.1
+matplotlib==3.11.2
+openseespy==3.8.0.0
+pytest

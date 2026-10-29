@@ -1,0 +1,476 @@
+{
+ "frame": "W16",
+ "spec": {
+  "n_storeys": 6,
+  "n_bays": 3,
+  "bay_width": 8.0,
+  "storey_height": 3.8,
+  "ground_storey_height": 4.5,
+  "trib_width": 7.5,
+  "q_dead": 4.0,
+  "q_live": 2.4,
+  "q_dead_roof": 3.0,
+  "q_live_roof": 1.0,
+  "p_wind": 1.6,
+  "group_size": 2,
+  "beam_unbraced_frac": 0.3333333333333333,
+  "name": "W16"
+ },
+ "mode": "DDO-h450",
+ "beta_uls": 3.0,
+ "beta_sls": 1.5,
+ "n_mc": 50000,
+ "saa_seed": 12345,
+ "accept": "point",
+ "runs": [
+  {
+   "seed": 1,
+   "x": [
+    4,
+    6,
+    14,
+    0,
+    2,
+    9,
+    0,
+    0,
+    5
+   ],
+   "weight": 20679.49218932,
+   "feasible": true,
+   "info": {
+    "weight": 20679.49218932,
+    "strength": 0.9220159990188405,
+    "drift": 0.9991270350659428,
+    "deflection": 0.15631260389334878,
+    "max_B2": 1.1248224863507519
+   },
+   "ga_weight": 20679.49218932,
+   "history": [
+    {
+     "gen": 0,
+     "best_weight": 34782.5207574,
+     "feasible": true,
+     "n_eval": 80,
+     "n_feasible": 3
+    },
+    {
+     "gen": 1,
+     "best_weight": 33787.24403828,
+     "feasible": true,
+     "n_eval": 118,
+     "n_feasible": 11
+    },
+    {
+     "gen": 2,
+     "best_weight": 33533.20841732,
+     "feasible": true,
+     "n_eval": 158,
+     "n_feasible": 22
+    },
+    {
+     "gen": 3,
+     "best_weight": 33225.691613,
+     "feasible": true,
+     "n_eval": 195,
+     "n_feasible": 40
+    },
+    {
+     "gen": 4,
+     "best_weight": 32843.22011988,
+     "feasible": true,
+     "n_eval": 234,
+     "n_feasible": 40
+    },
+    {
+     "gen": 5,
+     "best_weight": 29800.5662052,
+     "feasible": true,
+     "n_eval": 273,
+     "n_feasible": 40
+    },
+    {
+     "gen": 6,
+     "best_weight": 29800.5662052,
+     "feasible": true,
+     "n_eval": 313,
+     "n_feasible": 40
+    },
+    {
+     "gen": 7,
+     "best_weight": 28318.48916936,
+     "feasible": true,
+     "n_eval": 350,
+     "n_feasible": 40
+    },
+    {
+     "gen": 8,
+     "best_weight": 28318.48916936,
+     "feasible": true,
+     "n_eval": 390,
+     "n_feasible": 40
+    },
+    {
+     "gen": 9,
+     "best_weight": 27993.65175452,
+     "feasible": true,
+     "n_eval": 428,
+     "n_feasible": 40
+    },
+    {
+     "gen": 10,
+     "best_weight": 26966.772517960002,
+     "feasible": true,
+     "n_eval": 463,
+     "n_feasible": 40
+    },
+    {
+     "gen": 11,
+     "best_weight": 25347.14349916,
+     "feasible": true,
+     "n_eval": 503,
+     "n_feasible": 40
+    },
+    {
+     "gen": 12,
+     "best_weight": 24877.562502840003,
+     "feasible": true,
+     "n_eval": 539,
+     "n_feasible": 40
+    },
+    {
+     "gen": 13,
+     "best_weight": 24877.562502840003,
+     "feasible": true,
+     "n_eval": 576,
+     "n_feasible": 40
+    },
+    {
+     "gen": 14,
+     "best_weight": 24377.18931004,
+     "feasible": true,
+     "n_eval": 616,
+     "n_feasible": 40
+    },
+    {
+     "gen": 15,
+     "best_weight": 23354.36167828,
+     "feasible": true,
+     "n_eval": 652,
+     "n_feasible": 40
+    },
+    {
+     "gen": 16,
+     "best_weight": 23354.36167828,
+     "feasible": true,
+     "n_eval": 690,
+     "n_feasible": 40
+    },
+    {
+     "gen": 17,
+     "best_weight": 23331.47011116,
+     "feasible": true,
+     "n_eval": 728,
+     "n_feasible": 40
+    },
+    {
+     "gen": 18,
+     "best_weight": 23331.47011116,
+     "feasible": true,
+     "n_eval": 765,
+     "n_feasible": 40
+    },
+    {
+     "gen": 19,
+     "best_weight": 22753.50868644,
+     "feasible": true,
+     "n_eval": 803,
+     "n_feasible": 40
+    },
+    {
+     "gen": 20,
+     "best_weight": 22753.50868644,
+     "feasible": true,
+     "n_eval": 839,
+     "n_feasible": 40
+    },
+    {
+     "gen": 21,
+     "best_weight": 22643.406326,
+     "feasible": true,
+     "n_eval": 877,
+     "n_feasible": 40
+    },
+    {
+     "gen": 22,
+     "best_weight": 22365.972687319998,
+     "feasible": true,
+     "n_eval": 917,
+     "n_feasible": 40
+    },
+    {
+     "gen": 23,
+     "best_weight": 21852.63435916,
+     "feasible": true,
+     "n_eval": 955,
+     "n_feasible": 40
+    },
+    {
+     "gen": 24,
+     "best_weight": 21852.63435916,
+     "feasible": true,
+     "n_eval": 993,
+     "n_feasible": 40
+    },
+    {
+     "gen": 25,
+     "best_weight": 21852.63435916,
+     "feasible": true,
+     "n_eval": 1027,
+     "n_feasible": 40
+    },
+    {
+     "gen": 26,
+     "best_weight": 21852.63435916,
+     "feasible": true,
+     "n_eval": 1066,
+     "n_feasible": 40
+    },
+    {
+     "gen": 27,
+     "best_weight": 21852.63435916,
+     "feasible": true,
+     "n_eval": 1103,
+     "n_feasible": 40
+    },
+    {
+     "gen": 28,
+     "best_weight": 21852.63435916,
+     "feasible": true,
+     "n_eval": 1142,
+     "n_feasible": 40
+    },
+    {
+     "gen": 29,
+     "best_weight": 21852.63435916,
+     "feasible": true,
+     "n_eval": 1177,
+     "n_feasible": 40
+    },
+    {
+     "gen": 30,
+     "best_weight": 21806.7499348,
+     "feasible": true,
+     "n_eval": 1215,
+     "n_feasible": 40
+    },
+    {
+     "gen": 31,
+     "best_weight": 21549.87819048,
+     "feasible": true,
+     "n_eval": 1254,
+     "n_feasible": 40
+    },
+    {
+     "gen": 32,
+     "best_weight": 21549.87819048,
+     "feasible": true,
+     "n_eval": 1291,
+     "n_feasible": 40
+    },
+    {
+     "gen": 33,
+     "best_weight": 21419.01135544,
+     "feasible": true,
+     "n_eval": 1327,
+     "n_feasible": 40
+    },
+    {
+     "gen": 34,
+     "best_weight": 21078.17010164,
+     "feasible": true,
+     "n_eval": 1364,
+     "n_feasible": 40
+    },
+    {
+     "gen": 35,
+     "best_weight": 21078.17010164,
+     "feasible": true,
+     "n_eval": 1388,
+     "n_feasible": 40
+    },
+    {
+     "gen": 36,
+     "best_weight": 21078.17010164,
+     "feasible": true,
+     "n_eval": 1424,
+     "n_feasible": 40
+    },
+    {
+     "gen": 37,
+     "best_weight": 21029.95600452,
+     "feasible": true,
+     "n_eval": 1456,
+     "n_feasible": 40
+    },
+    {
+     "gen": 38,
+     "best_weight": 20957.12840824,
+     "feasible": true,
+     "n_eval": 1490,
+     "n_feasible": 40
+    },
+    {
+     "gen": 39,
+     "best_weight": 20957.12840824,
+     "feasible": true,
+     "n_eval": 1522,
+     "n_feasible": 40
+    },
+    {
+     "gen": 40,
+     "best_weight": 20957.12840824,
+     "feasible": true,
+     "n_eval": 1559,
+     "n_feasible": 40
+    },
+    {
+     "gen": 41,
+     "best_weight": 20679.49218932,
+     "feasible": true,
+     "n_eval": 1591,
+     "n_feasible": 40
+    },
+    {
+     "gen": 42,
+     "best_weight": 20679.49218932,
+     "feasible": true,
+     "n_eval": 1625,
+     "n_feasible": 40
+    },
+    {
+     "gen": 43,
+     "best_weight": 20679.49218932,
+     "feasible": true,
+     "n_eval": 1657,
+     "n_feasible": 40
+    },
+    {
+     "gen": 44,
+     "best_weight": 20679.49218932,
+     "feasible": true,
+     "n_eval": 1685,
+     "n_feasible": 40
+    },
+    {
+     "gen": 45,
+     "best_weight": 20679.49218932,
+     "feasible": true,
+     "n_eval": 1718,
+     "n_feasible": 40
+    },
+    {
+     "gen": 46,
+     "best_weight": 20679.49218932,
+     "feasible": true,
+     "n_eval": 1751,
+     "n_feasible": 40
+    },
+    {
+     "gen": 47,
+     "best_weight": 20679.49218932,
+     "feasible": true,
+     "n_eval": 1784,
+     "n_feasible": 40
+    },
+    {
+     "gen": 48,
+     "best_weight": 20679.49218932,
+     "feasible": true,
+     "n_eval": 1817,
+     "n_feasible": 40
+    },
+    {
+     "gen": 49,
+     "best_weight": 20679.49218932,
+     "feasible": true,
+     "n_eval": 1850,
+     "n_feasible": 40
+    },
+    {
+     "gen": 50,
+     "best_weight": 20679.49218932,
+     "feasible": true,
+     "n_eval": 1881,
+     "n_feasible": 40
+    },
+    {
+     "gen": 51,
+     "best_weight": 20679.49218932,
+     "feasible": true,
+     "n_eval": 1916,
+     "n_feasible": 40
+    },
+    {
+     "gen": 52,
+     "best_weight": 20679.49218932,
+     "feasible": true,
+     "n_eval": 1944,
+     "n_feasible": 40
+    },
+    {
+     "gen": 53,
+     "best_weight": 20679.49218932,
+     "feasible": true,
+     "n_eval": 1972,
+     "n_feasible": 40
+    },
+    {
+     "gen": 54,
+     "best_weight": 20679.49218932,
+     "feasible": true,
+     "n_eval": 1998,
+     "n_feasible": 40
+    },
+    {
+     "gen": 55,
+     "best_weight": 20679.49218932,
+     "feasible": true,
+     "n_eval": 2026,
+     "n_feasible": 40
+    },
+    {
+     "gen": 56,
+     "best_weight": 20679.49218932,
+     "feasible": true,
+     "n_eval": 2052,
+     "n_feasible": 40
+    }
+   ],
+   "n_eval": 2098,
+   "time_s": 314.7754967212677,
+   "t_analysis": 313.4035840034485,
+   "t_mc": 0.0,
+   "design": [
+    {
+     "storeys": "1-2",
+     "ext_col": "W14X74",
+     "int_col": "W14X90",
+     "beam": "W24X68"
+    },
+    {
+     "storeys": "3-4",
+     "ext_col": "W14X48",
+     "int_col": "W14X61",
+     "beam": "W24X55"
+    },
+    {
+     "storeys": "5-6",
+     "ext_col": "W14X48",
+     "int_col": "W14X48",
+     "beam": "W21X44"
+    }
+   ]
+  }
+ ]
+}

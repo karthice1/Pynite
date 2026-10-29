@@ -1,0 +1,20 @@
+\begin{tabular}{lrrr}
+\toprule
+Quantity & Closed form & PyNite & Rel. error \\
+\midrule
+Cantilever tip deflection (m) & 0.053333 & 0.053333 & 0.0e+00 \\
+Cantilever fixed-end moment (kN m) & 200 & 200 & 0.0e+00 \\
+Fixed beam end moment (kN m) & 213.33 & 213.33 & 4.0e-16 \\
+Fixed beam mid-span moment (kN m) & 106.67 & 106.67 & 1.1e-15 \\
+Fixed beam mid-span deflection (m) & 0.010667 & 0.010667 & 3.3e-16 \\
+Portal sway (m) & 0.012698 & 0.012699 & 9.3e-06 \\
+Portal column base moment (kN m) & 114.29 & 114.29 & 7.2e-06 \\
+Portal column top moment (kN m) & 85.714 & 85.715 & 3.6e-06 \\
+\midrule
+\multicolumn{4}{l}{Second-order cantilever, tip sway (mm): exact vs PyNite P-$\Delta$ with $n$ elements} \\
+$P/P_{cr}$ & exact & $n=1$ / $n=2$ / $n=8$ & err. ($n=1$, $n=8$) \\
+0.2 & 25.972 & 25.964 / 25.972 / 25.972 & 3.3e-04, 1.0e-07 \\
+0.4 & 34.534 & 34.471 / 34.529 / 34.534 & 1.8e-03, 5.5e-07 \\
+0.6 & 51.650 & 51.326 / 51.627 / 51.650 & 6.3e-03, 1.8e-06 \\
+\bottomrule
+\end{tabular}

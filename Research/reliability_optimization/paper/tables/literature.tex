@@ -1,0 +1,16 @@
+\begin{tabular}{p{2.3cm}p{2.6cm}p{1.9cm}p{3.0cm}p{1.9cm}p{2.2cm}p{1.3cm}}
+\toprule
+Study & Structure and analysis & Design variables & Reliability formulation & Optimiser & Independent verification & Public code/data \\
+\midrule
+\citet{PapadrakakisLagaros2002}$^\dagger$ & Large-scale structures; elastoplastic analysis to collapse & n.r. & MCS with importance sampling; plastic collapse & ES; neural-network surrogate of constraints or analysis & n.r. & n.r. \\
+\citet{Papadrakakis2004} & 3-storey, 4-bay planar steel MRF, seismic; multi-modal response-spectrum analysis & Discrete W-shapes, 5 groups & MCS ($5000$) or LHS ($1000$); failure = interstorey drift $>4\%$ of storey height; $P_f\le10^{-3}$; EC3/EC8 checks also imposed; compared with deterministic optimum & $(\mu+\lambda)$-ES & MCS vs.\ LHS estimate; no CI & none stated \\
+\citet{LagarosPapadrakakis2007}$^\dagger$ & Steel buildings, seismic & n.r. & MCS; robust (two-objective) and reliability-based formulations & Modified NSGA-II & n.r. & n.r. \\
+\citet{Foley2007}$^\dagger$ & Single- and multi-storey planar steel MRFs with FR/PR connections, seismic & n.r. & Probabilistic performance-based (life safety, damage) & Multi-objective GA & n.r. & n.r. \\
+\citet{Mathakari2007}$^\dagger$ & 3D trusses (transmission towers); FE & Topology, geometry, member sizes & FE reliability, importance sampling; deformation and stress thresholds under wind & MOGA (weight vs.\ $\beta$) & n.r. & n.r. \\
+\citet{Buonopane2006}$^\dagger$ & Planar steel frames; advanced (inelastic) analysis & -- (assessment) & System reliability of frames designed by advanced analysis & -- & -- & n.r. \\
+\citet{Zhang2016}$^\dagger$ & Planar steel frames; advanced analysis & -- (assessment) & System-reliability framework for system-based design & -- & -- & n.r. \\
+\citet{TruongKim2017} & 2- and 6-storey steel space frames, gravity and wind; plastic-hinge advanced analysis & Discrete W-shapes & Improved LHS with importance sampling; failure = load-carrying capacity $<$ applied load; $P_f\le10^{-3}$; deterministic strength, drift ($H/400$) and constructability constraints also imposed; drift not probabilistic & Harmony search & Estimator vs.\ crude MCS on benchmarks; final frame designs not re-checked; no CI & none stated \\
+\midrule
+This study & Planar steel MRFs; second-order elastic (DAM, $B_1$--$B_2$ surrogate of five linear analyses) & Discrete AISC W-shapes, 9 variables & Crude MCS with SAA; series-system first-member ULS (two Turkstra scenarios), drift and deflection SLS; with and without the LRFD checks; exact binomial CIs & GA + local search; NSGA-II; exhaustive enumeration of a reduced space & Closed form; OpenSeesPy; full P-$\Delta$ MC of 10 designs (8 principal + 2 three-storey variants) incl.\ tail strata & Yes: code, inputs, raw results, seeds \\
+\bottomrule
+\end{tabular}

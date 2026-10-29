@@ -1,0 +1,478 @@
+%% Sections 1-2: introduction and framework
+\section{Introduction}\label{sec:intro}
+
+Minimum-weight design of steel moment frames with discrete catalogue sections is a mature
+topic in structural optimisation. Genetic algorithms \citep{Camp1998,Pezeshk2000}, harmony
+search \citep{Degertekin2008} and a large family of other metaheuristics \citep{SakaGeem2013}
+have been used to select hot-rolled sections that satisfy code strength and serviceability
+checks at least weight. Almost all of this work is \emph{deterministic}: the optimiser drives
+the governing load-and-resistance-factor design (LRFD) checks to unity and treats the partial
+factors of the code as a sufficient representation of uncertainty. The partial factors,
+however, were calibrated for members and typical load ratios \citep{Ellingwood1980,Galambos1982};
+they do not guarantee a uniform reliability for an optimised \emph{system}, whose members are
+all deliberately pushed to their limits and whose governing constraints may be strength in one
+member group and drift in another.
+
+Reliability-based design optimisation (RBDO) replaces or supplements the deterministic checks by
+explicit constraints on failure probabilities \citep{Frangopol1985,Enevoldsen1994,Valdebenito2010,Aoues2010}.
+Table~\ref{tab:literature} summarises the studies closest to the present one. Reliability-based
+optimisation of steel frames with discrete sections and Monte Carlo simulation was pioneered by
+Papadrakakis, Lagaros and co-workers \citep{PapadrakakisLagaros2002,Papadrakakis2004,LagarosPapadrakakis2007}.
+\citet{Papadrakakis2004} optimised a seismically loaded 3-storey planar moment frame with evolution
+strategies. They imposed the Eurocode 3 and 8 checks in both the deterministic and the
+reliability-based problem, and added a Monte Carlo constraint on the probability that the interstorey
+drift exceeds 4\% of the storey height. The reliability-based optimum was heavier than the
+deterministic one (their text gives approximately 26\%; the volumes in their Table~6 differ by 34\%).
+The deterministic optimum had a failure probability of $9.3\times10^{-2}$. Their failure probabilities
+were estimated from 5000 (MCS) or 1000 (LHS) samples, without confidence intervals.
+\citet{TruongKim2017} embedded plastic-hinge advanced analysis in the RBDO of steel space frames under
+gravity and wind with harmony search. Their RBDO also kept the deterministic strength and $H/400$ drift
+constraints, and used a sampling estimator verified against crude Monte Carlo on benchmark problems.
+Drift was not a probabilistic constraint, and the failure probabilities of the final frame designs were
+not re-estimated independently. Multi-objective genetic algorithms have been used for probabilistic
+performance-based design of steel moment frames \citep{Foley2007} and for weight--reliability fronts
+of transmission towers \citep{Mathakari2007}. The system reliability of frames designed by advanced
+analysis has been quantified without optimisation \citep{Buonopane2006,Zhang2016}.
+
+Imposing code checks in addition to a reliability constraint is therefore not new
+\citep{Papadrakakis2004,TruongKim2017}, and neither is the finding that a reliability constraint can
+increase the weight \citep{Papadrakakis2004}. In the two closest studies, which we read in full, we did
+not find (i) a comparison of reliability-based optima under a code-calibrated gravity--wind model with
+deterministic optima of the same frames, including deterministic designs with tightened drift limits
+and RBDO with and without the code checks; (ii) a probabilistic serviceability (drift) constraint
+next to the ULS constraint; (iii) confidence intervals for the failure probabilities of the final
+designs, or a re-estimate of them with independent samples; (iv) a validation of the reliability
+surrogate against full second-order re-analysis in the failure tail of several optimised designs; or
+(v) a release of the code and raw results. For the other studies in Table~\ref{tab:literature},
+which we could assess only from their abstracts and records, we make no such claim.
+
+This paper addresses the research question: \emph{can uncertainty-aware optimisation produce
+lighter steel frame designs than code-based optimisation while satisfying explicit reliability and
+serviceability constraints?} Steel mass is the objective; it is used as a proxy for material cost,
+and its relation to a broader cost is examined with an illustrative cost model. The contribution is
+not a new optimisation algorithm, but a computational workflow, with demonstrated accuracy, that
+makes probabilistic constraints practical in discrete steel-section optimisation and allows an
+honest comparison with code-based design. Specifically:
+\begin{enumerate}
+\item a superposition surrogate that turns five linear analyses per design (PyNite
+\citep{PyNite}) and the AISC~360-16 $B_1$--$B_2$ amplification into a vectorised Monte Carlo
+evaluation of a series-system ultimate limit state (ULS) and two serviceability limit states (SLS)
+for $5\times10^4$--$10^6$ samples per design (the superposition of the linear unit-case responses
+is exact within the linear analysis, whereas the $B_1$--$B_2$ amplification approximates the full
+second-order response; Section~\ref{sec:fullmc}), combined with a sample average approximation (SAA)
+\citep{Kleywegt2002} that makes the reliability constraints deterministic functions of the design;
+\item four formulations solved with the same optimiser on the same frames: deterministic design
+optimisation (DDO) with several drift limits, RBDO with reliability constraints only, a
+\emph{code-compliant} RBDO (RBDO-C) that also enforces every LRFD (AISC~360-16, ASCE~7-05) and
+serviceability check, and a
+bi-objective mass--reliability formulation;
+\item a statistical treatment of the reliability estimates (exact binomial confidence intervals,
+failure counts, an explicit acceptance rule, and a confidence-bounded variant of the reliability
+constraint), and an assessment of optimiser robustness by repeated runs, SAA variants and
+exhaustive enumeration of a reduced design space;
+\item a verification chain from closed-form solutions and an independent solver (OpenSeesPy
+\citep{McKenna2010,Zhu2018}) to full P-$\Delta$ re-analysis Monte Carlo of ten designs from six
+frame configurations, including the failure tail, the failure classification and a model-based
+treatment of the unanalysed part of the tail; and
+\item an open release of the code, input data, seeds and raw results with a one-command reproduction.
+\end{enumerate}
+What is demonstrated is restricted to the seven regular planar steel moment frame configurations
+studied (three to nine storeys under gravity and wind), with a second-order elastic, component-based
+ULS and the stated probabilistic model. Generality to
+three-dimensional frames, seismic actions, inelastic collapse reliability and full cost models is
+\emph{not} demonstrated here.
+
+Section~\ref{sec:framework} presents the frame family, the design checks, the probabilistic
+model, the reliability estimation and the optimisation formulations. Section~\ref{sec:verification}
+verifies the structural and reliability models. Section~\ref{sec:results} reports the optimiser
+robustness, the comparison of deterministic and reliability-based designs, the cost--reliability
+trade-off and the parametric, economic and sensitivity studies. Section~\ref{sec:discussion}
+discusses the interpretation and limitations and Section~\ref{sec:conclusions} concludes.
+
+\begin{table}[!htbp]
+\centering
+\caption{Closely related studies. Entries for \citet{Papadrakakis2004} and \citet{TruongKim2017}
+were taken from the full texts. Entries marked $^\dagger$ were taken from the abstracts and bibliographic
+records only, because the full texts were not available to the authors; n.r.\ = not reported there;
+-- = not applicable.
+MRF: moment-resisting frame; MCS: Monte Carlo simulation; LHS: Latin hypercube sampling; ES:
+evolution strategies; FR/PR: fully/partially restrained connections.}
+\label{tab:literature}
+\scriptsize
+\fittable{\input{tables/literature.tex}}
+\end{table}
+
+%% ---------------------------------------------------------------------------
+\section{Framework}\label{sec:framework}
+
+\subsection{Parameterised frame family}\label{sec:frames}
+
+The framework generates regular planar moment frames with $n_s$ storeys and $n_b$ bays of
+width $b$ (Fig.~\ref{fig:frame}). All beam--column connections are rigid and column bases are
+fixed. The ground storey is 4.5~m high and the upper storeys 3.8~m. Frames are spaced at
+7.5~m, which defines the tributary width of floor loads and wind pressure. Nominal floor loads
+are $q_D = 4.0$~kPa (slab, finishes and services) and $q_L = 2.4$~kPa (office occupancy); the
+roof carries 3.0~kPa dead and 1.0~kPa live load. Member self-weight is added to the dead load.
+The nominal 50-year wind is represented by a net (windward plus leeward) pressure $p_w$,
+converted to storey forces from the tributary storey heights and distributed equally to the
+floor nodes, which mimics a rigid floor diaphragm.
+
+Members are grouped by storey groups of two storeys (three for the nine-storey frame); every
+group has three discrete design variables: the exterior column, the interior column and the
+beam section. Columns are selected from 20 W14 shapes (W14$\times$48 to W14$\times$311) and
+beams from 28 W16--W30 shapes. All sections are ASTM A992 ($F_y = 345$~MPa,
+$E = 200$~GPa). Section properties were taken from the AISC Shapes Database
+\citep{AISCShapes}; as a guard against transcription errors, each entry was checked against
+the fillet-free three-plate idealisation of the section, giving ratios of tabulated to plate
+values of 0.99--1.03 for $A$, $I_x$, $Z_x$ and $I_y$ in all cases. The catalogues are sorted by
+area so that an index step is a monotonic change in mass. A constructability constraint
+requires column areas not to increase with height.
+
+The base frame has six storeys, three 8-m bays and $p_w=1.2$~kPa. The parametric family
+varies one parameter at a time (Table~\ref{tab:frames}): $n_s\in\{3,6,9\}$,
+$b\in\{6,8,10\}$~m and $p_w\in\{0.8,1.2,1.6\}$~kPa. A reduced problem, the base frame with one
+section group over all six storeys (three variables, $20\times20\times28 = 11\,200$ designs), is
+used to check the optimiser against exhaustive enumeration.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.55\textwidth]{figures/frame.pdf}
+\caption{Base frame (six storeys, three 8-m bays). Thick lines: exterior columns; colours
+indicate the three storey groups, each with an exterior-column, interior-column and beam
+design variable. Gravity loads act on the beams; wind storey forces $W_i$ are applied at the
+floor levels.}
+\label{fig:frame}
+\end{figure}
+
+\begin{table}[!htbp]
+\centering
+\caption{Frames of the parametric study (one parameter varied at a time from the base frame).}
+\label{tab:frames}
+\small
+\fittable{\input{tables/frames.tex}}
+\end{table}
+
+\subsection{Structural analysis by superposition of PyNite unit cases}\label{sec:superposition}
+
+For each candidate design $\mathbf{x}$, PyNite \citep{PyNite} solves five first-order linear
+elastic load cases with nominal stiffness: dead load $D$ (including self-weight), live load
+$L$, wind $W$, and two lateral cases $N_D$ and $N_L$ whose floor forces equal the dead and live
+gravity load of each floor. Any realisation of the loading, with intensities
+$(d,\ell,w)$ (multiples of the nominal $D$, $L$, $W$) and a global out-of-plumbness angle
+$\theta$, then produces the first-order response
+\begin{equation}
+r = \underbrace{d\,r_D + \ell\,r_L}_{r_{nt}}
+  + \underbrace{w\,r_W + \theta\,(d\,r_{N_D} + \ell\,r_{N_L})}_{r_{lt}},
+\label{eq:superposition}
+\end{equation}
+split into the no-translation part $r_{nt}$ and the lateral-translation part $r_{lt}$
+required by the approximate second-order analysis of AISC~360 Appendix~8. Because member
+forces of a frame with uniformly scaled modulus $eE$ are independent of $e$ and displacements
+scale with $1/e$, a global random modulus factor is also represented exactly. Responses
+extracted per unit case are column end moments, axial and shear forces; beam moments at 11
+stations along the span, axial and end shear forces; mid-span beam deflections relative to the
+chord; and floor-average inter-storey drifts.
+
+Equation~\eqref{eq:superposition} is exact for the first-order linear analysis: it reproduces the
+linear response of any realisation without approximation. This exactness does not extend to the
+second-order response. The $B_1$--$B_2$ amplification below is an approximation of the full
+P-$\Delta$ analysis, and its error is quantified in Section~\ref{sec:fullmc}.
+
+Second-order effects are introduced with the $B_1$--$B_2$ method. For storey $i$,
+\begin{equation}
+B_{2,i} = \left(1-\frac{P_{story,i}}{P_{e,story,i}}\right)^{-1},\qquad
+P_{e,story,i} = R_M \,\tau\, e\,\frac{H_i h_i}{\Delta_{H,i}},
+\label{eq:B2}
+\end{equation}
+where $P_{story,i}$ is the total gravity load carried by the storey, $H_i/\Delta_{H,i}$ the
+first-order lateral stiffness obtained from the $W$ case, $h_i$ the storey height and
+$R_M=0.85$. For columns, $B_1 = C_m/(1-P_r/P_{e1})\ge1$ with $C_m = 0.6-0.4M_1/M_2$
+computed from the no-translation end moments and $P_{e1} = \pi^2\tau eEI/L^2$. Required
+strengths are $M_r = B_1M_{nt} + B_2M_{lt}$ and $P_r = P_{nt}+B_2P_{lt}$; beams use the
+larger $B_2$ of the two storeys they connect. A storey with $P_{story}\ge P_{e,story}$ is
+unstable and is treated as failure.
+
+The amplifiers are \emph{recomputed for every sample}: $P_{story}$, $P_r$ and $C_m$ follow the
+sampled gravity loads, and $P_{e,story}$ and $P_{e1}$ follow the sampled modulus factor $e$. The
+assumptions behind this use of the method are that (a) the lateral stiffness of a storey scales
+with the frame-wide modulus factor and is otherwise that of the nominal sections, (b) the
+gravity load is distributed over the columns as in the first-order analysis, (c) member stiffness
+is not reduced by yielding before the first member limit state is reached, and (d) the storey
+amplification is the same for all columns of a storey (rigid floor). Assumptions (a) and (b) are
+removed in the full re-analysis of Section~\ref{sec:fullmc}, where every member has its own modulus
+and property factor and the P-$\Delta$ (and, through the element geometric stiffness, P-$\delta$)
+effects are computed directly; assumption (c) is inherent in the elastic ULS definition below. In
+deterministic design, the Direct Analysis Method (DAM) \citep{AISC360,SurovekMaleck2004} is followed:
+stiffness is reduced by $\tau = 0.8$, notional loads of $0.002Y_i$ are applied in gravity-only
+combinations and an additional $0.001Y_i$ in all combinations so that $\tau_b=1$ may be used;
+effective length factors are then $K=1$. In the reliability analysis the best-estimate stiffness
+($\tau=1$) is used and the notional loads are replaced by the random out-of-plumbness $\theta$.
+
+\subsection{Member resistances and limit states}\label{sec:resistance}
+
+Nominal resistances follow AISC~360-16: compression from Chapter~E3 with $K=1$, strong-axis
+buckling over the storey height and weak-axis buckling between floors (columns) or between
+secondary beams at third points (beams); flexure from F2 (lateral--torsional buckling, $C_b=1$)
+and F3 (flange local buckling); shear from G2.1; and combined forces from the H1-1 interaction
+equations. Beam axial forces are small (largest beam $P_r/P_c$ of the optimised designs below
+0.07), so the slender-web reduction of beam compression capacity is not modelled. For the
+deterministic checks the LRFD resistance factors $\phi_c=\phi_b=\phi_t=0.9$ and $\phi_v=1.0$ or
+$0.9$ (G2.1) are applied to the ASCE~7-05 \citep{ASCE705} strength combinations $1.4D$,
+$1.2D+1.6L$, $1.2D+0.5L\pm1.6W$ and $0.9D\pm1.6W$ (roof live load is treated as part of $L$).
+Serviceability requires inter-storey drift $\le h/400$ under $D+0.5L+W$ and beam live-load
+deflection $\le$ span/360.
+
+\emph{Code basis.} AISC~360-16 and ASCE~7-05 are used as a fixed, internally consistent benchmark,
+not as the current provisions. Both have since been superseded (AISC~360-22 \citep{AISC360_22} and
+ASCE/SEI~7-22 \citep{ASCE722}). From ASCE~7-10 onwards, wind loads are based on strength-level wind
+speeds with a load factor of 1.0, so moving to a later edition would change the definition of the
+nominal wind load $W$ together with the wind-load statistics of Table~\ref{tab:rv}, not only a load
+factor. Throughout this paper, ``code-compliant'' and ``code checks'' mean compliance with the
+AISC~360-16 checks listed above under the ASCE~7-05 combinations. The designs have not been checked
+against AISC~360-22 or ASCE/SEI~7-22.
+
+For each realisation the member utilisation $U_k$ is the larger of the H1-1 interaction ratio
+and the shear ratio, both evaluated with nominal (unfactored) resistances that depend on the
+random yield stress, modulus and fabrication factor of the member. Three limit-state functions
+are defined:
+\begin{align}
+g_{ULS} &= 1 - \max_{s\in\{S_1,S_2\}}\max_k U_k^{(s)}, \label{eq:gULS}\\
+g_{drift} &= 1 - \max_i \frac{\delta_i^{(S_2)}/h_i}{1/400}, \label{eq:gdrift}\\
+g_{defl} &= 1 - \max_j \frac{\delta_{L,j}}{\ell_j/360}. \label{eq:gdefl}
+\end{align}
+The load scenarios are constructed with Turkstra's rule \citep{TurkstraMadsen1980}:
+$S_1 = D + L_{50}$ (50-year maximum live load) and $S_2 = D + L_{apt} + W_{50}$
+(arbitrary-point-in-time live load with the 50-year maximum wind); the out-of-plumbness acts in
+both. The ULS event is the union of the member events over all members and both scenarios. It is
+constructed sample by sample, so the dependence between members (common loads, common modulus,
+partly correlated yield stress) and between the scenarios (common $D$, $E$, $F_y$, fabrication
+factor and $\theta$) is represented exactly by the joint sampling; no bounds or independence
+assumptions of series-system theory are needed. Turkstra's rule itself neglects the probability
+that the 50-year live load and the 50-year wind coincide, which is small for the statistics used.
+The drift SLS is evaluated in $S_2$ and the deflection SLS under $L_{50}$.
+
+$g_{ULS}$ is a \emph{first-member-failure, second-order elastic, component-based} limit state:
+the frame is deemed to fail when the first member reaches a code-format resistance, evaluated with
+the AISC interaction equations and nominal (unfactored) resistances. It is not a collapse
+analysis. It does not credit inelastic redistribution, and residual stresses and member
+out-of-straightness enter only through the column-curve and LTB equations of AISC~360, not through
+an explicit imperfect model. Connections are rigid and do not fail. Throughout this paper
+$\beta_{ULS}$ denotes the reliability index of \emph{this} event. It is consistent with the
+member-based calibration of current codes \citep{Ellingwood1980}, but it is a lower bound-type
+measure of the collapse reliability, which inelastic system analyses report to be higher
+\citep{Buonopane2006,Zhang2016}.
+
+\subsection{Probabilistic model}\label{sec:probmodel}
+
+Table~\ref{tab:rv} lists the basic random variables, their sources, and which parameters are
+assumptions of this study. The load statistics are those of the probability-based load criterion
+of \citet{Ellingwood1980} for dead load, 50-year live load and 50-year wind, together with the
+arbitrary-point-in-time live load (gamma, mean $0.24L_n$, c.o.v.\ 0.60) and the fabrication
+(geometric) factor (c.o.v.\ 0.05). These statistics were used to calibrate the LRFD load factors,
+so using them makes the comparison between code-based and reliability-based designs internally
+consistent. The c.o.v.\ of yield stress (0.07) and modulus (0.03) and the lognormal model are those
+of the JCSS Probabilistic Model Code \citep{JCSS2001}. The mean-to-nominal ratio of $F_y$ (1.10)
+and the inter-member equicorrelation of $\ln F_y$ ($\rho=0.5$) are assumptions; both are varied
+in the sensitivity study. The initial out-of-plumbness is normal with zero mean and standard
+deviation 1/1000, so that the erection tolerance of 1/500 corresponds to two standard deviations.
+
+\emph{Dependence.} The load intensities are fully correlated over the frame, i.e.\ one realisation
+of $D$, $L$ and $W$ scales the nominal load pattern. For dead load and wind this is the usual
+assumption; for live load it neglects the spatial variability between floors and bays and is
+conservative for the frame-level effects that govern here. The modulus factor is frame-wide in the
+surrogate (members from one mill order) and member-specific in the full re-analysis; the yield
+stress and fabrication factor are member-specific, the former with partial correlation to
+represent a common heat or producer. $\theta$ is a single frame-wide sway imperfection.
+
+\emph{Aleatory versus epistemic uncertainty.} The variables of Table~\ref{tab:rv} describe
+physical (aleatory) variability, with their parameters fixed at the cited values. Model-form
+(epistemic) uncertainty of the structural and resistance models, i.e.\ the error of the H1-1
+interaction equations and of the second-order elastic analysis, is \emph{not} part of the
+baseline model, so that the baseline indices are conditional on the structural model, as in the
+code calibration that is the reference of the comparison. Its effect is quantified separately by
+frame-wide lognormal model factors with unit mean on resistance ($\theta_R$), load effect
+($\theta_E$) and drift ($\theta_\delta$), with c.o.v.\ of 0.05 and 0.10 chosen to bracket plausible
+values (Section~\ref{sec:sensitivity}). Because H1-1 and the shear check are homogeneous of degree
+one in the demands and of degree minus one in the resistances, the factors act on the
+utilisation exactly as $U\theta_E/\theta_R$. Parameter uncertainty of the load statistics is
+addressed by the sensitivity study. The model-factor analysis has two uses in this paper. First, it is a sensitivity study of the
+final designs (Table~\ref{tab:modelunc}). Second, for the base frame and the three-storey frame, the
+factors with c.o.v.\ 0.05 are included in the reliability constraints themselves (RBDO-C-MU,
+Section~\ref{sec:optimisation}) to quantify the extra steel needed to keep the targets when this
+uncertainty is counted. Because the baseline indices exclude model-form uncertainty, they
+should not be read as estimates of real-world failure rates.
+
+\emph{Dependence and spatial variability.} The loads are fully correlated over the frame (one
+dead-load, one live-load and one wind factor per realisation), and the out-of-plumbness is a single
+frame-wide variable. These assumptions suit the small regular frames studied here. They should not
+be extrapolated to buildings in which the spatial variability of loads or imperfections is
+substantial.
+
+\begin{table}[!htbp]
+\centering
+\caption{Basic random variables (50-year reference period), source of each model, and which
+parameters are assumptions of this study.}
+\label{tab:rv}
+\small
+\fittable{\input{tables/random_variables.tex}}
+\end{table}
+
+\subsection{Reliability estimation, confidence intervals and acceptance}\label{sec:mc}
+
+Failure probabilities are estimated by crude Monte Carlo simulation. With $k$ failures in $N$
+independent samples, the point estimate is $\hat P_f = k/N$, its c.o.v.\ is
+$\sqrt{(1-P_f)/(NP_f)}$, and the reported index is $\hat\beta = -\Phi^{-1}(\hat P_f)$. Because $k$
+is binomial, an exact (Clopper--Pearson) two-sided $95\%$ confidence interval
+$[P_f^{lo},P_f^{hi}]$ is computed from the beta distribution,
+\begin{equation}
+P_f^{lo} = B^{-1}\!\left(0.025;\,k,\,N-k+1\right),\qquad
+P_f^{hi} = B^{-1}\!\left(0.975;\,k+1,\,N-k\right),
+\label{eq:cp}
+\end{equation}
+and mapped to the interval $[-\Phi^{-1}(P_f^{hi}),\,-\Phi^{-1}(P_f^{lo})]$ of $\beta$. The one-sided
+$95\%$ lower confidence bound of $\beta$ follows from the one-sided upper bound
+$B^{-1}(0.95;\,k+1,\,N-k)$ of $P_f$. When no failure is observed, the point estimate is undefined
+and only the lower confidence bound is reported (for $N=10^6$, $P_f\le3.0\times10^{-6}$ and
+$\beta\ge4.53$ with $95\%$ confidence). Every final design is reported with $N$, $k$, the point
+estimate and the interval.
+
+The limit states are evaluated by the superposition~\eqref{eq:superposition} and closed-form
+resistances, so a sample costs a few vectorised arithmetic operations per member; a design is
+evaluated with $5\times10^4$ samples in about one second on one CPU core, about four times the cost
+of the five PyNite analyses.
+
+\emph{Sample average approximation.} Inside the optimiser the samples are drawn once and reused
+for every design (common random numbers). This SAA \citep{Kleywegt2002} makes $\hat\beta(\mathbf{x})$
+a deterministic function of the design, so the comparison of two designs is not corrupted by
+independent sampling noise (their estimates are positively correlated) and the discrete search
+is well posed. The price is a \emph{finite-sample misclassification} risk: a design whose true
+index is just below the target may be accepted because the particular sample is favourable, and
+the optimiser, which seeks the lightest accepted design, preferentially finds such designs (the
+optimisation bias of SAA). We control this risk in three ways: (i) every final design is
+re-verified with $N=10^6$ \emph{independent} samples; (ii) the SAA problem is re-solved with other
+sample streams and sizes ($N=2\times10^4$, $5\times10^4$, $10^5$) to measure the spread of the
+optima; and (iii) a confidence-bounded variant imposes the targets on the one-sided $95\%$ lower
+confidence bound of $\beta$ in the SAA sample instead of the point estimate. To save time, a
+design is first evaluated on the first $10^4$ samples and the remainder is computed only if the
+screening estimate is not clearly infeasible (more than 0.4 below a target index).
+
+\emph{Three claims about a target.} For a target $\beta_T$ and an estimate from $N$ samples, three
+statements of different strength are distinguished throughout the paper:
+\begin{enumerate}
+\item[(P)] the \emph{point estimate} reaches the target, $\hat\beta\ge\beta_T$;
+\item[(I)] the $95\%$ \emph{confidence interval contains} the target; the evidence is then inconclusive,
+because the true index may lie on either side of $\beta_T$;
+\item[(L)] the one-sided $95\%$ \emph{lower confidence bound} exceeds the target,
+$\beta^{lcb}\ge\beta_T$. Only this statement establishes that the target is met with $95\%$ confidence.
+It is a marginal statement about one limit state of one design (see ``Scope of confidence statements''
+below).
+\end{enumerate}
+In the independent verification, each design and target is classified as ``above'' when the lower
+end of the two-sided interval exceeds the target, so that (L) holds; ``within'' when the interval
+contains the target, i.e.\ case (I); and ``below'' when the upper end is smaller than the target. A
+``within'' result is \emph{not} reported as meeting the target. We say that such a design is
+consistent with the target at the stated sampling resolution, and give the interval.
+
+\emph{Two reliability constraints.} The optimiser imposes the targets in one of two ways. In the
+point-estimate formulations (RBDO, RBDO-C) the SAA point estimates must reach the targets, which
+corresponds to (P) on the SAA sample. In the confidence-bounded formulation (RBDO-C95,
+Section~\ref{sec:optimisation}) the one-sided $95\%$ lower confidence bounds of the SAA estimates must
+reach the targets, which corresponds to (L) on the SAA sample. The second formulation is the one
+to use when the purpose is to demonstrate a prescribed minimum reliability with $95\%$ confidence. Its
+designs are again verified with $10^6$ independent samples. Both formulations control only the Monte Carlo
+\emph{sampling} uncertainty of the estimates. Neither removes systematic errors of the surrogate or of
+the models (Sections~\ref{sec:fullmc} and~\ref{sec:strict}), and a lower confidence bound is conditional
+on the model under which it is computed.
+
+\emph{Scope of confidence statements.} The one-sided $95\%$ lower confidence bounds reported for the
+ULS, drift and deflection limit states are marginal bounds for the individual limit-state reliability
+estimates, conditional on the adopted probabilistic and structural models. Satisfying each bound
+separately does not, by itself, establish a simultaneous $95\%$ confidence guarantee across all limit
+states or across all frame configurations. Unless a simultaneous confidence procedure is applied,
+statements that designs meet multiple reliability targets with $95\%$ confidence should be
+interpreted separately for each limit state and design. Where a simultaneous statement is made in
+this paper, it uses the Bonferroni procedure: each of $m$ bounds is computed at the one-sided level
+$1-0.05/m$, so that all $m$ hold together with probability of at least $95\%$ whatever the dependence
+between the estimates (Section~\ref{sec:strict}). These confidence statements address Monte Carlo
+sampling uncertainty and do not eliminate model-form uncertainty or systematic approximation errors.
+
+All reliability indices in this paper are conditional on the probabilistic model of
+Table~\ref{tab:rv} and on the structural and resistance models. They do not include model-form
+uncertainty unless this is stated explicitly (Sections~\ref{sec:probmodel} and~\ref{sec:sensitivity}).
+
+\subsection{Optimisation formulations}\label{sec:optimisation}
+
+The objective is the steel mass $m(\mathbf{x}) = \rho_s\sum_k A_k(\mathbf{x})\ell_k$, used as a
+proxy for material cost (connection, fabrication and erection costs are considered only in the
+illustrative cost model of Section~\ref{sec:costmodel}). The formulations are
+\begin{align}
+\text{DDO-}h/n:\quad &\min_{\mathbf{x}}\ m\quad\text{s.t.}\quad
+\max_{c,k}U^{LRFD}_{c,k}\le1,\quad \frac{\delta}{h}\le\frac{1}{n},\quad \delta_L\le\frac{\ell}{360},\\
+\text{RBDO:}\quad &\min_{\mathbf{x}}\ m\quad\text{s.t.}\quad
+\hat\beta_{ULS}\ge\beta_T,\quad \hat\beta_{drift}\ge\beta_{SLS},\quad \hat\beta_{defl}\ge\beta_{SLS},\\
+\text{RBDO-C:}\quad &\min_{\mathbf{x}}\ m\quad\text{s.t.}\quad\text{the constraints of DDO-}h/400
+\text{ and of RBDO},\\
+\text{RBDO-C95:}\quad &\min_{\mathbf{x}}\ m\quad\text{s.t.}\quad\text{the constraints of DDO-}h/400,\nonumber\\
+&\phantom{\min_{\mathbf{x}}\ m\quad\text{s.t.}\quad}\beta^{lcb}_{ULS}\ge\beta_T,\quad \beta^{lcb}_{drift},\,\beta^{lcb}_{defl}\ge\beta_{SLS},\\
+\text{MO:}\quad &\min_{\mathbf{x}}\ \bigl(m,\,-\hat\beta_{ULS}\bigr)\quad\text{s.t.}\quad
+\hat\beta_{drift},\hat\beta_{defl}\ge\beta_{SLS},\quad \hat\beta_{ULS}\ge1,
+\end{align}
+all subject to column areas that do not increase with height. DDO with $n=400$ (``DDO'') is the
+code-based design; $n=450$, 500 and 600 represent the range of tighter drift limits used in
+practice. RBDO-C is the formulation that a designer bound by the code could adopt: the
+reliability constraints are added to, not substituted for, the mandatory checks, so that every
+RBDO-C design is code-compliant and its mass is directly comparable with DDO. RBDO without the
+code checks is retained to show what the reliability constraints alone would select; a design
+accepted by RBDO but failing an LRFD check would have no regulatory standing under a
+prescriptive code, although it could be admissible under a reliability-based (performance-based)
+route of the kind allowed by EN~1990 \citep{EN1990}. RBDO-C95 replaces the SAA point estimates of RBDO-C by their
+one-sided $95\%$ lower confidence bounds (Section~\ref{sec:mc}). It is the formulation to use when
+the target is to be demonstrated with $95\%$ confidence. The point-estimate formulation RBDO-C is used
+for the like-for-like comparisons with DDO, because DDO, too, is judged on nominal values. Two
+further variants are used for the three-storey frame and the base frame: RBDO-C with an increased
+ULS target that absorbs the surrogate discrepancy found in the validation (Section~\ref{sec:fullmc}),
+and RBDO-C with the model factors of Section~\ref{sec:probmodel} included in the reliability
+constraints (``RBDO-C-MU'').
+
+The baseline targets are $\beta_T = 3.0$ for the ULS, the value adopted by \citet{Ellingwood1980}
+for gravity load combinations in the calibration of the LRFD load factors (a lower value was
+accepted for combinations with wind), and $\beta_{SLS}=1.5$ (50 years), the value given by EN~1990
+\citep{EN1990} for irreversible serviceability states. Because both targets are choices of the
+owner or code writer, results are also given for other targets.
+
+DDO and RBDO(-C) are solved with the same elitist genetic algorithm (population 40, binary
+tournament with Deb's feasibility rules \citep{Deb2000}, uniform crossover with probability 0.9,
+per-gene mutation probability $1.5/n_v$ of which 70\% are steps of $\pm1$--3 catalogue positions
+and 30\% random resets, and $(\mu+\lambda)$ replacement). A run stops after 15 generations without
+improvement of the best design or after 60 generations. The best GA design is then polished by a
+discrete local search that accepts the first feasible lighter neighbour among single down-sizing
+moves and down/up-sizing swaps of two variables, repeated until no improvement is found, so every
+reported optimum is locally optimal with respect to these moves. The GA is a heuristic: convergence
+of repeated runs indicates robust convergence within the search budget, not a guarantee of global
+optimality, which is checked only for the reduced problem by enumeration. Accordingly, ``optimum'',
+``optimal design'' and ``minimum-mass design'' denote in this paper the best feasible design found
+within the tested optimisation budget, not a proven global minimum; ``minimum mass'' in the title
+names the objective of the optimisation problem. The bi-objective
+problem is solved with NSGA-II \citep{Deb2002} with constrained domination (population 48, 60
+generations); all feasible designs visited are archived and the non-dominated archive is
+re-verified. The SAA samples, the GA operators and the verification samples are all seeded, so
+every number in this paper is reproducible from the released code.
+
+\subsection{Illustrative cost model}\label{sec:costmodel}
+
+To test whether conclusions drawn from steel mass carry over to cost, a simple cost index in
+tonnes of steel equivalent is used,
+\begin{equation}
+C = m + \tau\, n_{sec} + \kappa\, m_{beam},
+\label{eq:cost}
+\end{equation}
+where $n_{sec}$ is the number of distinct section designations (procurement, detailing and
+handling), $m_{beam}$ the beam mass (a proxy for the size of moment connections and their welding,
+which scale with the beam flange force), and $\tau$ and $\kappa$ are cost ratios. The number of
+members, connections and pieces is identical for all designs of a frame and therefore does not
+change the comparison. Equation~\eqref{eq:cost} is not a calibrated cost model. The values of $\tau$ (0.25--1~t per
+section designation) and $\kappa$ (0--0.25) are hypothetical sensitivity parameters, not estimates
+of actual fabrication or connection costs, and the ranking obtained with them has not been checked
+against project costs. The index is used only to show how large the non-mass terms would have to be
+to change the ranking of the designs. All statements on economy in this paper therefore refer to
+steel mass or to this illustrative index.

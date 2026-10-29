@@ -1,0 +1,438 @@
+{
+ "frame": "S9",
+ "spec": {
+  "n_storeys": 9,
+  "n_bays": 3,
+  "bay_width": 8.0,
+  "storey_height": 3.8,
+  "ground_storey_height": 4.5,
+  "trib_width": 7.5,
+  "q_dead": 4.0,
+  "q_live": 2.4,
+  "q_dead_roof": 3.0,
+  "q_live_roof": 1.0,
+  "p_wind": 1.2,
+  "group_size": 3,
+  "beam_unbraced_frac": 0.3333333333333333,
+  "name": "S9"
+ },
+ "mode": "DDO-h500",
+ "beta_uls": 3.0,
+ "beta_sls": 1.5,
+ "runs": [
+  {
+   "seed": 1,
+   "x": [
+    5,
+    8,
+    20,
+    2,
+    6,
+    9,
+    0,
+    0,
+    5
+   ],
+   "weight": 35484.359998880005,
+   "feasible": true,
+   "info": {
+    "weight": 35484.359998880005,
+    "strength": 0.9959548077617884,
+    "drift": 0.9899906111219853,
+    "deflection": 0.15562526295190995,
+    "max_B2": 1.1493274367071453
+   },
+   "ga_weight": 35484.359998880005,
+   "history": [
+    {
+     "gen": 0,
+     "best_weight": 51793.386090440006,
+     "feasible": true,
+     "n_eval": 80,
+     "n_feasible": 2
+    },
+    {
+     "gen": 1,
+     "best_weight": 51793.386090440006,
+     "feasible": true,
+     "n_eval": 118,
+     "n_feasible": 5
+    },
+    {
+     "gen": 2,
+     "best_weight": 48142.6875854,
+     "feasible": true,
+     "n_eval": 158,
+     "n_feasible": 14
+    },
+    {
+     "gen": 3,
+     "best_weight": 47705.114267000004,
+     "feasible": true,
+     "n_eval": 195,
+     "n_feasible": 28
+    },
+    {
+     "gen": 4,
+     "best_weight": 43961.02627132,
+     "feasible": true,
+     "n_eval": 234,
+     "n_feasible": 40
+    },
+    {
+     "gen": 5,
+     "best_weight": 43961.02627132,
+     "feasible": true,
+     "n_eval": 274,
+     "n_feasible": 40
+    },
+    {
+     "gen": 6,
+     "best_weight": 43635.682405880005,
+     "feasible": true,
+     "n_eval": 314,
+     "n_feasible": 40
+    },
+    {
+     "gen": 7,
+     "best_weight": 41374.88692748,
+     "feasible": true,
+     "n_eval": 352,
+     "n_feasible": 40
+    },
+    {
+     "gen": 8,
+     "best_weight": 41374.88692748,
+     "feasible": true,
+     "n_eval": 392,
+     "n_feasible": 40
+    },
+    {
+     "gen": 9,
+     "best_weight": 40012.939973960005,
+     "feasible": true,
+     "n_eval": 428,
+     "n_feasible": 40
+    },
+    {
+     "gen": 10,
+     "best_weight": 39077.62700588,
+     "feasible": true,
+     "n_eval": 463,
+     "n_feasible": 40
+    },
+    {
+     "gen": 11,
+     "best_weight": 39077.62700588,
+     "feasible": true,
+     "n_eval": 501,
+     "n_feasible": 40
+    },
+    {
+     "gen": 12,
+     "best_weight": 39077.62700588,
+     "feasible": true,
+     "n_eval": 538,
+     "n_feasible": 40
+    },
+    {
+     "gen": 13,
+     "best_weight": 39050.8864142,
+     "feasible": true,
+     "n_eval": 574,
+     "n_feasible": 40
+    },
+    {
+     "gen": 14,
+     "best_weight": 38624.86016948,
+     "feasible": true,
+     "n_eval": 613,
+     "n_feasible": 40
+    },
+    {
+     "gen": 15,
+     "best_weight": 38219.19323888,
+     "feasible": true,
+     "n_eval": 649,
+     "n_feasible": 40
+    },
+    {
+     "gen": 16,
+     "best_weight": 37859.10686228,
+     "feasible": true,
+     "n_eval": 682,
+     "n_feasible": 40
+    },
+    {
+     "gen": 17,
+     "best_weight": 37745.763218,
+     "feasible": true,
+     "n_eval": 720,
+     "n_feasible": 40
+    },
+    {
+     "gen": 18,
+     "best_weight": 37553.41328012,
+     "feasible": true,
+     "n_eval": 755,
+     "n_feasible": 40
+    },
+    {
+     "gen": 19,
+     "best_weight": 37287.83058548,
+     "feasible": true,
+     "n_eval": 793,
+     "n_feasible": 40
+    },
+    {
+     "gen": 20,
+     "best_weight": 37287.83058548,
+     "feasible": true,
+     "n_eval": 829,
+     "n_feasible": 40
+    },
+    {
+     "gen": 21,
+     "best_weight": 36849.04178564,
+     "feasible": true,
+     "n_eval": 868,
+     "n_feasible": 40
+    },
+    {
+     "gen": 22,
+     "best_weight": 36681.91308764,
+     "feasible": true,
+     "n_eval": 906,
+     "n_feasible": 40
+    },
+    {
+     "gen": 23,
+     "best_weight": 36548.81786996,
+     "feasible": true,
+     "n_eval": 944,
+     "n_feasible": 40
+    },
+    {
+     "gen": 24,
+     "best_weight": 36548.81786996,
+     "feasible": true,
+     "n_eval": 982,
+     "n_feasible": 40
+    },
+    {
+     "gen": 25,
+     "best_weight": 35830.77220928,
+     "feasible": true,
+     "n_eval": 1018,
+     "n_feasible": 40
+    },
+    {
+     "gen": 26,
+     "best_weight": 35830.77220928,
+     "feasible": true,
+     "n_eval": 1055,
+     "n_feasible": 40
+    },
+    {
+     "gen": 27,
+     "best_weight": 35830.77220928,
+     "feasible": true,
+     "n_eval": 1092,
+     "n_feasible": 40
+    },
+    {
+     "gen": 28,
+     "best_weight": 35830.77220928,
+     "feasible": true,
+     "n_eval": 1130,
+     "n_feasible": 40
+    },
+    {
+     "gen": 29,
+     "best_weight": 35830.77220928,
+     "feasible": true,
+     "n_eval": 1163,
+     "n_feasible": 40
+    },
+    {
+     "gen": 30,
+     "best_weight": 35830.77220928,
+     "feasible": true,
+     "n_eval": 1198,
+     "n_feasible": 40
+    },
+    {
+     "gen": 31,
+     "best_weight": 35830.77220928,
+     "feasible": true,
+     "n_eval": 1235,
+     "n_feasible": 40
+    },
+    {
+     "gen": 32,
+     "best_weight": 35830.77220928,
+     "feasible": true,
+     "n_eval": 1272,
+     "n_feasible": 40
+    },
+    {
+     "gen": 33,
+     "best_weight": 35830.77220928,
+     "feasible": true,
+     "n_eval": 1306,
+     "n_feasible": 40
+    },
+    {
+     "gen": 34,
+     "best_weight": 35657.566104080004,
+     "feasible": true,
+     "n_eval": 1342,
+     "n_feasible": 40
+    },
+    {
+     "gen": 35,
+     "best_weight": 35657.566104080004,
+     "feasible": true,
+     "n_eval": 1375,
+     "n_feasible": 40
+    },
+    {
+     "gen": 36,
+     "best_weight": 35484.359998880005,
+     "feasible": true,
+     "n_eval": 1409,
+     "n_feasible": 40
+    },
+    {
+     "gen": 37,
+     "best_weight": 35484.359998880005,
+     "feasible": true,
+     "n_eval": 1443,
+     "n_feasible": 40
+    },
+    {
+     "gen": 38,
+     "best_weight": 35484.359998880005,
+     "feasible": true,
+     "n_eval": 1476,
+     "n_feasible": 40
+    },
+    {
+     "gen": 39,
+     "best_weight": 35484.359998880005,
+     "feasible": true,
+     "n_eval": 1513,
+     "n_feasible": 40
+    },
+    {
+     "gen": 40,
+     "best_weight": 35484.359998880005,
+     "feasible": true,
+     "n_eval": 1539,
+     "n_feasible": 40
+    },
+    {
+     "gen": 41,
+     "best_weight": 35484.359998880005,
+     "feasible": true,
+     "n_eval": 1569,
+     "n_feasible": 40
+    },
+    {
+     "gen": 42,
+     "best_weight": 35484.359998880005,
+     "feasible": true,
+     "n_eval": 1603,
+     "n_feasible": 40
+    },
+    {
+     "gen": 43,
+     "best_weight": 35484.359998880005,
+     "feasible": true,
+     "n_eval": 1635,
+     "n_feasible": 40
+    },
+    {
+     "gen": 44,
+     "best_weight": 35484.359998880005,
+     "feasible": true,
+     "n_eval": 1666,
+     "n_feasible": 40
+    },
+    {
+     "gen": 45,
+     "best_weight": 35484.359998880005,
+     "feasible": true,
+     "n_eval": 1695,
+     "n_feasible": 40
+    },
+    {
+     "gen": 46,
+     "best_weight": 35484.359998880005,
+     "feasible": true,
+     "n_eval": 1726,
+     "n_feasible": 40
+    },
+    {
+     "gen": 47,
+     "best_weight": 35484.359998880005,
+     "feasible": true,
+     "n_eval": 1757,
+     "n_feasible": 40
+    },
+    {
+     "gen": 48,
+     "best_weight": 35484.359998880005,
+     "feasible": true,
+     "n_eval": 1788,
+     "n_feasible": 40
+    },
+    {
+     "gen": 49,
+     "best_weight": 35484.359998880005,
+     "feasible": true,
+     "n_eval": 1820,
+     "n_feasible": 40
+    },
+    {
+     "gen": 50,
+     "best_weight": 35484.359998880005,
+     "feasible": true,
+     "n_eval": 1850,
+     "n_feasible": 40
+    },
+    {
+     "gen": 51,
+     "best_weight": 35484.359998880005,
+     "feasible": true,
+     "n_eval": 1884,
+     "n_feasible": 40
+    }
+   ],
+   "n_eval": 1938,
+   "time_s": 464.511346578598,
+   "t_analysis": 462.9417486190796,
+   "t_mc": 0.0,
+   "design": [
+    {
+     "storeys": "1-3",
+     "ext_col": "W14X82",
+     "int_col": "W14X109",
+     "beam": "W30X90"
+    },
+    {
+     "storeys": "4-6",
+     "ext_col": "W14X61",
+     "int_col": "W14X90",
+     "beam": "W24X55"
+    },
+    {
+     "storeys": "7-9",
+     "ext_col": "W14X48",
+     "int_col": "W14X48",
+     "beam": "W21X44"
+    }
+   ]
+  }
+ ]
+}
