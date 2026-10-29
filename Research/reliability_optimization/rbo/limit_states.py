@@ -1,10 +1,15 @@
 """Member resistances (AISC 360-16), second-order demands and limit-state checks.
 
+The code basis is fixed (CODE_BASIS): designs are checked against these editions only, not
+against later ones such as AISC 360-22 or ASCE/SEI 7-22.
+
 All functions are vectorised over an arbitrary number of "realisations" (rows):
 a realisation is either a factored LRFD load combination (deterministic design)
 or one Monte Carlo sample of the random variables (reliability analysis).
 """
 import numpy as np
+
+CODE_BASIS = {'resistance': 'AISC 360-16', 'loads': 'ASCE/SEI 7-05'}
 
 from .frames import E_STEEL, FY_NOM, CASES
 

@@ -2,7 +2,7 @@
 Minimum-mass design of steel frames against deterministic code checks leaves the reliability of the
 optimised frame unquantified. This paper presents an open, reproducible framework for
 reliability-constrained optimisation of planar steel moment frames, built on PyNite, with discrete
-W-shapes checked to AISC 360-16. The ultimate limit state is component-based: the first attainment of
+W-shapes checked to AISC 360-16 under the ASCE 7-05 load combinations, a fixed code basis used as a benchmark. The ultimate limit state is component-based: the first attainment of
 a member limit state in a second-order elastic analysis ($B_1$--$B_2$ amplification of superposed
 linear responses), not collapse. It is combined with 50-year drift and deflection serviceability.
 A sample average approximation makes the reliability constraints deterministic for a genetic
@@ -14,12 +14,13 @@ second-order re-analysis in the failure tail of ten designs.
 
 For seven frames, deterministic optima had ultimate reliability indices of 2.88--3.66 and drift indices
 of 0.89--2.54. With point-estimate constraints (targets 3.0 and 1.5), six of seven reliability-based
-optima met both targets with 95\% confidence, at 1.1--10.1\% more steel. With confidence-bounded
-constraints, all seven did so in the baseline surrogate model, at 1.1--11.7\% more steel. These bounds
+optima met both targets with 95\% confidence in the baseline surrogate model, at 1.1--10.1\% more
+steel. With confidence-bounded constraints, all seven did so, at 1.1--11.7\% more steel. These bounds
 cover sampling uncertainty only, and drift results near the target remain sensitive to the 1\% error
 of the $B_1$--$B_2$ drifts. For a three-storey frame the surrogate was unconservative. A design with
-2.7\% more steel met the target on the re-analysed tail samples; for the complete full model this
-rests on an assumed heavy-tailed residual model, not on a distribution-free bound. Uncertainty-aware
-optimisation did not reduce steel mass; its benefit is a least-mass design at a stated reliability,
-conditional on the probabilistic and structural models.
+2.7\% more steel than the point-estimate design (5.2\% more than the deterministic optimum) met the
+target on the re-analysed tail samples; for the complete full model this rests on an assumed
+heavy-tailed residual model, and its interval is model-conditional, not a distribution-free bound. Uncertainty-aware
+optimisation did not reduce steel mass; its benefit is the lightest design found, within the tested search budget, that meets a stated
+reliability, conditional on the probabilistic and structural models.
 \end{abstract}

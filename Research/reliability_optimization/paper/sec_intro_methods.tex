@@ -61,7 +61,8 @@ for $5\times10^4$--$10^6$ samples per design, combined with a sample average app
 \citep{Kleywegt2002} that makes the reliability constraints deterministic functions of the design;
 \item four formulations solved with the same optimiser on the same frames: deterministic design
 optimisation (DDO) with several drift limits, RBDO with reliability constraints only, a
-\emph{code-compliant} RBDO (RBDO-C) that also enforces every LRFD and serviceability check, and a
+\emph{code-compliant} RBDO (RBDO-C) that also enforces every LRFD (AISC~360-16, ASCE~7-05) and
+serviceability check, and a
 bi-objective mass--reliability formulation;
 \item a statistical treatment of the reliability estimates (exact binomial confidence intervals,
 failure counts, an explicit acceptance rule, and a confidence-bounded variant of the reliability
@@ -213,6 +214,15 @@ $0.9$ (G2.1) are applied to the ASCE~7-05 \citep{ASCE705} strength combinations 
 $1.2D+1.6L$, $1.2D+0.5L\pm1.6W$ and $0.9D\pm1.6W$ (roof live load is treated as part of $L$).
 Serviceability requires inter-storey drift $\le h/400$ under $D+0.5L+W$ and beam live-load
 deflection $\le$ span/360.
+
+\emph{Code basis.} AISC~360-16 and ASCE~7-05 are used as a fixed, internally consistent benchmark,
+not as the current provisions. Both have since been superseded (AISC~360-22 \citep{AISC360_22} and
+ASCE/SEI~7-22 \citep{ASCE722}). From ASCE~7-10 onwards, wind loads are based on strength-level wind
+speeds with a load factor of 1.0, so moving to a later edition would change the definition of the
+nominal wind load $W$ together with the wind-load statistics of Table~\ref{tab:rv}, not only a load
+factor. Throughout this paper, ``code-compliant'' and ``code checks'' mean compliance with the
+AISC~360-16 checks listed above under the ASCE~7-05 combinations. The designs have not been checked
+against AISC~360-22 or ASCE/SEI~7-22.
 
 For each realisation the member utilisation $U_k$ is the larger of the H1-1 interaction ratio
 and the shear ratio, both evaluated with nominal (unfactored) resistances that depend on the
@@ -418,7 +428,10 @@ discrete local search that accepts the first feasible lighter neighbour among si
 moves and down/up-sizing swaps of two variables, repeated until no improvement is found, so every
 reported optimum is locally optimal with respect to these moves. The GA is a heuristic: convergence
 of repeated runs indicates robust convergence within the search budget, not a guarantee of global
-optimality, which is checked only for the reduced problem by enumeration. The bi-objective
+optimality, which is checked only for the reduced problem by enumeration. Accordingly, ``optimum'',
+``optimal design'' and ``minimum-mass design'' denote in this paper the best feasible design found
+within the tested optimisation budget, not a proven global minimum; ``minimum mass'' in the title
+names the objective of the optimisation problem. The bi-objective
 problem is solved with NSGA-II \citep{Deb2002} with constrained domination (population 48, 60
 generations); all feasible designs visited are archived and the non-dominated archive is
 re-verified. The SAA samples, the GA operators and the verification samples are all seeded, so

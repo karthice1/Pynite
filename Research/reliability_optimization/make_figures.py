@@ -513,7 +513,8 @@ def tab_random_variables():
         else:
             lines.append(f'{name} & {dist} & {bias:.2f} & {cov:.2f} & {s} & {st} \\\\')
     lines += [r'\midrule',
-              r'Model factors $\theta_R,\theta_E,\theta_\delta$ (frame-wide) & Lognormal & 1.00 & 0 (0.05, 0.10) & sensitivity only & assumed \\',
+              r'Model factors $\theta_R,\theta_E,\theta_\delta$ (frame-wide) & Lognormal & 1.00 & 0 (0.05, 0.10) & '
+              r'baseline: 0; sensitivity study: 0.05, 0.10; RBDO-C-MU (2 frames): 0.05 & assumed \\',
               r'\bottomrule', r'\end{tabular}']
     write_table('random_variables', '\n'.join(lines))
 
