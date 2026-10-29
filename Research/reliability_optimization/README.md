@@ -35,6 +35,7 @@ Manuscript versions (commits that contain all results, figures, tables and PDFs 
 * second revision (`paper/response_to_reviewers_R2.tex`): `2c7d8254451d`
 * third revision (`paper/response_to_reviewers_R3.tex`; Word version built by `paper/to_docx.py`): `2897a87d4f26`
 * fourth revision (`paper/response_to_reviewers_R4.tex`): `c9122243242c`
+* fifth revision (`paper/response_to_reviewers_R5.tex`): `ccfd4ce7c014`
 
 
 Environment: `requirements.txt` (Python 3.13, NumPy, SciPy, Matplotlib, OpenSeesPy, PyNite from
