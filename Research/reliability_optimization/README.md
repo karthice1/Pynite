@@ -29,8 +29,10 @@ folder from seeded random streams.
 
 ## Reproducing the paper
 
-Manuscript versions: first revision (response to reviewers) = commit `d2715a1`
-(`d2715a1` contains all results, figures, tables and PDFs of that version).
+Manuscript versions (commits that contain all results, figures, tables and PDFs of each version):
+
+* first revision (`paper/response_to_reviewers.tex`): `d2715a1`
+* second revision (`paper/response_to_reviewers_R2.tex`): `2c7d8254451d`
 
 
 Environment: `requirements.txt` (Python 3.13, NumPy, SciPy, Matplotlib, OpenSeesPy, PyNite from
