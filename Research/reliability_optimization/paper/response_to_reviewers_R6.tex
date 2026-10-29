@@ -1,0 +1,77 @@
+\documentclass[11pt]{article}
+\usepackage[margin=2.3cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{xr}
+\externaldocument{main}
+\usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue]{hyperref}
+\usepackage{enumitem}
+\usepackage{microtype}
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0pt}
+\newenvironment{comment}[1]{\par\medskip\noindent\textbf{Comment~#1.}\ \itshape}{\par}
+\newcommand{\resp}{\par\noindent\textbf{Response.}\ }
+
+\title{Response to the reviewer (sixth round)\\[0.3em]\large A reliability-constrained, multi-objective
+framework for minimum-mass design of steel frame structures under material and loading uncertainty}
+\author{[Author name]}
+\date{}
+
+\begin{document}
+\maketitle
+
+We thank the reviewer for pointing out that our fifth-round letter did not respond to the comment
+on marginal versus simultaneous confidence statements. We apologise for the omission; the comment is
+answered here. The responses to Comments~2--4 in the fifth-round letter are unchanged. Apart from the
+new simultaneous bounds below, which are computed from the existing verification samples, no
+numerical results have changed. Section and table numbers refer to the revised manuscript.
+
+\begin{comment}{1 (marginal versus simultaneous confidence statements)}
+The one-sided 95\% lower bounds are marginal bounds for individual limit states. Insert the suggested
+``Scope of confidence statements'' paragraph after the description of RBDO-C95, and make the
+Abstract and Conclusions consistent. The statement that all seven RBDO-C95 designs meet both
+targets with 95\% confidence should be qualified as a set of separate marginal assessments or
+supported by a simultaneous confidence procedure.
+\end{comment}
+\resp We did both.
+\begin{itemize}[itemsep=0.15em]
+\item \emph{Scope paragraph.} The suggested paragraph is inserted at the end of Section~\ref{sec:mc},
+immediately after the description of RBDO-C95, with the reviewer's wording. We added one sentence:
+where the paper makes a simultaneous statement, it uses the Bonferroni procedure. Each of $m$ bounds
+is computed at the one-sided level $1-0.05/m$, so that all $m$ hold together with probability of at
+least 95\% whatever the dependence between the estimates. The definition of claim~(L) now also says
+that it is a marginal statement about one limit state of one design.
+\item \emph{Simultaneous procedure (tool).} We added \texttt{beta\_lcb\_simultaneous} to
+\texttt{rbo/reliability.py} and the table generator \texttt{tab\_simultaneous} to
+\texttt{make\_figures.py}. The latter writes \texttt{results/simultaneous.json} and the new
+Table~\ref{tab:simultaneous}. The bounds use the existing $10^6$ verification samples, so no new
+simulation was needed. The results for the RBDO-C95 designs are:
+\begin{itemize}[itemsep=0.1em]
+\item for each design on its own ($m=3$ limit states), all bounds exceed their targets, so each design
+meets its three targets simultaneously with at least 95\% confidence;
+\item for all seven designs together ($m=21$), all bounds exceed their targets except the ULS bound of
+the low-wind frame, which is 2.995 against a target of 3.0 (marginal bound 3.005). A simultaneous
+95\% statement for all seven frames together therefore cannot be made. We report this as it is.
+\end{itemize}
+\item \emph{Abstract.} It now says that the point-estimate and confidence-bounded designs met
+\emph{each} target with \emph{marginal} 95\% confidence in the baseline surrogate model. It adds that
+each RBDO-C95 design also met its three targets simultaneously (Bonferroni), but not all seven designs
+jointly.
+\item \emph{Results, Discussion and Conclusions.} Every statement that a design meets ``both targets
+with 95\% confidence'' now reads ``each target with marginal 95\% confidence''. This covers
+Sections~\ref{sec:basedesign}, \ref{sec:targets} and~\ref{sec:strict}, the caption of
+Table~\ref{tab:driftlimits}, the Discussion and Conclusions~3--4. Section~\ref{sec:strict} has a new
+paragraph ``Simultaneous confidence'' with Table~\ref{tab:simultaneous}. Conclusion~4 states the
+per-design simultaneous result and the exception for the seven-design family. The statement that the
+bounds address Monte Carlo sampling uncertainty only, and not model-form or systematic approximation
+errors, is retained in each place.
+\end{itemize}
+The marginal and simultaneous bounds differ by less than 0.03 in $\beta_{ULS}$ and less than 0.01 in
+$\beta_{drift}$. The distinction therefore changes a conclusion only for designs within a few
+hundredths of a target, as the low-wind frame shows.
+
+\section*{Remaining item}
+The author and affiliation placeholders remain, because the names and affiliations have not yet
+been supplied to us. They will be inserted before submission. The manuscript keeps the exact
+repository commit that produced it.
+
+\end{document}

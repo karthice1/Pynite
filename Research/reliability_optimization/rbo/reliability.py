@@ -188,6 +188,14 @@ def pf_upper(k, N, conf=0.95):
     return 1.0 if k == N else float(stats.beta.ppf(conf, k + 1, N - k))
 
 
+def beta_lcb_simultaneous(k, N, m, conf=0.95):
+    """One-sided lower confidence bound of beta that holds simultaneously for m statements.
+
+    Bonferroni: each of the m bounds is computed at level 1 - (1 - conf)/m, so the probability
+    that all m hold is at least conf whatever the dependence between the estimates."""
+    return float(beta_from_pf(pf_upper(k, N, 1 - (1 - conf) / m)))
+
+
 def estimate(ind, n=None, conf=0.95):
     """Failure probabilities, reliability indices, MC c.o.v. and confidence intervals.
 

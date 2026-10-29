@@ -324,8 +324,8 @@ probability of about 0.19, and serviceability checks carry no load factor.
 
 The RBDO-C design ($\beta_T = 3.0$, $\beta_{SLS}=1.5$) weighs 18\,787~kg (+2.88\%), satisfies all
 LRFD checks (strength ratio 0.977) and has $\hat\beta_{ULS}=3.049$ $[3.03, 3.07]$ ($k=1148$) and
-$\hat\beta_{drift}=1.507$ $[1.50, 1.51]$; both reliability constraints are active and both targets
-are met with $95\%$ confidence in the baseline surrogate model. The drift index is only 0.007 above
+$\hat\beta_{drift}=1.507$ $[1.50, 1.51]$; both reliability constraints are active and each target
+is met with marginal $95\%$ confidence in the baseline surrogate model. The drift index is only 0.007 above
 its target, so a 1\% underestimate of the drift by the $B_1$--$B_2$ surrogate would put it below
 (Section~\ref{sec:strict}). It is the same design as found by RBDO without code constraints,
 so for the base frame the code checks are not binding once the reliability targets are imposed.
@@ -425,7 +425,7 @@ storeys), 0.34\% (low wind), 1.14\% (high wind) and 4.99\% (10-m bays), and heav
 6-m bays. The 6-m bay $h/500$ design has $\hat\beta_{drift}=1.499$ $[1.495, 1.503]$, so its interval
 contains the target, but its SAA estimate (1.494) was below the target and the point-estimate SAA
 constraint rejected it.
-\item \emph{Claim L.} Among the deterministic designs that meet both targets with $95\%$ confidence,
+\item \emph{Claim L.} Among the deterministic designs that meet each target with marginal $95\%$ confidence,
 RBDO-C95 is lighter in three frames (by 0.10\% to 8.34\%) and heavier in two: base
 ($+1.55\%$, against $h/500$, whose drift lower bound happens to reach 1.5) and high wind
 ($+0.27\%$). In the three-storey and low-wind frames no deterministic design in this range reaches
@@ -449,7 +449,7 @@ independent samples; $\Delta m$ from unrounded masses relative to DDO with $h/40
 \centering
 \caption{Optimum mass (kg) and verified $\hat\beta_{ULS}/\hat\beta_{drift}$ of deterministic
 designs with four drift limits, of RBDO-C and of RBDO-C95 ($10^6$ samples). Bold: both targets met
-with $95\%$ confidence (claim L). Italic: neither interval below its target, but at least one target
+with marginal $95\%$ confidence (claim L for each). Italic: neither interval below its target, but at least one target
 not met with $95\%$ confidence. $\Delta m_1$: RBDO-C relative to the lightest bold or italic design;
 $\Delta m_2$: RBDO-C95 relative to the lightest bold design.}
 \label{tab:driftlimits}
@@ -480,7 +480,7 @@ $\hat\beta_{drift}<1.5$, four of them below 1.0.
 
 Second, RBDO-C equalises the reliability. All seven RBDO-C designs satisfy every LRFD check, and
 their point estimates reach both targets in the SAA sample. In the independent verification, six of
-them meet both targets with $95\%$ confidence (claim L of Section~\ref{sec:mc}). The three-storey
+them meet each target with marginal $95\%$ confidence (claim L of Section~\ref{sec:mc}). The three-storey
 design has $\hat\beta_{ULS}=2.995$ $[2.98, 3.01]$: its interval contains the target, so the evidence
 is inconclusive (claim I), and it is not counted as meeting the target. Section~\ref{sec:strict}
 shows that this design also falls below the target in the full second-order model and gives
@@ -543,16 +543,41 @@ by scenario ($S_1$: gravity with $L_{50}$; $S_2$: wind).}
 \emph{Confidence-bounded designs.} Table~\ref{tab:strict} compares the point-estimate designs
 (RBDO-C) with the confidence-bounded designs (RBDO-C95) of all frames. Each design is classified by
 the strongest of the three claims of Section~\ref{sec:mc}. In the independent verification, the
-RBDO-C designs of six frames already meet both targets with $95\%$ confidence (L), because the
+RBDO-C designs of six frames already meet each target with marginal $95\%$ confidence (L), because the
 discrete catalogue leaves a margin above the target. RBDO-C95 returns the same design in three of
 these frames (nine storeys, 10-m bays, low wind) and heavier designs for the base frame ($+1.55\%$)
 and the high-wind frame ($+1.42\%$). For 6-m bays it finds a design that is 0.26\% \emph{lighter} than
 the best of the two RBDO-C runs. That design is also feasible for RBDO-C, so this result is a
 further indication of the limited search budget (Section~\ref{sec:robust}). In the three-storey frame,
 RBDO-C95 costs $+1.15\%$ and turns the inconclusive result (I) into claim L:
-$\hat\beta_{ULS}=3.068$ with a lower bound of 3.053. All RBDO-C95 designs therefore meet both targets
-with $95\%$ confidence in the baseline surrogate model, at 0 to 1.6\% more steel than RBDO-C and 1.1 to
-11.7\% more than DDO. The confidence bound controls Monte Carlo sampling uncertainty only. It does not
+$\hat\beta_{ULS}=3.068$ with a lower bound of 3.053. All RBDO-C95 designs therefore meet each target
+with marginal $95\%$ confidence in the baseline surrogate model, at 0 to 1.6\% more steel than RBDO-C
+and 1.1 to 11.7\% more than DDO.
+
+\emph{Simultaneous confidence.} Table~\ref{tab:simultaneous} gives the Bonferroni simultaneous lower
+bounds for the RBDO-C95 designs, from the same $10^6$ verification samples. For each design taken on
+its own ($m=3$ limit states, one-sided level $1-0.05/3$), every bound still exceeds its target, so
+each design meets all three targets simultaneously with at least $95\%$ confidence. For the family of
+all seven designs ($m=21$, level $1-0.05/21$), all bounds exceed their targets except the ULS bound of
+the low-wind frame, which falls to 2.995 against the target of 3.0. A simultaneous $95\%$ statement
+for all seven frames together therefore cannot be made; it holds for six frames, and for the
+low-wind frame it fails by 0.005 in $\beta_{ULS}$ because its marginal bound (3.005) is close to the
+target. The marginal and simultaneous bounds differ by less than 0.03 in $\beta_{ULS}$ and less than 0.01
+in $\beta_{drift}$, so the distinction is decisive only for designs within a few hundredths of a
+target.
+
+\begin{table}[!htbp]
+\centering
+\caption{RBDO-C95 designs: one-sided lower confidence bounds of the reliability indices ($10^6$
+independent samples, baseline surrogate model). Marginal: $95\%$ bound for each limit state
+separately. $m=3$: Bonferroni bounds that hold simultaneously for the three limit states of the design
+with at least $95\%$ confidence. $m=21$: Bonferroni bounds that hold simultaneously for all three limit
+states of all seven designs. Bold: below the target. The deflection bounds come from zero observed
+failures. The bounds address Monte Carlo sampling uncertainty only.}
+\label{tab:simultaneous}
+\small
+\fittable{\input{tables/simultaneous.tex}}
+\end{table} The confidence bound controls Monte Carlo sampling uncertainty only. It does not
 remove systematic errors of the surrogate, which are examined next.
 
 \emph{Drift bias of the surrogate.} The $B_1$--$B_2$ drifts are up to 1.0\% lower than the
@@ -722,7 +747,7 @@ the DDO design exactly (Table~\ref{tab:targets}). RBDO therefore provides econom
 prescribed and uniform reliability}, not with respect to code-based design, whose reliability is
 unknown and non-uniform. Against deterministic designs with a tightened drift limit whose intervals are not below the
 targets, RBDO-C was lighter by 0.1--5.0\% in four frames, equal in one and 0.6\% heavier in one.
-Against those that meet both targets with $95\%$ confidence, RBDO-C95 was lighter in three frames
+Against those that meet each target with marginal $95\%$ confidence, RBDO-C95 was lighter in three frames
 and 0.3--1.6\% heavier in two (Table~\ref{tab:driftlimits}). These conclusions agree in sign
 with \citet{Papadrakakis2004}, whose reliability-based steel-frame design under seismic loading was
 heavier than its deterministic counterpart. All statements on economy refer to steel mass or to
@@ -752,7 +777,10 @@ therefore have a verified interval that contains the target (claim I). This happ
 design and two RBDO designs (Table~\ref{tab:verification}). An interval that contains the target
 shows only that the data cannot decide; it does not show that the target is met. The
 confidence-bounded formulation RBDO-C95 removes this ambiguity for the sampling error: all its
-designs meet both targets with $95\%$ confidence (claim L) in the baseline surrogate model. It does not
+designs meet each target with marginal $95\%$ confidence (claim L) in the baseline surrogate model,
+and each design meets its three targets simultaneously with $95\%$ confidence (Bonferroni,
+Table~\ref{tab:simultaneous}). A simultaneous statement for all seven designs together fails
+marginally for the ULS of the low-wind frame (2.995 against 3.0). It does not
 remove systematic approximation errors. Under a 1\% drift bias the nine-storey design becomes
 inconclusive for the drift target, and the three-storey design falls below the ULS target in the full
 second-order model. It costs 1.2--1.6\% more steel than RBDO-C in three
@@ -814,10 +842,13 @@ $\hat\beta_{ULS}$ between 2.88 and 3.66, three of seven significantly below 3.0,
 $\hat\beta_{drift}$ between 0.89 and 2.54.
 \item With point-estimate reliability constraints ($\beta_T=3.0$, $\beta_{SLS}=1.5$), the code-compliant
 designs (RBDO-C) were 1.1--10.1\% heavier than DDO. In independent $10^6$-sample verification, six of
-seven met both targets with $95\%$ confidence in the baseline surrogate model. For the seventh (three storeys) the interval contained
+seven met each target with marginal $95\%$ confidence in the baseline surrogate model. For the seventh (three storeys) the interval contained
 the target, and the full second-order model placed it below the target.
 \item With the targets imposed on one-sided $95\%$ lower confidence bounds (RBDO-C95), all seven
-designs met both targets with $95\%$ confidence in the baseline surrogate model. They were 1.1--11.7\%
+designs met each target with marginal $95\%$ confidence in the baseline surrogate model. Each design
+also met its three targets simultaneously with $95\%$ confidence (Bonferroni). A simultaneous statement
+for all seven designs together holds except for the ULS of the low-wind frame, whose simultaneous
+bound is 2.995 against a target of 3.0. They were 1.1--11.7\%
 heavier than DDO and 0--1.6\% heavier than RBDO-C. These bounds address Monte Carlo sampling
 uncertainty only. Results close to the drift target remain sensitive to the $B_1$--$B_2$ approximation:
 a 1\% drift bias makes the nine-storey design inconclusive. We recommend RBDO-C95 when a minimum

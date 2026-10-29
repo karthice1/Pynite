@@ -1094,6 +1094,31 @@ def tab_tail():
         json.dump(rows, f, indent=1)
 
 
+def tab_simultaneous():
+    """Marginal and Bonferroni-simultaneous lower bounds of the RBDO-C95 designs (10^6 samples)."""
+    from rbo.reliability import beta_lcb_simultaneous
+    v = ver()
+    ls = (('uls', BETA_ULS), ('drift', BETA_SLS), ('defl', BETA_SLS))
+    m_all = len(FRAME_ORDER) * len(ls)
+    out, lines = {}, [r'\begin{tabular}{lrrrrrrrrr}', r'\toprule',
+                      r' & \multicolumn{3}{c}{$\beta_{ULS}$ (target %.1f)} & \multicolumn{3}{c}{$\beta_{drift}$ (target %.1f)}'
+                      r' & \multicolumn{3}{c}{$\beta_{defl}$ (target %.1f)} \\' % (BETA_ULS, BETA_SLS, BETA_SLS),
+                      r'\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}',
+                      r'Frame' + r' & marginal & $m=3$ & $m=%d$' % m_all * 3 + r' \\', r'\midrule']
+    for f in FRAME_ORDER:
+        e = v[f'{f}_RBDO-C_lcb']['est']
+        row, out[f] = [FRAME_LABEL[f]], {}
+        for k, target in ls:
+            b = [e[f'beta_lcb_{k}']] + [beta_lcb_simultaneous(e[f'nfail_{k}'], e[f'n_{k}'], m) for m in (3, m_all)]
+            out[f][k] = b
+            row += [(r'\textbf{%.3f}' if x < target else '%.3f') % x for x in b]
+        lines.append(' & '.join(row) + r' \\')
+    lines += [r'\bottomrule', r'\end{tabular}']
+    write_table('simultaneous', '\n'.join(lines))
+    with open(os.path.join(RES, 'simultaneous.json'), 'w') as fh:
+        json.dump({'m_all': m_all, 'bounds': out}, fh, indent=1)
+
+
 def summary():
     """Numbers quoted in the manuscript text."""
     out = {}
@@ -1126,7 +1151,7 @@ if __name__ == '__main__':
                fig_pdelta, fig_fullmc, fig_mc_convergence, fig_sensitivity, fig_validation, fig_driftlimits,
                tab_random_variables, tab_closed_form, tab_opensees, tab_designs, tab_verification, tab_targets,
                tab_saa, tab_strict, tab_robustness, tab_enum, tab_driftlimits, tab_cost, tab_members, tab_modelunc,
-               tab_validation, tab_tail, tab_opt_runs, tab_frames, summary]:
+               tab_validation, tab_tail, tab_simultaneous, tab_opt_runs, tab_frames, summary]:
         if todo and fn.__name__ not in todo:
             continue
         try:

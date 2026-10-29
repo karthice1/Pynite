@@ -364,6 +364,8 @@ statements of different strength are distinguished throughout the paper:
 because the true index may lie on either side of $\beta_T$;
 \item[(L)] the one-sided $95\%$ \emph{lower confidence bound} exceeds the target,
 $\beta^{lcb}\ge\beta_T$. Only this statement establishes that the target is met with $95\%$ confidence.
+It is a marginal statement about one limit state of one design (see ``Scope of confidence statements''
+below).
 \end{enumerate}
 In the independent verification, each design and target is classified as ``above'' when the lower
 end of the two-sided interval exceeds the target, so that (L) holds; ``within'' when the interval
@@ -381,6 +383,18 @@ designs are again verified with $10^6$ independent samples. Both formulations co
 \emph{sampling} uncertainty of the estimates. Neither removes systematic errors of the surrogate or of
 the models (Sections~\ref{sec:fullmc} and~\ref{sec:strict}), and a lower confidence bound is conditional
 on the model under which it is computed.
+
+\emph{Scope of confidence statements.} The one-sided $95\%$ lower confidence bounds reported for the
+ULS, drift and deflection limit states are marginal bounds for the individual limit-state reliability
+estimates, conditional on the adopted probabilistic and structural models. Satisfying each bound
+separately does not, by itself, establish a simultaneous $95\%$ confidence guarantee across all limit
+states or across all frame configurations. Unless a simultaneous confidence procedure is applied,
+statements that designs meet multiple reliability targets with $95\%$ confidence should be
+interpreted separately for each limit state and design. Where a simultaneous statement is made in
+this paper, it uses the Bonferroni procedure: each of $m$ bounds is computed at the one-sided level
+$1-0.05/m$, so that all $m$ hold together with probability of at least $95\%$ whatever the dependence
+between the estimates (Section~\ref{sec:strict}). These confidence statements address Monte Carlo
+sampling uncertainty and do not eliminate model-form uncertainty or systematic approximation errors.
 
 All reliability indices in this paper are conditional on the probabilistic model of
 Table~\ref{tab:rv} and on the structural and resistance models. They do not include model-form
