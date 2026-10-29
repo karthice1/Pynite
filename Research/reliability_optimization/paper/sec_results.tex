@@ -107,7 +107,8 @@ log-ratios (4000 resamples). Each bootstrap residual is added to a draw from the
 sampled strata, which gives a $95\%$ interval and a one-sided lower bound for the combined estimate.
 These quantities are conditional on the $t_3$ model of the tail and are therefore called
 \emph{model-conditional} confidence intervals and lower bounds. A $t$ distribution with two
-degrees of freedom is used as a further, more extreme case.
+degrees of freedom is used as a further, more extreme case, for which only point estimates are
+reported.
 \end{itemize}
 The base RBDO-C design was in addition analysed under doubled wind (1000 samples) as a stress test
 that produces failure fractions large enough to be compared directly.
@@ -156,7 +157,7 @@ i.e.\ 4--8\% of $\hat P_f$ for six of the eight main designs, 23\% for nine stor
 6-m bay design, whose $P_f$ is small ($8.5\times10^{-5}$). Adding it lowers
 $\hat\beta^{full}_{ULS}$ by 0.01--0.02 for six designs, by 0.06 for nine storeys and by 0.15 for 6-m
 bays. Including the bootstrap uncertainty of the fit, the model-conditional intervals are 0.07--0.12 wide
-on the lower side. Under the more extreme $t_2$ model the indices fall by a further 0.1--0.5. The target
+on the lower side. Under the more extreme $t_2$ model the point estimates fall by a further 0.1--0.5. The target
 classification of the main designs does not change under $t_3$, except for the three-storey design,
 which is already below the target in the full model. Table~\ref{tab:tail} keeps the sampled-strata
 intervals, which are statistical statements about the full model on the analysed strata, separate
@@ -586,12 +587,13 @@ analysed strata;
 with a model-conditional $95\%$ confidence interval [3.41, 3.61] and lower bound 3.43, including the
 bootstrap uncertainty of the fit.
 \end{itemize}
-Both lie above the target. Even the more extreme $t_2$ residual gives 3.16.
+Both lie above the target. With the more extreme $t_2$ residual model, the point estimate is 3.16;
+no confidence interval or lower bound was computed for the $t_2$ model.
 \end{itemize}
 For this margin design, the ULS target is therefore met with $95\%$ confidence on the sampled
 strata. For the complete full model, the model-conditional lower bound (3.43) also exceeds the target, but
-this holds only under the assumed $t_3$ residual model and not under every tail model ($t_2$ gives
-3.16). It is not a distribution-free bound, because the tail of $U_{full}/U_s$ beyond the
+this holds only under the assumed $t_3$ residual model and not under every tail model (the $t_2$
+point estimate is 3.16). It is not a distribution-free bound, because the tail of $U_{full}/U_s$ beyond the
 observed range is assumed, not observed (Section~\ref{sec:fullmc}). On this basis, meeting the ULS
 target for the three-storey frame in the full second-order model costs $+2.69\%$ of steel relative to
 RBDO-C ($+5.17\%$ relative to DDO). Controlling only the sampling uncertainty of the surrogate costs
@@ -824,7 +826,8 @@ reliability is to be demonstrated, together with a check of systematic errors ne
 ($+2.7\%$ of steel relative to RBDO-C) meets the target with $95\%$ confidence on the sampled strata of
 the full second-order model ($\hat\beta=3.61$ [3.45, 3.73]). Including the unanalysed samples through a
 $t_3$ residual model, it has a model-based estimate of 3.52 with a model-conditional lower bound of
-3.43 (3.16 under a $t_2$ model). This is an engineering estimate conditional on the residual model,
+3.43. Under the more extreme $t_2$ residual model, the point estimate is 3.16 (no lower bound
+was computed for that model). This is an engineering estimate conditional on the residual model,
 not a distribution-free bound. The steel premium is $+2.7\%$ relative to RBDO-C and $+5.2\%$
 relative to DDO.
 \item Uncertainty-aware optimisation therefore did not reduce steel mass relative to code-based

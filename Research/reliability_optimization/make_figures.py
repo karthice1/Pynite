@@ -1078,7 +1078,7 @@ def tab_tail():
              r'\multicolumn{3}{c}{Sampled strata + $t$-model residual of $U_s<0.85$} \\',
              r'\cmidrule(lr){2-4}\cmidrule(lr){5-6}\cmidrule(lr){7-9}',
              r'Design & $P(C)$ & $k_C/n_C$ & max $U_f/U_s$ & $A,B$ & $A,B,C$ & '
-             r'$R_{t_3}$ & $\hat\beta$ [95\% CI] ($\beta^{lcb}$), $t_3$ & $\hat\beta$, $t_2$ \\', r'\midrule']
+             r'$R_{t_3}$ & $\hat\beta$ [model-cond.\ 95\% CI] ($\beta^{lcb}$), $t_3$ & $\hat\beta$ (point est.), $t_2$ \\', r'\midrule']
     from scipy import stats as st
     for r in rows:
         lo, hi = r['beta70_ci']

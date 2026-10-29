@@ -54,10 +54,12 @@ not a new optimisation algorithm, but a computational workflow, with demonstrate
 makes probabilistic constraints practical in discrete steel-section optimisation and allows an
 honest comparison with code-based design. Specifically:
 \begin{enumerate}
-\item an exact superposition surrogate that turns five linear analyses per design (PyNite
+\item a superposition surrogate that turns five linear analyses per design (PyNite
 \citep{PyNite}) and the AISC~360-16 $B_1$--$B_2$ amplification into a vectorised Monte Carlo
 evaluation of a series-system ultimate limit state (ULS) and two serviceability limit states (SLS)
-for $5\times10^4$--$10^6$ samples per design, combined with a sample average approximation (SAA)
+for $5\times10^4$--$10^6$ samples per design (the superposition of the linear unit-case responses
+is exact within the linear analysis, whereas the $B_1$--$B_2$ amplification approximates the full
+second-order response; Section~\ref{sec:fullmc}), combined with a sample average approximation (SAA)
 \citep{Kleywegt2002} that makes the reliability constraints deterministic functions of the design;
 \item four formulations solved with the same optimiser on the same frames: deterministic design
 optimisation (DDO) with several drift limits, RBDO with reliability constraints only, a
@@ -170,6 +172,11 @@ scale with $1/e$, a global random modulus factor is also represented exactly. Re
 extracted per unit case are column end moments, axial and shear forces; beam moments at 11
 stations along the span, axial and end shear forces; mid-span beam deflections relative to the
 chord; and floor-average inter-storey drifts.
+
+Equation~\eqref{eq:superposition} is exact for the first-order linear analysis: it reproduces the
+linear response of any realisation without approximation. This exactness does not extend to the
+second-order response. The $B_1$--$B_2$ amplification below is an approximation of the full
+P-$\Delta$ analysis, and its error is quantified in Section~\ref{sec:fullmc}.
 
 Second-order effects are introduced with the $B_1$--$B_2$ method. For storey $i$,
 \begin{equation}
