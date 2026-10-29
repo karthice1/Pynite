@@ -1,0 +1,245 @@
+\documentclass[11pt]{article}
+\usepackage[margin=2.3cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{xr}
+\externaldocument{main}
+\usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue]{hyperref}
+\usepackage{enumitem}
+\usepackage{microtype}
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0pt}
+\newenvironment{comment}[1]{\par\medskip\noindent\textbf{Comment~#1.}\ \itshape}{\par}
+\newcommand{\resp}{\par\noindent\textbf{Response.}\ }
+\newcommand{\chg}{\par\noindent\textbf{Changes.}\ }
+
+\title{Response to the reviewer (second round)\\[0.3em]\large A reliability-constrained, multi-objective
+framework for minimum-mass design of steel frame structures under material and loading uncertainty}
+\author{[Author name]}
+\date{}
+
+\begin{document}
+\maketitle
+
+We thank the reviewer for a second careful report. We agree that a response letter is not evidence
+in itself. For each point below, we therefore name the new computation, the table or figure where
+its result appears, and the sentences of the manuscript that changed. All new results were produced
+by the seeded scripts in the repository, and the commit that produced them is given in the
+manuscript (Data and code availability). Section, table and figure numbers refer to the revised
+manuscript.
+
+\section*{Summary of the main changes}
+\begin{enumerate}[leftmargin=1.5em,itemsep=0.1em]
+\item The three-storey design was re-optimised twice. The first design imposes the targets on 95\%
+lower confidence bounds; the second adds a margin informed by the full-model discrepancy. Both
+designs were validated against full second-order re-analysis (Section~\ref{sec:strict}).
+\item The paper now distinguishes three claims everywhere: (P) the point estimate reaches the
+target, (I) the interval contains it, and (L) the lower bound exceeds it. ``Within'' results are no
+longer described as meeting the target (Section~\ref{sec:mc}).
+\item A confidence-bounded formulation, RBDO-C95, was run for all seven frames. It is presented as
+the recommended formulation when a minimum reliability is to be demonstrated
+(Sections~\ref{sec:optimisation} and~\ref{sec:strict}, Table~\ref{tab:strict}).
+\item The excluded part of the failure tail was tested with 3\,000 additional full re-analyses and
+a residual-risk estimate. The statement that excluded samples ``cannot fail'' was removed
+(Section~\ref{sec:fullmc}, Table~\ref{tab:tail}).
+\item The full texts of Papadrakakis et al.\ (2004) and Truong and Kim (2017) were read, and
+Table~\ref{tab:literature} and the novelty statement were revised accordingly. The full text of
+Foley et al.\ (2007) could not be accessed.
+\item Model-uncertainty-aware designs (RBDO-C-MU) quantify the extra steel needed to keep the target
+when model factors are included (Table~\ref{tab:mudesign}).
+\item An analysis of the effect of the 1\% drift bias of the $B_1$--$B_2$ surrogate on the drift
+reliability was added (Table~\ref{tab:strict}).
+\end{enumerate}
+
+\section*{Major comments}
+
+\begin{comment}{1 (three-storey design)}
+The three-storey RBDO-C design ($\hat\beta=2.995$ [2.98, 3.01]) is accepted as ``within'', while the
+full model gives $\Delta\beta=-0.07$ [$-0.17$, $-0.01$]. Re-optimise with a margin or a stricter
+acceptance rule, report the extra mass, and revise the abstract and conclusions.
+\end{comment}
+\resp We did both, and validated the resulting designs in the full model. The results are in
+Section~\ref{sec:strict} and Table~\ref{tab:validation}.
+\begin{itemize}[itemsep=0.1em]
+\item \emph{RBDO-C (8188~kg)}, the previous design. Full model: $\hat\beta^{full}_{ULS}=2.94$ [2.84,
+3.01]. It is no longer described as meeting the target anywhere in the paper.
+\item \emph{RBDO-C95 (8282~kg, $+1.15\%$)}, with the target imposed on the SAA lower confidence
+bound. Surrogate: $3.068$ (lower bound 3.053), i.e.\ claim L. Full model: $3.01$ [2.89, 3.10] with
+$\Delta\beta=-0.09$ [$-0.21$, $-0.01$]. The point estimate reaches the target, but the interval
+contains it (claim P, I). The discrepancy is therefore systematic for this frame.
+\item \emph{RBDO-C95 with a margin (8408~kg, $+2.69\%$).} The ULS target is raised to 3.21, i.e.\ by
+the upper end of the discrepancy interval. Because the catalogue is discrete, the design jumps to
+$\hat\beta_{ULS}=3.62$ [3.58, 3.66]. Full model: $3.61$ [3.45, 3.73], or 3.52 with the heavy-tailed
+residual of the excluded samples. This meets the target with 95\% confidence on the sampled strata.
+\end{itemize}
+The steel needed to meet the ULS target with 95\% confidence in the full model is therefore 2.69\%
+above RBDO-C and 5.17\% above DDO. The abstract, Discussion and Conclusions (items 1, 3 and 4) now
+state this, and they describe the three-storey result as a limitation of the surrogate. We could not
+isolate the cause of the discrepancy, and the manuscript says so rather than offering an
+unverified explanation.
+
+\begin{comment}{2 (acceptance rule)}
+Distinguish the point estimate, the interval containing the target and the lower bound exceeding it;
+present the confidence-bounded formulation as a substantive alternative; consider making it the
+primary recommendation; use precise wording.
+\end{comment}
+\resp
+\begin{itemize}[itemsep=0.1em]
+\item \emph{Three claims.} Section~\ref{sec:mc} now defines the three claims (P), (I) and (L). It
+states that only (L) establishes the target with 95\% confidence and that a ``within'' result is
+inconclusive. The former sentence that accepted ``within'' as meeting the target was deleted.
+\item \emph{Tables.} Table~\ref{tab:strict} classifies every design by the strongest claim, and
+Table~\ref{tab:driftlimits} marks (L) in bold and (P/I) in italic.
+\item \emph{Confidence-bounded formulation.} RBDO-C95 is defined in Section~\ref{sec:optimisation}
+and was run for all seven frames. All its designs meet both targets with 95\% confidence in
+independent verification. It costs 1.15--1.55\% more steel than RBDO-C in three frames and nothing in
+three. In the 6-m bay frame it found a design 0.26\% lighter than the RBDO-C runs; we report this as
+a limitation of the search budget. Against DDO, RBDO-C95 costs 1.1--11.7\%.
+\item \emph{Recommendation.} The Discussion and Conclusion~4 now recommend RBDO-C95 whenever a
+minimum reliability is to be demonstrated. RBDO-C is kept for the like-for-like comparison with
+DDO, which is also judged on nominal values.
+\item \emph{Wording.} The abstract and conclusions now state the claims separately: six of seven
+RBDO-C designs reach (L), and all RBDO-C95 designs do.
+\item \emph{Drift limits.} The comparison with tightened drift limits was redone for both claim levels
+(Section~\ref{sec:targets}). Against deterministic designs with claim (L), RBDO-C95 is lighter in
+three frames and 0.27\% (high wind) and 1.55\% (base) heavier in two.
+\end{itemize}
+
+\begin{comment}{3 (excluded tail)}
+An observed maximum ratio of 1.049 is not a bound. Validate the threshold or estimate the residual
+risk, explain the estimator, and check a lower threshold or a larger sample.
+\end{comment}
+\resp We agree, and the sentence that samples below 0.85 ``cannot fail'' has been removed. The
+estimator is now described as resting on an assumption that is tested (Section~\ref{sec:fullmc}):
+\begin{itemize}[itemsep=0.1em]
+\item \emph{Lower threshold.} For every validated design, 300 samples of the stratum $0.70\le
+U_s<0.85$ of the same pool were re-analysed with the full model, 3\,000 analyses in total. None
+failed. The largest observed ratio is now described as an observed maximum: 1.060 in this stratum
+and 1.061 over all 13\,042 re-analysed samples. Lowering the threshold to 0.70 leaves the point
+estimates unchanged.
+\item \emph{Limits of this check.} The 95\% intervals become much wider (lower ends 0.35--0.69
+below the point estimates). This is because the stratum carries 6--37\% of the pool probability, and
+300 failure-free samples cannot bound a probability of order $10^{-3}$ in it. We state this
+explicitly; a distribution-free bound would need tens of thousands of full analyses per design.
+\item \emph{Residual-risk estimate.} For all unanalysed samples with $U_s<0.85$, the residual is
+estimated from a fitted model of $\ln(U_{full}/U_s)$: normal, and Student $t_3$ as a heavy-tailed
+alternative. The normal model gives $<10^{-23}$. The $t_3$ model gives $2.7\times10^{-5}$ to
+$1.8\times10^{-4}$, which lowers $\hat\beta^{full}$ by 0.01--0.02 for most designs, by 0.06 for nine
+storeys and by 0.15 for 6-m bays. No target classification changes, except that the RBDO-C95
+three-storey design drops from 3.01 to 2.97.
+\end{itemize}
+All of this is in Table~\ref{tab:tail}. The summary paragraph of Section~\ref{sec:fullmc} and
+Conclusion~1 now say that the validation is statistical and that the tail beyond the observed
+maximum is modelled, not observed.
+
+\begin{comment}{4 (literature)}
+Read the full texts of Papadrakakis et al.\ (2004), Foley et al.\ (2007) and Truong and Kim (2017);
+check the four claimed contributions; update Table~1.
+\end{comment}
+\resp
+\begin{itemize}[itemsep=0.1em]
+\item \emph{Papadrakakis et al.\ (2004)}, full text read (the openly available PDF in the BazTech
+repository). Two of our earlier implicit claims did not survive this reading, and we have corrected
+them. They imposed the Eurocode 3/8 checks in both the deterministic and the reliability-based
+problem, and they compared the two optima. The reliability-based design was heavier: their text
+says about 26\%, while the volumes in their Table~6 differ by 34\%. Their probabilistic constraint
+is on interstorey drift $>4\%$ of storey height under seismic loading, estimated with 5000 (MCS) or
+1000 (LHS) samples, without confidence intervals. The introduction now states that imposing code
+checks alongside a reliability constraint, and finding that the reliability-based design is
+heavier, are \emph{not} new.
+\item \emph{Truong and Kim (2017)}, full text read (an openly accessible copy of the article). Their
+RBDO of steel space frames under gravity and wind also keeps deterministic strength, $H/400$ drift
+and constructability constraints. Their failure criterion is load-carrying capacity from
+plastic-hinge advanced analysis. Drift is not a probabilistic constraint. The sampling estimator is
+verified against crude MCS on benchmark problems, but the failure probabilities of the final frame
+designs are not re-estimated independently, and no confidence intervals are given.
+\item \emph{Foley et al.\ (2007).} We could not access the full text: the publisher's page shows
+only the abstract, and no open copy was found. We say so plainly. Its row in Table~1 and the rows of
+the other studies we could assess only from abstracts are marked with $^\dagger$. The text makes
+no novelty claim relative to them.
+\item \emph{Revised contribution.} It is now stated relative to the two studies read in full. In
+neither did we find: (i) a comparison under a code-calibrated gravity--wind model with deterministic
+optima, including tightened drift limits and RBDO with and without code checks; (ii) a probabilistic
+drift constraint next to the ULS constraint; (iii) confidence intervals or independent
+re-estimation for the final designs; (iv) a tail validation of the surrogate against full
+second-order re-analysis; or (v) a code release. Table~\ref{tab:literature} was updated with the
+full-text information.
+\end{itemize}
+
+\begin{comment}{5 (model uncertainty)}
+Make the conditional nature of the baseline explicit; avoid suggesting a real-world target is met;
+explain the purpose of the model-factor analysis; if feasible, give a model-uncertainty-aware design.
+\end{comment}
+\resp
+\begin{itemize}[itemsep=0.1em]
+\item \emph{Conditional statements.} The conditional nature of the indices is now stated in
+Section~\ref{sec:mc} (last paragraph), in Section~\ref{sec:sensitivity}, at the start of the
+Conclusions and in the abstract. Section~\ref{sec:sensitivity} says explicitly that the baseline
+designs do \emph{not} meet $\beta_T$ once model uncertainty with c.o.v.\ 0.10 is counted.
+\item \emph{Purpose of the model factors.} Section~\ref{sec:probmodel} explains that they are used
+both as a sensitivity study and, for two frames, inside the constraints.
+\item \emph{Model-uncertainty-aware designs.} RBDO-C-MU (c.o.v.\ 0.05) was run for the base and
+three-storey frames (Table~\ref{tab:mudesign}). Keeping $\beta_T=3.0$ with model uncertainty
+included costs $+1.34\%$ (base, $\hat\beta_{ULS}=3.047$ with the factors) and $+2.69\%$ (three
+storeys) relative to RBDO-C. Without the factors, the RBDO-C designs have only 2.77 and 2.70. Designs
+for c.o.v.\ 0.10 were not computed; the manuscript says they would be heavier.
+\end{itemize}
+
+\begin{comment}{6 (cost model)}
+Keep economy tied to mass or the illustrative index; do not imply validation against project
+costs; state how the penalty ranges relate to plausible costs or that they are hypothetical.
+\end{comment}
+\resp Section~\ref{sec:costmodel} now states that $\tau$ and $\kappa$ are hypothetical sensitivity
+parameters, not estimates of fabrication or connection costs, and that the ranking has not been
+checked against project costs. The Discussion and Conclusion~5 limit all economic statements to steel
+mass and the uncalibrated index.
+
+\section*{Additional technical and editorial comments}
+
+\begin{comment}{Table~3 vs.\ response letter (fabrication factor)}
+\end{comment}
+\resp Our first response letter was wrong on this point. The fabrication-factor model (normal, mean
+1.00, c.o.v.\ 0.05) is taken from Ellingwood et al.\ (1980), as Table~\ref{tab:rv} states, and it
+is sourced, not assumed. The assumed parameters are the mean-to-nominal ratio of $F_y$ (1.10), its
+inter-member correlation (0.5), the out-of-plumbness standard deviation and the model factors. This
+is what the ``Status'' column of Table~\ref{tab:rv} shows.
+
+\begin{comment}{$B_1$--$B_2$ drift bias near the drift target}
+\end{comment}
+\resp A new computation increases all surrogate drifts by 1\% and re-evaluates $\beta_{drift}$ with
+$10^6$ samples (Table~\ref{tab:strict}, last columns; stage \texttt{driftbias}). This lowers
+$\beta_{drift}$ by 0.026--0.028. The base and high-wind RBDO-C designs (1.507, 1.511) would then fall
+below 1.5, and the nine-storey design would become inconclusive. The RBDO-C95 designs keep claim L,
+except the nine-storey design, which is identical to its RBDO-C design. Section~\ref{sec:strict}
+states that drift targets met by less than about 0.03 are met only to the accuracy of the $B_1$--$B_2$
+approximation.
+
+\begin{comment}{Seeds and robustness}
+\end{comment}
+\resp Sections~\ref{sec:optimisation} and~\ref{sec:robust} and the ``demonstrated'' paragraph of the
+Discussion describe the evidence as robustness within the tested search budget. The lighter 6-m bay
+design found by the RBDO-C95 run is reported as an example of the limits of that budget.
+
+\begin{comment}{Fully correlated loads and common imperfection}
+\end{comment}
+\resp A paragraph ``Dependence and spatial variability'' was added to Section~\ref{sec:probmodel}. It
+states these assumptions and warns against extrapolating to buildings with substantial spatial
+variability. The ``not demonstrated'' list in the Discussion repeats this.
+
+\begin{comment}{Identifiable commit and executable workflow}
+\end{comment}
+\resp The Data and code availability statement now names the commit that produced the results of
+this version. \texttt{reproduce.sh} and \texttt{jobs.txt} include every new run and stage
+(confidence-bounded and model-uncertainty designs, \texttt{validateC}, \texttt{driftbias}). A
+release tag and DOI will be created on acceptance.
+
+\begin{comment}{Author placeholders}
+\end{comment}
+\resp The author names and affiliations remain placeholders in this version. They will be completed
+before formal submission.
+
+\begin{comment}{Headline claims}
+\end{comment}
+\resp The abstract and Conclusions were rewritten. They state the three claim levels separately,
+give the three-storey full-model result, and state that all indices are conditional on the models.
+
+\end{document}

@@ -11,6 +11,7 @@
 \newcommand{\fittable}[1]{\resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{#1}}
 
 \journal{Structural Safety}
+\newcommand{\resultscommit}{(to be filled)}
 
 \begin{document}
 
@@ -38,14 +39,15 @@ Reliability-based design optimisation \sep Steel moment frames \sep Monte Carlo 
 \section*{Data and code availability}
 The framework, the input data, the scripts that produce every figure and table, and the raw
 results are openly available at \url{https://github.com/karthice1/Pynite} in the folder
-\path{Research/reliability_optimization} (branch \path{claude/project-thread-o7hjbo}; the commit
-used for this manuscript is recorded in the folder's \path{README.md}). The software environment is
-listed in \path{requirements.txt} (Python 3.13, NumPy, SciPy, Matplotlib, OpenSeesPy 3.8 and
-PyNite from the same repository). Every stochastic computation uses fixed seeds that are stored
-with its results. The single command \path{./reproduce.sh} reruns all optimisations, verifications
-and validations, and regenerates every figure, table and this manuscript; the stages can also be
-run individually with \path{run_experiments.py}. A persistent archive (release tag and DOI) will be
-created on acceptance.
+\path{Research/reliability_optimization}. The results, figures and tables of this version of the
+manuscript were produced by commit \texttt{\resultscommit} of branch
+\path{claude/project-thread-o7hjbo}, which an independent researcher can check out to reproduce them.
+The software environment is listed in \path{requirements.txt} (Python 3.13, NumPy, SciPy,
+Matplotlib, OpenSeesPy 3.8 and PyNite from the same repository). Every stochastic computation uses
+fixed seeds that are stored with its results. The single command \path{./reproduce.sh} reruns all
+optimisations, verifications and validations (about 10--12~h on four cores), and regenerates every
+figure, table and this manuscript. The stages can also be run individually with
+\path{run_experiments.py}. A persistent archive (release tag and DOI) will be created on acceptance.
 
 \section*{Declaration of competing interest}
 The authors declare that they have no known competing financial interests or personal

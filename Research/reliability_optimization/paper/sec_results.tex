@@ -90,11 +90,18 @@ all samples the surrogate classifies as ULS failures ($U_s\ge1$; up to 250 analy
 the near misses $0.85\le U_s<1$ (250 analysed at random). Both scenarios are re-analysed when their
 surrogate utilisation is in the tail. With the stratum probabilities known from the pool, the
 full-model failure probability is estimated as $\hat P_f^{full} = P(A)\hat f_A + P(B)\hat f_B$,
-where $\hat f$ is the fraction of full-model failures in a stratum. Samples with $U_s<0.85$ cannot
-fail in the full model, since the largest observed ratio $U_{full}/U_s$ over all 8\,000 analysed
-samples is 1.049. A $95\%$ interval of $\hat P_f^{full}$, of the ratio $\hat P_f^{full}/\hat P_f^{sur}$
-and of the difference in $\beta$ is obtained by propagating Jeffreys posteriors of the stratum
-fractions and of the pool counts by simulation.
+where $\hat f$ is the fraction of full-model failures in a stratum. A $95\%$ interval of
+$\hat P_f^{full}$, of the ratio $\hat P_f^{full}/\hat P_f^{sur}$ and of the difference in $\beta$ is
+obtained by propagating Jeffreys posteriors of the stratum fractions and of the pool counts by simulation;
+\item an \emph{excluded-stratum check}. The estimator above assumes that samples with $U_s<0.85$
+do not fail in the full model. This is an assumption, not a bound: a sample with $U_s<0.85$ fails
+only if $U_{full}/U_s\ge1/0.85=1.18$, and no finite sample can exclude that. It is therefore tested in
+two ways. First, 300 samples of the stratum $C=\{0.70\le U_s<0.85\}$ of the same pool are re-analysed,
+which gives the stratified estimate with the threshold lowered to 0.70. Second, a residual-risk
+estimate is computed for all unanalysed samples with $U_s<0.85$. For this, $\ln(U_{full}/U_s)$ is
+fitted to the re-analysed samples of strata B and C by a normal distribution and, as a deliberately
+heavy-tailed alternative, by a Student $t$ distribution with three degrees of freedom and the same
+scale. The probability $P(U_{full}/U_s\ge1/U_s)$ is then summed over the pool's histogram of $U_s$.
 \end{itemize}
 The base RBDO-C design was in addition analysed under doubled wind (1000 samples) as a stress test
 that produces failure fractions large enough to be compared directly.
@@ -114,12 +121,48 @@ full model, so the surrogate is slightly unconservative. Under doubled wind (bas
 failure fractions are 2.1\% (surrogate) and 1.7\% (full analysis), and the drift exceedance
 fractions 68.1\% and 67.8\%.
 
-In summary, the surrogate reproduces the full second-order reliability within about $\pm0.07$ in
-$\beta_{ULS}$, which is of the order of the SAA resolution, and the drift reliability without
-detectable bias. Where it errs, it errs on the conservative side in six of eight designs. The
-three-storey result shows that the agreement is not guaranteed: a design accepted at the
-target by the surrogate may have a full-model index up to about 0.1 lower, and a validation of this
-kind should accompany any application of the surrogate to frame types outside the tested range.
+Tables~\ref{tab:validation} and~\ref{tab:tail} also contain the two heavier three-storey designs of
+Section~\ref{sec:strict}, so they list ten designs. The statements in this section refer to the
+eight designs above unless the three-storey designs are named. The excluded-stratum check is
+summarised in Table~\ref{tab:tail}. None of the $10\times300$ re-analysed samples of stratum C
+fails in the full model, and the largest ratio $U_{full}/U_s$ among them is 1.060. Over all
+$13\,042$ re-analysed samples the largest observed ratio is 1.061. This
+is an observed maximum, not a guarantee. Lowering the threshold to 0.70 therefore leaves the point
+estimates unchanged. It does, however, widen the $95\%$ intervals considerably (lower ends
+0.35--0.53 below the point estimates), because stratum C carries 6--37\% of the pool probability and
+300 failure-free samples cannot bound a probability of order $10^{-3}$ in it. A distribution-free
+bound of the required tightness would need tens of thousands of full analyses per design. The
+residual-risk estimate is negligible under the normal model of the ratio ($<10^{-23}$). Under the
+heavy-tailed $t_3$ model it is $2.7\times10^{-5}$--$9.0\times10^{-5}$, i.e.\ 4--8\% of $\hat P_f$
+for six designs, 23\% for nine storeys and 80\% for the 6-m bay design, whose $P_f$ is small
+($8.5\times10^{-5}$). Adding it
+lowers $\hat\beta^{full}_{ULS}$ by 0.01--0.02 for six designs, by 0.06 for nine storeys and by 0.15
+for 6-m bays (Table~\ref{tab:tail}). The conclusions on the target classification below are not
+affected for any design except the three-storey design, which is already below the target in the
+full model.
+
+In summary, the surrogate reproduces the full second-order reliability within $-0.07$ to $+0.05$ in
+$\beta_{ULS}$ on the sampled strata of the eight designs ($-0.09$ for the heavier three-storey
+design of Section~\ref{sec:strict}), and the drift reliability without detectable bias. Where it errs,
+it errs on the conservative side in six of eight designs. The validation is statistical: it rests
+on the observed distribution of $U_{full}/U_s$, whose tail beyond the observed maximum of 1.06 is
+modelled, not observed. The three-storey result shows that agreement is not guaranteed. There,
+the surrogate design with $\hat\beta_{ULS}=2.995$ has a full-model index of 2.94 (2.92 with the
+$t_3$ residual), so it does not meet the target in the full model. The consequences for the design
+are examined in Section~\ref{sec:s3}. A validation of this kind should accompany any application of
+the surrogate to frame types outside the tested range.
+
+\begin{table}[!htbp]
+\centering
+\caption{Check of the samples excluded by the tail-stratified estimator (pool $2\times10^5$). Stratum
+$C$: probability, full-model failures in 300 re-analysed samples, largest observed ratio and s.d.\
+of $\ln(U_{full}/U_s)$ over strata B and C. $\hat\beta^{full}_{ULS}$ with the threshold 0.85 (strata A,
+B) and 0.70 (A, B, C; Jeffreys $95\%$ interval). Residual: model-based estimate of the full-model
+failure probability contributed by all unanalysed samples with $U_s<0.85$.}
+\label{tab:tail}
+\scriptsize
+\fittable{\input{tables/tail.tex}}
+\end{table}
 
 \begin{table}[!htbp]
 \centering
@@ -343,16 +386,24 @@ optima for drift limits of $h/400$, $h/450$, $h/500$ and $h/600$, all with the s
 deflection checks. Tightening the drift limit raises $\beta_{drift}$ of the drift-governed frames
 in a similar way (about 1.2--1.4 at $h/450$, 1.5 at $h/500$ and 2.0 at $h/600$), but it has no
 effect on frames governed by strength (three storeys, low wind) and cannot raise their
-$\beta_{ULS}$. Applying the acceptance rule of Section~\ref{sec:mc} to the verified indices, the
-lightest deterministic design that meets both targets is $h/500$ for the base, nine-storey, 6-m bay
-and high-wind frames and $h/600$ for the 10-m bay and low-wind frames; for the three-storey frame no
-drift limit meets $\beta_T$. Compared with that design, RBDO-C is equal (base), lighter by 0.10\%
-(nine storeys), 0.34\% (low wind), 1.14\% (high wind) and 4.99\% (10-m bays), and heavier by
-0.58\% for the 6-m bays. The last case is instructive: the $h/500$ design has
-$\hat\beta_{drift}=1.499$ $[1.495, 1.503]$, statistically indistinguishable from the target and
-therefore accepted in verification, but its SAA estimate (1.494) was below the target, so the
-point-estimate SAA constraint rejected it. Near-threshold classification can thus change the
-optimum by about 0.5\% of mass in either direction. No single drift limit delivers the target
+$\beta_{ULS}$. Two comparisons are made, one for each strength of claim (Section~\ref{sec:mc}).
+\begin{itemize}
+\item \emph{Weaker claim.} Among the deterministic designs whose intervals are not below either
+target (claims P or I), the lightest is $h/500$ for the base, nine-storey, 6-m bay and high-wind
+frames and $h/600$ for the 10-m bay and low-wind frames. For the three-storey frame no drift limit
+reaches $\beta_T$. Compared with that design, RBDO-C is equal (base), lighter by 0.10\% (nine
+storeys), 0.34\% (low wind), 1.14\% (high wind) and 4.99\% (10-m bays), and heavier by 0.58\% for the
+6-m bays. The 6-m bay $h/500$ design has $\hat\beta_{drift}=1.499$ $[1.495, 1.503]$, so its interval
+contains the target, but its SAA estimate (1.494) was below the target and the point-estimate SAA
+constraint rejected it.
+\item \emph{Claim L.} Among the deterministic designs that meet both targets with $95\%$ confidence,
+RBDO-C95 is lighter in three frames (by 0.10\% to 8.34\%) and heavier in two: base
+($+1.55\%$, against $h/500$, whose drift lower bound happens to reach 1.5) and high wind
+($+0.27\%$). In the three-storey and low-wind frames no deterministic design in this range reaches
+claim L.
+\end{itemize}
+Near-threshold classification can thus change the comparison by up to about 1.5\% of mass in
+either direction. No single drift limit delivers the target
 reliabilities in all frames, which is what the explicit reliability constraints achieve by
 construction.
 
@@ -368,9 +419,10 @@ independent samples; $\Delta m$ from unrounded masses relative to DDO with $h/40
 \begin{table}[!htbp]
 \centering
 \caption{Optimum mass (kg) and verified $\hat\beta_{ULS}/\hat\beta_{drift}$ of deterministic
-designs with four drift limits and of RBDO-C. Bold: meets both targets under the acceptance rule
-(target not below the $95\%$ interval). Last column: RBDO-C relative to the lightest deterministic
-design meeting both targets.}
+designs with four drift limits, of RBDO-C and of RBDO-C95 ($10^6$ samples). Bold: both targets met
+with $95\%$ confidence (claim L). Italic: neither interval below its target, but at least one target
+not met with $95\%$ confidence. $\Delta m_1$: RBDO-C relative to the lightest bold or italic design;
+$\Delta m_2$: RBDO-C95 relative to the lightest bold design.}
 \label{tab:driftlimits}
 \scriptsize
 \fittable{\input{tables/driftlimits.tex}}
@@ -397,9 +449,13 @@ drift indices from 0.887 (high wind) to 2.544 (three storeys). Three DDO designs
 significantly below $\beta_T=3.0$ (three storeys, 10-m bays, low wind) and five have
 $\hat\beta_{drift}<1.5$, four of them below 1.0.
 
-Second, RBDO-C equalises the reliability. All seven RBDO-C designs satisfy every LRFD check and
-meet both targets under the acceptance rule: six are above both targets with $95\%$ confidence, and
-the three-storey design has $\hat\beta_{ULS}=2.995$ $[2.98, 3.01]$, within the interval of the target.
+Second, RBDO-C equalises the reliability. All seven RBDO-C designs satisfy every LRFD check, and
+their point estimates reach both targets in the SAA sample. In the independent verification, six of
+them meet both targets with $95\%$ confidence (claim L of Section~\ref{sec:mc}). The three-storey
+design has $\hat\beta_{ULS}=2.995$ $[2.98, 3.01]$: its interval contains the target, so the evidence
+is inconclusive (claim I), and it is not counted as meeting the target. Section~\ref{sec:strict}
+shows that this design also falls below the target in the full second-order model and gives
+the designs that remove both shortcomings.
 The mass premium relative to DDO, computed from unrounded masses, ranges from +1.13\% (low wind)
 to +10.11\% (high wind). The premium is essentially the cost of raising $\beta_{drift}$ to 1.5 in
 the drift-governed frames and of raising $\beta_{ULS}$ to 3.0 in the strength-governed ones.
@@ -453,6 +509,91 @@ by scenario ($S_1$: gravity with $L_{50}$; $S_2$: wind).}
 \fittable{\input{tables/members.tex}}
 \end{table}
 
+\subsection{Confidence-bounded designs, the three-storey frame and model uncertainty}\label{sec:strict}\label{sec:s3}
+
+\emph{Confidence-bounded designs.} Table~\ref{tab:strict} compares the point-estimate designs
+(RBDO-C) with the confidence-bounded designs (RBDO-C95) of all frames. Each design is classified by
+the strongest of the three claims of Section~\ref{sec:mc}. In the independent verification, the
+RBDO-C designs of six frames already meet both targets with $95\%$ confidence (L), because the
+discrete catalogue leaves a margin above the target. RBDO-C95 returns the same design in three of
+these frames (nine storeys, 10-m bays, low wind) and heavier designs for the base frame ($+1.55\%$)
+and the high-wind frame ($+1.42\%$). For 6-m bays it finds a design that is 0.26\% \emph{lighter} than
+the best of the two RBDO-C runs. That design is also feasible for RBDO-C, so this result is a
+further indication of the limited search budget (Section~\ref{sec:robust}). In the three-storey frame,
+RBDO-C95 costs $+1.15\%$ and turns the inconclusive result (I) into claim L:
+$\hat\beta_{ULS}=3.068$ with a lower bound of 3.053. All RBDO-C95 designs therefore meet both targets
+with $95\%$ confidence in the surrogate model, at 0 to 1.6\% more steel than RBDO-C and 1.1 to 11.7\%
+more than DDO.
+
+\emph{Drift bias of the surrogate.} The $B_1$--$B_2$ drifts are up to 1.0\% lower than the
+second-order drifts in some storeys (Section~\ref{sec:opensees}), and the random validation sets
+show mean drift differences of $-1.0$ to $+1.4\%$. Near the drift target this matters. Increasing
+all surrogate drifts by 1\% lowers $\beta_{drift}$ by 0.026--0.028
+(Table~\ref{tab:strict}, last columns). The base and high-wind RBDO-C designs, whose drift indices are
+1.507 and 1.511, would then fall below 1.5, and the nine-storey design would become inconclusive.
+The RBDO-C95 designs keep claim L for $\beta_{drift}$ under this bias, except the nine-storey
+design, which is the same as its RBDO-C design. The drift targets of designs that are within about 0.03
+of $\beta_{SLS}$ should therefore be regarded as met only to the accuracy of the $B_1$--$B_2$
+approximation.
+
+\emph{The three-storey frame in the full model.} The validation of Section~\ref{sec:fullmc} found
+that the surrogate overestimates $\beta_{ULS}$ of the three-storey design. The same check was
+repeated for the two heavier designs (Table~\ref{tab:validation}):
+\begin{itemize}
+\item RBDO-C (8188~kg): $\hat\beta^{full}_{ULS}=2.94$ [2.84, 3.01], i.e.\ point estimate below the
+target.
+\item RBDO-C95 (8282~kg): $\hat\beta^{full}_{ULS}=3.01$ [2.89, 3.10] with $\Delta\beta=-0.09$
+[$-0.21$, $-0.01$]. The point estimate reaches the target, but the interval contains it (P, I), and
+with the $t_3$ residual of the excluded samples the estimate is 2.97.
+\item RBDO-C95 with a margin (8408~kg): the ULS target is raised to $\beta_T=3.21$, i.e.\ by the upper
+end of the observed discrepancy, so that the target is still met in the full model if the surrogate
+error is as large as the validation allows. Because the catalogue is discrete, the optimum jumps to a
+design with $\hat\beta_{ULS}=3.621$ [3.58, 3.66] in the surrogate. In the full model it has
+$\hat\beta^{full}_{ULS}=3.61$ [3.45, 3.73] (3.52 with the $t_3$ residual), which meets the target
+with $95\%$ confidence on the sampled strata.
+\end{itemize}
+Meeting the ULS target for the three-storey frame with $95\%$ confidence in the full second-order
+model thus costs $+2.69\%$ of steel relative to RBDO-C ($+5.17\%$ relative to DDO), compared with
+$+1.15\%$ when only the sampling uncertainty of the surrogate is controlled. The surrogate
+discrepancy is systematic for this frame ($\Delta\beta=-0.07$ and $-0.09$ for two different
+designs). Its cause has not been isolated. The surrogate uses one frame-wide modulus factor and nominal
+section stiffness, whereas the full model gives every member its own modulus and fabrication factor;
+in a low-rise, strength-governed frame the resulting redistribution of member forces may matter more
+than in the drift-governed frames, but this has not been verified. The three-storey result is therefore retained
+as evidence of a limitation of the surrogate, and the RBDO-C design of this frame is not described as
+meeting the target.
+
+\emph{Model-uncertainty-aware designs.} Table~\ref{tab:mudesign} gives the designs obtained when the
+model factors with c.o.v.\ 0.05 are included in the reliability constraints (RBDO-C-MU). With these
+factors, the RBDO-C designs have $\hat\beta_{ULS}=2.70$ (three storeys) and 2.77 (base), i.e.\ they
+do not meet the target. Keeping $\beta_T=3.0$ including model uncertainty costs $+1.34\%$ of steel
+for the base frame and $+2.69\%$ for the three-storey frame, whose discrete optimum is the same
+design as the margin design above. Model uncertainty with c.o.v.\ 0.10 would lower the indices by
+another 0.6, so the corresponding designs would be heavier still. They were not computed.
+
+\begin{table}[!htbp]
+\centering
+\caption{Point-estimate (RBDO-C) and confidence-bounded (RBDO-C95) designs ($10^6$ independent
+samples). $\beta^{lcb}$: one-sided $95\%$ lower confidence bound. Claim: L = lower bound $\ge$ target
+($95\%$ confidence); P, I = point estimate $\ge$ target, interval contains it; I = point estimate
+$<$ target, interval contains it; below = interval below the target. Last columns: drift index if
+all surrogate drifts are increased by 1\%.}
+\label{tab:strict}
+\scriptsize
+\fittable{\input{tables/strict.tex}}
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\caption{Model-uncertainty-aware designs (RBDO-C-MU): reliability constraints include the model
+factors $\theta_R,\theta_E,\theta_\delta$ with c.o.v.\ 0.05 ($10^6$ independent samples). Last column:
+indices of the same designs without model factors.}
+\label{tab:mudesign}
+\scriptsize
+\fittable{\input{tables/mudesign.tex}}
+\end{table}
+
+
 \subsection{Sections and an illustrative cost model}\label{sec:cost}
 
 Table~\ref{tab:cost} lists the number of distinct sections of the DDO and RBDO-C designs, the
@@ -493,12 +634,13 @@ Model uncertainty has a larger effect on the absolute ULS indices (Table~\ref{ta
 Frame-wide model factors on resistance, load effect and drift with c.o.v.\ 0.05 lower $\beta_{ULS}$ by
 0.23--0.30 and with c.o.v.\ 0.10 by 0.82--0.90 in all frames, for DDO and RBDO-C alike, whereas
 $\beta_{drift}$ changes by at most 0.05 because the drift uncertainty is dominated by the wind. The
-baseline indices of this paper are therefore conditional on the structural and resistance models:
-with a model uncertainty of 0.10, a design meeting $\beta_T=3.0$ in the baseline model would have
-an index of about 2.1--2.3. Because the shift is almost uniform across frames and formulations,
-the \emph{relative} comparison of DDO and RBDO-C is not affected; a target that is to be met
-including model uncertainty would have to be raised by the corresponding amount, at the mass cost
-shown in Fig.~\ref{fig:pareto}.
+baseline indices of this paper are therefore conditional on the structural and resistance models.
+With a model uncertainty of 0.10, a design that meets $\beta_T=3.0$ in the baseline model would have
+an index of only about 2.1--2.3, so the baseline designs do \emph{not} meet the target once this
+uncertainty is counted. Because the shift is almost uniform across frames and formulations, the
+\emph{relative} comparison of DDO and RBDO-C is not affected. The steel needed to keep the target
+when model uncertainty with c.o.v.\ 0.05 is included in the constraints is given in
+Section~\ref{sec:strict} (Table~\ref{tab:mudesign}).
 
 \begin{figure}[!htbp]
 \centering
@@ -524,18 +666,21 @@ uncertainty factors $\theta_R$, $\theta_E$ and $\theta_\delta$ (lognormal, unit 
 
 \paragraph{Answer to the research question}
 For the frames studied, uncertainty-aware optimisation did \emph{not} produce lighter designs than
-deterministic optimisation against the LRFD checks; the code-compliant reliability-based designs
-were 1.1--10.1\% heavier. The deterministic optima are already close to the reliability-based
+deterministic optimisation against the LRFD checks. The code-compliant reliability-based designs
+were 1.1--10.1\% heavier (point-estimate constraints, RBDO-C), and 1.1--11.7\% heavier when the targets
+had to be met with $95\%$ confidence (RBDO-C95). The deterministic optima are already close to the reliability-based
 optimum for the ULS ($\hat\beta_{ULS}\approx2.9$--3.7 at a target of 3.0), while the conventional
 drift check at the nominal 50-year wind provides only $\hat\beta_{drift}\approx0.9$--1.2 for the
 drift-governed frames. When the reliability levels implicit in the code are required, RBDO returns
 the DDO design exactly (Table~\ref{tab:targets}). RBDO therefore provides economy \emph{at a
 prescribed and uniform reliability}, not with respect to code-based design, whose reliability is
-unknown and non-uniform. Against deterministic designs with a tightened drift limit that meet the
-same targets, RBDO-C was lighter by up to 5.0\% in five frames, equal in one and 0.6\% heavier in
-one, the last because of near-threshold sampling classification. These conclusions agree in sign
-with the observation of \citet{Papadrakakis2004} that a reliability-based steel-frame design was
-heavier than its deterministic counterpart.
+unknown and non-uniform. Against deterministic designs with a tightened drift limit whose intervals are not below the
+targets, RBDO-C was lighter by 0.1--5.0\% in four frames, equal in one and 0.6\% heavier in one.
+Against those that meet both targets with $95\%$ confidence, RBDO-C95 was lighter in three frames
+and 0.3--1.6\% heavier in two (Table~\ref{tab:driftlimits}). These conclusions agree in sign
+with \citet{Papadrakakis2004}, whose reliability-based steel-frame design under seismic loading was
+heavier than its deterministic counterpart. All statements on economy refer to steel mass or to
+the uncalibrated cost index of Section~\ref{sec:costmodel}.
 
 \paragraph{What the reliability indices mean}
 $\beta_{ULS}$ is the index of the first attainment of a code-format member limit state in a
@@ -554,14 +699,19 @@ model, and not as estimates of real-world failure rates.
 
 \paragraph{Statistical confidence and acceptance}
 With $N=10^6$ independent samples and 400--2000 ULS failures per final design, the $95\%$ intervals
-of $\beta_{ULS}$ are about $\pm0.02$--$0.05$, and of $\beta_{drift}$ about $\pm0.005$. The reliability
-constraints are imposed on SAA point estimates with $N=5\times10^4$, whose resolution is about
-$\pm0.1$ in $\beta_{ULS}$; designs found by the optimiser therefore lie up to about 0.1 on either
-side of the target in verification, and three of 21 final designs (Table~\ref{tab:verification})
-are statistically indistinguishable from the target. Requiring the SAA lower confidence bound to
-meet the target removes this ambiguity at a cost of 1.6\% of steel for the base frame
-(Table~\ref{tab:saa}). Which rule is appropriate depends on whether the target is understood as a
-point value (as in code calibration) or as a value to be demonstrated with confidence.
+of $\beta_{ULS}$ are about $\pm0.02$--$0.05$, and those of $\beta_{drift}$ about $\pm0.005$. Inside the
+optimiser, the constraints are evaluated on $N=5\times10^4$ SAA samples, whose resolution is about
+$\pm0.1$ in $\beta_{ULS}$. A design whose SAA point estimate reaches the target (claim P) may
+therefore have a verified interval that contains the target (claim I). This happened for one RBDO-C
+design and two RBDO designs (Table~\ref{tab:verification}). An interval that contains the target
+shows only that the data cannot decide; it does not show that the target is met. The
+confidence-bounded formulation RBDO-C95 removes this ambiguity: all its designs meet both targets
+with $95\%$ confidence (claim L) in the surrogate model. It costs 1.2--1.6\% more steel than RBDO-C in three
+frames and nothing in three. In the 6-m bay frame the RBDO-C95 run even found a design 0.26\%
+lighter than the best RBDO-C run (Table~\ref{tab:strict}). We therefore recommend RBDO-C95 whenever
+a minimum reliability is to be \emph{demonstrated}. The point-estimate formulation RBDO-C is
+appropriate when the target is understood, as in code calibration, as a nominal value of a
+consistent model.
 
 \paragraph{Cost of reliability}
 The trade-off curves are strongly asymmetric. Once a frame is drift-governed, its ULS reliability
@@ -573,11 +723,15 @@ Fig.~\ref{fig:sensitivity}), a single global safety measure would hide these tra
 
 \paragraph{What has and has not been demonstrated}
 Demonstrated: for regular planar steel moment frames of three to nine storeys with 6--10-m bays under
-gravity and wind, with discrete W-shapes and the stated probabilistic model, (i) the superposition
-surrogate reproduces full second-order Monte Carlo results within about $\pm0.07$ in $\beta_{ULS}$; (ii)
-the GA with local search finds the exact optimum of a reduced problem in all runs and repeats its
-full-problem results in most frames; and (iii) code-compliant RBDO costs 1--10\% more steel than DDO
-and is generally the least-mass way to meet both targets. Not demonstrated: three-dimensional
+gravity and wind, with discrete W-shapes and the stated probabilistic model,
+(i) the superposition surrogate reproduces full second-order Monte Carlo results on the sampled
+tail strata within $-0.09$ to $+0.05$ in $\beta_{ULS}$. It is unconservative for the three-storey
+frame, and the excluded part of the tail is covered by a model of the response ratio, not by a bound;
+(ii) the GA with local search finds the exact optimum of a reduced problem in all runs and repeats
+its full-problem results in most frames, within the tested search budget;
+(iii) code-compliant RBDO costs 1--12\% more steel than DDO, depending on the frame and on whether
+the targets are imposed on point estimates or on lower confidence bounds; and
+(iv) it is generally the least-mass way to meet both targets. Not demonstrated: three-dimensional
 frames and torsion, multiple wind directions, seismic actions, inelastic collapse reliability,
 connection and foundation design, cost models calibrated to fabrication practice, and live-load
 models with spatial variability. A three-objective NSGA-II run (mass, $\beta_{ULS}$, $\beta_{drift}$)
@@ -591,27 +745,36 @@ bi-objective front, is the more economical way to map the trade-off.
 
 A reproducible framework for reliability-constrained optimisation of steel moment frames was
 developed on the open-source PyNite library and applied to seven planar frames with discrete
-W-shape sections. The main conclusions are:
+W-shape sections. All reliability statements below are conditional on the stated probabilistic,
+structural and resistance models, and exclude model-form uncertainty unless this is stated. The
+main conclusions are:
 \begin{enumerate}
 \item Five linear analyses per design, combined by superposition with AISC $B_1$--$B_2$
 amplification, give a reliability surrogate that agrees with OpenSeesPy to machine precision for
 linear responses and within 2\% for P-$\Delta$ responses. Against full P-$\Delta$ re-analysis with
-member-by-member random stiffness, tail-stratified for eight designs, it reproduces $\beta_{ULS}$
-within $-0.07$ to $+0.05$ and the drift reliability without detectable bias.
+member-by-member random stiffness for ten designs, it reproduces $\beta_{ULS}$ within $-0.09$ to
+$+0.05$ on the sampled tail strata. It is unconservative for the three-storey frame, and it
+reproduces the drift reliability without detectable bias. No failure was found among 3\,000
+re-analysed samples below the stratification threshold. Their residual contribution is estimated
+with a model of the response ratio; it is not bounded.
 \item Deterministic minimum-mass designs that satisfy the LRFD checks have non-uniform reliability:
 $\hat\beta_{ULS}$ between 2.88 and 3.66, three of seven significantly below 3.0, and 50-year
 $\hat\beta_{drift}$ between 0.89 and 2.54.
-\item Code-compliant RBDO with $\beta_T=3.0$ and $\beta_{SLS}=1.5$ met both targets in independent
-$10^6$-sample verification (six designs with $95\%$ confidence, one within the interval of the
-target) and was 1.1--10.1\% heavier than DDO. Without the code checks, RBDO selected two designs
-that marginally fail the LRFD strength check; enforcing the checks added 0.3--0.6\% of steel and did
-not change any conclusion. With code-implied targets, RBDO reproduces the DDO design.
+\item With point-estimate reliability constraints ($\beta_T=3.0$, $\beta_{SLS}=1.5$), the code-compliant
+designs (RBDO-C) were 1.1--10.1\% heavier than DDO. In independent $10^6$-sample verification, six of
+seven met both targets with $95\%$ confidence. For the seventh (three storeys) the interval contained
+the target, and the full second-order model placed it below the target.
+\item With the targets imposed on one-sided $95\%$ lower confidence bounds (RBDO-C95), all seven
+designs met both targets with $95\%$ confidence in the surrogate model. They were 1.1--11.7\% heavier
+than DDO and 0--1.6\% heavier than RBDO-C. For the three-storey frame, meeting the ULS target with
+$95\%$ confidence in the full second-order model required a margin and $+2.7\%$ of steel relative to
+RBDO-C. We recommend RBDO-C95 when a minimum reliability is to be demonstrated.
 \item Uncertainty-aware optimisation therefore did not reduce steel mass relative to code-based
-optimisation; it delivered designs with prescribed, uniform reliability, generally at less steel
-than tightened deterministic drift limits that meet the same targets. These conclusions hold under
-an illustrative cost model with section-count and connection terms.
-\item The absolute indices are conditional on the structural model and the load statistics: model
-uncertainty with c.o.v.\ 0.10 lowers $\beta_{ULS}$ by about 0.9, and the live- and wind-load models
-change the indices by up to 0.5; the relative comparison of the formulations is insensitive to these
-choices.
+optimisation. It delivered designs with a stated, uniform reliability, generally at less steel than
+tightened deterministic drift limits that meet the same targets. Economic statements are limited to
+steel mass and an illustrative, uncalibrated cost index.
+\item The absolute indices depend on the model. Frame-wide model uncertainty with c.o.v.\ 0.05 (0.10)
+lowers $\beta_{ULS}$ by about 0.3 (0.9). Keeping $\beta_T=3.0$ with c.o.v.\ 0.05 included costs 1.3\%
+(base) and 2.7\% (three storeys) more steel. The live- and wind-load models change the indices by up
+to 0.5, while the relative comparison of the formulations is insensitive to these choices.
 \end{enumerate}

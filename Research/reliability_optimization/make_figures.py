@@ -580,6 +580,77 @@ def tab_verification():
     write_table('verification', '\n'.join(lines))
 
 
+def claim(e, k, target=None):
+    """Strongest of the three claims of Section 2.5: 'L' (one-sided 95 % lower bound >= target),
+    'P, I' (point estimate >= target, interval contains it), 'I' (point estimate below the target,
+    interval contains it) or 'below'."""
+    t = TARGET[k] if target is None else target
+    if e[f'beta_lcb_{k}'] >= t:
+        return 'L'
+    if verdict(e, k, t) == 'below':
+        return 'below'
+    return 'P, I' if e[f'beta_{k}'] >= t else 'I'
+
+
+def tab_strict():
+    """Point-estimate (RBDO-C) vs confidence-bounded (RBDO-C95) designs, drift bias and model-
+    uncertainty-aware designs."""
+    v = ver()
+    db = load('driftbias.json')
+    lines = [r'\begin{tabular}{llrrllllll}', r'\toprule',
+             r'Frame & Formulation & Mass (kg) & $\Delta m$ vs.\ RBDO-C & $\hat\beta_{ULS}$ ($\beta^{lcb}$) & claim & '
+             r'$\hat\beta_{drift}$ ($\beta^{lcb}$) & claim & $\hat\beta_{drift}$, drift $+1\%$ ($\beta^{lcb}$) & claim \\',
+             r'\midrule']
+    for f in FRAME_ORDER:
+        m0 = v[f'{f}_RBDO-C']['weight']
+        first = True
+        for key, lab in ((f'{f}_RBDO-C', 'RBDO-C'), (f'{f}_RBDO-C_lcb', 'RBDO-C95'),
+                         (f'{f}_RBDO-C_bu3.07_bs1.5', r'RBDO-C, $\beta_T=3.07$')):
+            if key not in v:
+                continue
+            e = v[key]
+            s = e['est']
+            dm = '--' if lab == 'RBDO-C' else f"{(e['weight'] - m0) / m0 * 100:+.2f}\\%"
+            dkey = key if key in db else next((k for k in db if k.startswith(f + '_') and v[k]['x'] == e['x']), None)
+            if dkey:
+                d1 = db[dkey]['1.01']
+                c1 = 'L' if d1['beta_lcb'] >= BETA_SLS else ('below' if d1['ci_beta'][1] < BETA_SLS else
+                                                            ('P, I' if d1['beta'] >= BETA_SLS else 'I'))
+                bias = f"{d1['beta']:.3f} ({d1['beta_lcb']:.3f}) & {c1}"
+            else:
+                bias = '-- & --'
+            lines.append(f"{FRAME_LABEL[f] if first else ''} & {lab} & {e['weight']:.0f} & {dm} & "
+                         f"{s['beta_uls']:.3f} ({s['beta_lcb_uls']:.3f}) & {claim(s, 'uls')} & "
+                         f"{s['beta_drift']:.3f} ({s['beta_lcb_drift']:.3f}) & {claim(s, 'drift')} & {bias} \\\\")
+            first = False
+        lines.append(r'\midrule')
+    lines[-1] = r'\bottomrule'
+    lines.append(r'\end{tabular}')
+    write_table('strict', '\n'.join(lines))
+    # model-uncertainty-aware designs
+    lines = [r'\begin{tabular}{llrrlll}', r'\toprule',
+             r'Frame & Formulation & Mass (kg) & $\Delta m$ vs.\ RBDO-C & '
+             r'$\hat\beta_{ULS}$, c.o.v.\ 0.05 ($\beta^{lcb}$) & $\hat\beta_{drift}$, c.o.v.\ 0.05 ($\beta^{lcb}$) & '
+             r'$\hat\beta_{ULS}$ / $\hat\beta_{drift}$ without model factors \\', r'\midrule']
+    mu = load('modelunc.json')
+    for f in ('S3', 'base'):
+        e0 = v[f'{f}_RBDO-C']
+        m0 = e0['weight']
+        u = mu[f'{f}_RBDO-C']['MU-a']
+        lines.append(f"{FRAME_LABEL[f]} & RBDO-C & {m0:.0f} & -- & {u['beta_uls']:.3f} ({u['beta_lcb_uls']:.3f}) & "
+                     f"{u['beta_drift']:.3f} ({u['beta_lcb_drift']:.3f}) & "
+                     f"{e0['est']['beta_uls']:.3f} / {e0['est']['beta_drift']:.3f} \\\\")
+        e = v[f'{f}_RBDO-C_MU-a']
+        s, b = e['est'], e['est_baseline']
+        lines.append(f" & RBDO-C-MU & {e['weight']:.0f} & {(e['weight'] - m0) / m0 * 100:+.2f}\\% & "
+                     f"{s['beta_uls']:.3f} ({s['beta_lcb_uls']:.3f}) & {s['beta_drift']:.3f} ({s['beta_lcb_drift']:.3f}) & "
+                     f"{b['beta_uls']:.3f} / {b['beta_drift']:.3f} \\\\")
+        lines.append(r'\midrule')
+    lines[-1] = r'\bottomrule'
+    lines.append(r'\end{tabular}')
+    write_table('mudesign', '\n'.join(lines))
+
+
 def tab_targets():
     """Base frame: optimum mass for different reliability targets, drift limits and SAA settings."""
     v = ver()
@@ -591,7 +662,8 @@ def tab_targets():
             rows.append((f'DDO, drift $h/{L}$', '--', '--', v[k]))
     for k in sorted(k for k in v if k.startswith('base_RBDO') and k != 'pareto'):
         e = v[k]
-        if e.get('n_mc', N_MC_OPT) != N_MC_OPT or e.get('accept', 'point') != 'point' or '_saa' in k:
+        if (e.get('n_mc', N_MC_OPT) != N_MC_OPT or e.get('accept', 'point') != 'point' or '_saa' in k
+                or e.get('pm', 'none') != 'none'):
             continue
         rows.append((e['mode'], f"{e['beta_uls_T']:.1f}", f"{e['beta_sls_T']:.1f}", e))
     lines = [r'\begin{tabular}{lccrrrlrl}', r'\toprule',
@@ -686,14 +758,17 @@ def tab_enum():
 
 
 def tab_driftlimits():
+    """Deterministic optima with tightened drift limits vs. RBDO-C and RBDO-C95. Bold: both targets
+    met with 95 % confidence (claim L); italic: neither target below its interval (claims P/I)."""
     v = ver()
     lims = (400, 450, 500, 600)
-    lines = [r'\begin{tabular}{l' + 'r' * (len(lims) + 2) + '}', r'\toprule',
-             'Frame & ' + ' & '.join(f'DDO $h/{L}$' for L in lims) + r' & RBDO-C & RBDO-C vs. lightest DDO meeting targets \\',
+    lines = [r'\begin{tabular}{l' + 'r' * (len(lims) + 4) + '}', r'\toprule',
+             'Frame & ' + ' & '.join(f'DDO $h/{L}$' for L in lims) +
+             r' & RBDO-C & RBDO-C95 & $\Delta m_1$ & $\Delta m_2$ \\',
              r'\midrule']
     for f in FRAME_ORDER:
         cells = []
-        best_ok = None
+        best_ok, best_l = None, None
         for L in lims:
             k = f'{f}_DDO' if L == 400 else f'{f}_DDO-h{L}'
             e = v.get(k)
@@ -701,18 +776,22 @@ def tab_driftlimits():
                 cells.append('--')
                 continue
             s = e['est']
-            ok = verdict(s, 'uls') != 'below' and verdict(s, 'drift') != 'below'   # acceptance rule
-            txt = f"{e['weight']:.0f} ({s['beta_uls']:.2f}/{s['beta_drift']:.2f})"
-            cells.append(('\\textbf{' + txt + '}') if ok else txt)
+            ok = verdict(s, 'uls') != 'below' and verdict(s, 'drift') != 'below'
+            okl = claim(s, 'uls') == 'L' and claim(s, 'drift') == 'L'
+            w = (lambda t: '\\textbf{' + t + '}') if okl else (lambda t: '\\textit{' + t + '}') if ok else (lambda t: t)
+            cells.append('\\begin{tabular}[c]{@{}r@{}}' + w(f"{e['weight']:.0f}") + '\\\\' + w(f"({s['beta_uls']:.2f}/{s['beta_drift']:.2f})") + '\\end{tabular}')
             if ok and (best_ok is None or e['weight'] < best_ok):
                 best_ok = e['weight']
-        r = v.get(f'{f}_RBDO-C')
-        if r is None:
+            if okl and (best_l is None or e['weight'] < best_l):
+                best_l = e['weight']
+        r, r95 = v.get(f'{f}_RBDO-C'), v.get(f'{f}_RBDO-C_lcb')
+        if r is None or r95 is None:
             continue
-        s = r['est']
-        rc = f"{r['weight']:.0f} ({s['beta_uls']:.2f}/{s['beta_drift']:.2f})"
-        cmp = '--' if best_ok is None else f"{(r['weight'] - best_ok) / best_ok * 100:+.2f}\\%"
-        lines.append(f"{FRAME_LABEL[f]} & " + ' & '.join(cells) + f" & {rc} & {cmp} \\\\")
+        txt = lambda e: ('\\begin{tabular}[c]{@{}r@{}}' + f"{e['weight']:.0f}" + '\\\\' +
+                         f"({e['est']['beta_uls']:.2f}/{e['est']['beta_drift']:.2f})" + '\\end{tabular}')
+        pct = lambda m, ref: '--' if ref is None else f"{(m - ref) / ref * 100:+.2f}\\%"
+        lines.append(f"{FRAME_LABEL[f]} & " + ' & '.join(cells) + f" & {txt(r)} & {txt(r95)} & "
+                     f"{pct(r['weight'], best_ok)} & {pct(r95['weight'], best_l)} \\\\ \\addlinespace")
     lines += [r'\bottomrule', r'\end{tabular}']
     write_table('driftlimits', '\n'.join(lines))
 
@@ -814,12 +893,13 @@ def tab_opt_runs():
 
 
 # ------------------------------------------------- broad surrogate validation
-VAL_KEYS = ['base_DDO', 'base_RBDO-C', 'S3_RBDO-C', 'S9_RBDO-C', 'B6_RBDO-C', 'B10_RBDO-C', 'W08_RBDO-C', 'W16_RBDO-C']
+VAL_KEYS = ['base_DDO', 'base_RBDO-C', 'S3_RBDO-C', 'S9_RBDO-C', 'B6_RBDO-C', 'B10_RBDO-C', 'W08_RBDO-C', 'W16_RBDO-C',
+            'S3_RBDO-C_lcb', 'S3_RBDO-C_bu3.21_bs1.5_lcb']
 
 
 def val_label(k):
     f, m = k.split('_', 1)
-    return f'{FRAME_LABEL[f]} {m}'
+    return f"{FRAME_LABEL[f]} {m.replace('RBDO-C_bu3.21_bs1.5_lcb', 'RBDO-C95, $\\beta_T=3.21$').replace('RBDO-C_lcb', 'RBDO-C95')}"
 
 
 def val_rows(n_sim=200_000, seed=1):
@@ -891,6 +971,101 @@ def tab_validation():
         json.dump(rows, f, indent=1)
 
 
+def sci(x):
+    """LaTeX scientific notation with two significant digits."""
+    if x <= 0:
+        return '0'
+    m, e = f'{x:.1e}'.split('e')
+    return f'${m}\\times10^{{{int(e)}}}$'
+
+
+def tail_rows(n_sim=200_000, seed=2):
+    """Excluded-tail check: full re-analysis of C = {0.70 <= U_sur < 0.85} and a residual-risk
+    estimate for D = {U_sur < 0.70}, which is not analysed.
+
+    The residual of D is (1/N) sum_k P(R >= 1/U_k) over the pool histogram (bin upper edges,
+    conservative), with R = U_full / U_sur. log R is fitted to all re-analysed samples with
+    U_sur >= 0.70 (strata B and C) by a normal distribution and, as a heavy-tailed
+    alternative, by a Student t with 3 degrees of freedom and the same scale.
+    The stratified estimate with the lower threshold is P(A) f_A + P(B) f_B + P(C) f_C (+ R_D)."""
+    from scipy import stats as st
+    rng = np.random.default_rng(seed)
+    out = []
+    for k in VAL_KEYS:
+        try:
+            d = load(f'validate_{k}.json')
+            c = load(f'validateC_{k}.json')
+        except FileNotFoundError:
+            continue
+        N = d['n_pool']
+        A, B = d['tail']['A'], d['tail']['B']
+        nA, nB, nC = len(A['U_full']), len(B['U_full']), len(c['U_full'])
+        kA = int(np.sum(np.array(A['U_full']) >= 1))
+        kB = int(np.sum(np.array(B['U_full']) >= 1))
+        kC = int(np.sum(np.array(c['U_full']) >= 1))
+        NA, NB, NC = A['n_T'], B['n_T'], c['n_T']
+        NDD = N - NA - NB - NC
+        lr = np.log(np.concatenate([np.array(B['U_full']) / np.array(B['U_sur']),
+                                    np.array(c['U_full']) / np.array(c['U_sur'])]))
+        mu, sd = float(np.mean(lr)), float(np.std(lr, ddof=1))
+        rC = np.array(c['U_full']) / np.array(c['U_sur'])
+        edges = np.array(c['hist_edges'])
+        cnt = np.array(c['hist_counts'])
+        sel = edges[1:] <= c['u_low'] + 1e-9            # bins of D
+        need = np.log(1 / edges[1:][sel])                  # log ratio needed to fail (bin upper edge)
+        RD_norm = float(np.sum(cnt[sel] * st.norm.sf(need, mu, sd)) / N)
+        RD_t3 = float(np.sum(cnt[sel] * st.t.sf((need - mu) / sd, 3)) / N)
+        # model-based residual of C as well (for comparison with the sampled estimate)
+        selC = ~sel
+        needC = np.log(1 / edges[1:][selC])
+        RC_norm = float(np.sum(cnt[selC] * st.norm.sf(needC, mu, sd)) / N)
+        RC_t3 = float(np.sum(cnt[selC] * st.t.sf((needC - mu) / sd, 3)) / N)
+        pf85 = (NA / N) * (kA / nA) + (NB / N) * (kB / nB)
+        pf70 = pf85 + (NC / N) * (kC / nC)
+        pr = rng.dirichlet([NA + 0.5, NB + 0.5, NC + 0.5, NDD + 0.5], n_sim)
+        fA = rng.beta(kA + 0.5, nA - kA + 0.5, n_sim)
+        fB = rng.beta(kB + 0.5, nB - kB + 0.5, n_sim)
+        fC = rng.beta(kC + 0.5, nC - kC + 0.5, n_sim)
+        p85 = pr[:, 0] * fA + pr[:, 1] * fB
+        p70 = p85 + pr[:, 2] * fC
+        sur = pr[:, 0]
+        b = lambda p: -st.norm.ppf(p)
+        out.append({'key': k, 'NC': NC, 'pC': NC / N, 'nC': nC, 'kC': kC, 'ND': NDD, 'pD': NDD / N,
+                    'max_ratio_C': float(rC.max()), 'mu_logR': mu, 'sd_logR': sd,
+                    'pf_sur': NA / N, 'pf85': pf85, 'pf70': pf70,
+                    'pf70_ci': np.quantile(p70, [0.025, 0.975]).tolist(),
+                    'pf85_ci': np.quantile(p85, [0.025, 0.975]).tolist(),
+                    'contribC_ci': np.quantile(pr[:, 2] * fC, [0.025, 0.975]).tolist(),
+                    'RC_norm': RC_norm, 'RC_t3': RC_t3, 'RD_norm': RD_norm, 'RD_t3': RD_t3,
+                    'R85_norm': RC_norm + RD_norm, 'R85_t3': RC_t3 + RD_t3,
+                    'beta85_t3': float(b(pf85 + RC_t3 + RD_t3)),
+                    'beta85': float(b(pf85)), 'beta70': float(b(pf70)),
+                    'beta70_ci': [float(x) for x in b(np.quantile(p70, [0.975, 0.025]))],
+                    'beta70_t3': float(b(pf70 + RD_t3)),
+                    'dbeta70': float(b(pf70) - b(NA / N)),
+                    'dbeta70_ci': np.quantile(b(p70) - b(sur), [0.025, 0.975]).tolist()})
+    return out
+
+
+def tab_tail():
+    rows = tail_rows()
+    lines = [r'\begin{tabular}{lrrrrrlrrr}', r'\toprule',
+             r' & \multicolumn{4}{c}{Stratum $C$: $0.70\leq U_s<0.85$} & \multicolumn{2}{c}{$\hat\beta_{ULS}^{full}$, sampled strata} & '
+             r'\multicolumn{3}{c}{Residual of $U_s<0.85$ (model of $U_f/U_s$)} \\',
+             r'\cmidrule(lr){2-5}\cmidrule(lr){6-7}\cmidrule(lr){8-10}',
+             r'Design & $P(C)$ & $k_C/n_C$ & max $U_f/U_s$ & s.d.\ $\ln U_f/U_s$ & $A,B$ & $A,B,C$ [95\% CI] & '
+             r'normal & $t_3$ & $\hat\beta^{full}_{ULS}$ incl.\ $t_3$ \\', r'\midrule']
+    for r in rows:
+        lo, hi = r['beta70_ci']
+        lines.append(f"{val_label(r['key'])} & {r['pC']:.3f} & {r['kC']}/{r['nC']} & {r['max_ratio_C']:.3f} & "
+                     f"{r['sd_logR']:.3f} & {r['beta85']:.3f} & {r['beta70']:.3f} [{lo:.2f}, {hi:.2f}] & "
+                     f"{sci(r['R85_norm'])} & {sci(r['R85_t3'])} & {r['beta85_t3']:.3f} \\\\")
+    lines += [r'\bottomrule', r'\end{tabular}']
+    write_table('tail', '\n'.join(lines))
+    with open(os.path.join(RES, 'tail_summary.json'), 'w') as f:
+        json.dump(rows, f, indent=1)
+
+
 def summary():
     """Numbers quoted in the manuscript text."""
     out = {}
@@ -922,8 +1097,8 @@ if __name__ == '__main__':
     for fn in [fig_frame, fig_ga_history, fig_pareto, fig_parametric, fig_distributions, fig_member_util,
                fig_pdelta, fig_fullmc, fig_mc_convergence, fig_sensitivity, fig_validation, fig_driftlimits,
                tab_random_variables, tab_closed_form, tab_opensees, tab_designs, tab_verification, tab_targets,
-               tab_saa, tab_robustness, tab_enum, tab_driftlimits, tab_cost, tab_members, tab_modelunc,
-               tab_validation, tab_opt_runs, tab_frames, summary]:
+               tab_saa, tab_strict, tab_robustness, tab_enum, tab_driftlimits, tab_cost, tab_members, tab_modelunc,
+               tab_validation, tab_tail, tab_opt_runs, tab_frames, summary]:
         if todo and fn.__name__ not in todo:
             continue
         try:

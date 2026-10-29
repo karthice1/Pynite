@@ -2028,5 +2028,365 @@
    "beta_defl": 4.265,
    "beta_sls": 0.968
   }
+ },
+ "B10_RBDO-C_lcb": {
+  "mass_kg": 26065.5,
+  "n_types": 6,
+  "beta_uls": 3.119,
+  "ci_beta_uls": [
+   3.1,
+   3.139
+  ],
+  "nfail_uls": 906,
+  "beta_drift": 1.665,
+  "ci_beta_drift": [
+   1.661,
+   1.669
+  ],
+  "nfail_drift": 47974,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9531,
+  "drift_det": 0.7536,
+  "B2": 1.181,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    26065.5
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.142,
+   "beta_drift": 1.659,
+   "beta_defl": 4.265,
+   "beta_sls": 1.659
+  }
+ },
+ "B6_RBDO-C_lcb": {
+  "mass_kg": 14629.6,
+  "n_types": 7,
+  "beta_uls": 3.754,
+  "ci_beta_uls": [
+   3.701,
+   3.809
+  ],
+  "nfail_uls": 87,
+  "beta_drift": 1.546,
+  "ci_beta_drift": [
+   1.542,
+   1.549
+  ],
+  "nfail_drift": 61102,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9139,
+  "drift_det": 0.786,
+  "B2": 1.109,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    14629.6
+   ]
+  ],
+  "saa": {
+   "beta_uls": 4.107,
+   "beta_drift": 1.539,
+   "beta_defl": 4.265,
+   "beta_sls": 1.539
+  }
+ },
+ "S3_RBDO-C_MU-a": {
+  "mass_kg": 8407.8,
+  "n_types": 4,
+  "beta_uls": 3.253,
+  "ci_beta_uls": [
+   3.23,
+   3.277
+  ],
+  "nfail_uls": 571,
+  "beta_drift": 2.673,
+  "ci_beta_drift": [
+   2.662,
+   2.684
+  ],
+  "nfail_drift": 3760,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.8969,
+  "drift_det": 0.5189,
+  "B2": 1.093,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    8407.8
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.239,
+   "beta_drift": 2.657,
+   "beta_defl": 4.265,
+   "beta_sls": 2.657
+  }
+ },
+ "S3_RBDO-C_bu3.07_bs1.5": {
+  "mass_kg": 8281.7,
+  "n_types": 3,
+  "beta_uls": 3.068,
+  "ci_beta_uls": [
+   3.051,
+   3.086
+  ],
+  "nfail_uls": 1076,
+  "beta_drift": 2.55,
+  "ci_beta_drift": [
+   2.54,
+   2.559
+  ],
+  "nfail_drift": 5391,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9864,
+  "drift_det": 0.5462,
+  "B2": 1.098,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    8281.7
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.109,
+   "beta_drift": 2.533,
+   "beta_defl": 4.265,
+   "beta_sls": 2.533
+  }
+ },
+ "S3_RBDO-C_lcb": {
+  "mass_kg": 8281.7,
+  "n_types": 3,
+  "beta_uls": 3.068,
+  "ci_beta_uls": [
+   3.051,
+   3.086
+  ],
+  "nfail_uls": 1076,
+  "beta_drift": 2.55,
+  "ci_beta_drift": [
+   2.54,
+   2.559
+  ],
+  "nfail_drift": 5391,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9864,
+  "drift_det": 0.5462,
+  "B2": 1.098,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    8281.7
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.109,
+   "beta_drift": 2.533,
+   "beta_defl": 4.265,
+   "beta_sls": 2.533
+  }
+ },
+ "S9_RBDO-C_lcb": {
+  "mass_kg": 35449.8,
+  "n_types": 7,
+  "beta_uls": 3.351,
+  "ci_beta_uls": [
+   3.324,
+   3.378
+  ],
+  "nfail_uls": 403,
+  "beta_drift": 1.53,
+  "ci_beta_drift": [
+   1.527,
+   1.534
+  ],
+  "nfail_drift": 62958,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9654,
+  "drift_det": 0.7911,
+  "B2": 1.148,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    35449.8
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.367,
+   "beta_drift": 1.531,
+   "beta_defl": 4.265,
+   "beta_sls": 1.531
+  }
+ },
+ "W08_RBDO-C_lcb": {
+  "mass_kg": 17989.2,
+  "n_types": 6,
+  "beta_uls": 3.019,
+  "ci_beta_uls": [
+   3.003,
+   3.036
+  ],
+  "nfail_uls": 1267,
+  "beta_drift": 1.608,
+  "ci_beta_drift": [
+   1.604,
+   1.612
+  ],
+  "nfail_drift": 53870,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9981,
+  "drift_det": 0.7691,
+  "B2": 1.225,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    17989.2
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.073,
+   "beta_drift": 1.603,
+   "beta_defl": 4.265,
+   "beta_sls": 1.603
+  }
+ },
+ "W16_RBDO-C_lcb": {
+  "mass_kg": 22047.2,
+  "n_types": 7,
+  "beta_uls": 3.172,
+  "ci_beta_uls": [
+   3.151,
+   3.193
+  ],
+  "nfail_uls": 758,
+  "beta_drift": 1.533,
+  "ci_beta_drift": [
+   1.529,
+   1.537
+  ],
+  "nfail_drift": 62620,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9641,
+  "drift_det": 0.7896,
+  "B2": 1.109,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    22047.2
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.203,
+   "beta_drift": 1.529,
+   "beta_defl": 4.265,
+   "beta_sls": 1.529
+  }
+ },
+ "base_RBDO-C_MU-a": {
+  "mass_kg": 19038.9,
+  "n_types": 6,
+  "beta_uls": 3.047,
+  "ci_beta_uls": [
+   3.03,
+   3.065
+  ],
+  "nfail_uls": 1154,
+  "beta_drift": 1.509,
+  "ci_beta_drift": [
+   1.505,
+   1.512
+  ],
+  "nfail_drift": 65695,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.9318,
+  "drift_det": 0.7942,
+  "B2": 1.15,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    19038.9
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.073,
+   "beta_drift": 1.506,
+   "beta_defl": 4.265,
+   "beta_sls": 1.506
+  }
+ },
+ "S3_RBDO-C_bu3.21_bs1.5_lcb": {
+  "mass_kg": 8407.8,
+  "n_types": 4,
+  "beta_uls": 3.621,
+  "ci_beta_uls": [
+   3.579,
+   3.664
+  ],
+  "nfail_uls": 147,
+  "beta_drift": 2.695,
+  "ci_beta_drift": [
+   2.684,
+   2.706
+  ],
+  "nfail_drift": 3521,
+  "beta_lcb_defl": 4.527,
+  "lrfd": 0.8969,
+  "drift_det": 0.5189,
+  "B2": 1.093,
+  "verdict": [
+   "above",
+   "above"
+  ],
+  "runs": [
+   [
+    1,
+    8407.8
+   ]
+  ],
+  "saa": {
+   "beta_uls": 3.775,
+   "beta_drift": 2.666,
+   "beta_defl": 4.265,
+   "beta_sls": 2.666
+  }
  }
 }

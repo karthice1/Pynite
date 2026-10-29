@@ -85,7 +85,7 @@ def stage_closed_form():
                               'pdelta_cantilever': validation.bench_pdelta_cantilever()})
 
 
-def opt_tag(beta_uls=BETA_ULS, beta_sls=BETA_SLS, n_mc=N_MC_OPT, saa_seed=SEED_OPT, accept='point'):
+def opt_tag(beta_uls=BETA_ULS, beta_sls=BETA_SLS, n_mc=N_MC_OPT, saa_seed=SEED_OPT, accept='point', pm='none'):
     """File-name suffix of the non-default optimisation settings."""
     tag = '' if (beta_uls, beta_sls) == (BETA_ULS, BETA_SLS) else f'_bu{beta_uls}_bs{beta_sls}'
     if n_mc != N_MC_OPT:
@@ -94,14 +94,17 @@ def opt_tag(beta_uls=BETA_ULS, beta_sls=BETA_SLS, n_mc=N_MC_OPT, saa_seed=SEED_O
         tag += f'_saa{saa_seed}'
     if accept != 'point':
         tag += f'_{accept}'
+    if pm != 'none':
+        tag += f'_{pm}'
     return tag
 
 
 def make_problem(spec, mode, beta_uls=BETA_ULS, beta_sls=BETA_SLS, n_mc=N_MC_OPT, saa_seed=SEED_OPT,
-                 accept='point', cache=None):
-    """mode: DDO | DDO-hNNN (drift limit h/NNN) | RBDO | RBDO-C (RBDO + all LRFD/SLS checks)."""
+                 accept='point', pm='none', cache=None):
+    """mode: DDO | DDO-hNNN (drift limit h/NNN) | RBDO | RBDO-C (RBDO + all LRFD/SLS checks).
+    pm selects the probabilistic model (a key of MODEL_UNC; 'none' = baseline without model factors)."""
     base = 'DDO' if mode.startswith('DDO') else mode
-    prob = Problem(spec, base, PM, beta_uls, beta_sls, n_mc, min(N_SCREEN, n_mc), saa_seed,
+    prob = Problem(spec, base, MODEL_UNC[pm], beta_uls, beta_sls, n_mc, min(N_SCREEN, n_mc), saa_seed,
                    accept=accept, cache=cache)
     if mode.startswith('DDO-h'):
         prob.ddo_drift_limit = 1 / float(mode[5:])
@@ -134,7 +137,8 @@ def stage_opt(frame, mode, seeds, **opts):
         runs.sort(key=lambda r: r['seed'])
         save(fname, {'frame': frame, 'spec': asdict(spec), 'mode': mode,
                      'beta_uls': prob.beta_uls, 'beta_sls': prob.beta_sls, 'n_mc': prob.n_mc,
-                     'saa_seed': prob.seed, 'accept': prob.accept, 'runs': runs})
+                     'saa_seed': prob.seed, 'accept': prob.accept, 'pm': opts.get('pm', 'none'),
+                     'runs': runs})
 
 
 def design_weights(spec, X):
@@ -242,19 +246,23 @@ def verify_design(spec, x, n=N_VERIFY, seed=SEED_VERIFY, pm=PM, detail=False):
     return out
 
 
-def stage_verify(part=0, n_parts=1):
+def stage_verify(part=0, n_parts=1, only_new=0):
     """Independent 10^6-sample verification of the best design of every optimisation
     file, and of every distinct design found by the individual seeds. With
-    ``n_parts`` > 1 only every n-th file is processed (merge with verify_merge)."""
+    ``n_parts`` > 1 only every n-th file is processed (merge with verify_merge). With
+    ``only_new`` = 1 only files missing from verify.json are verified and merged into it.
+    Designs optimised with model factors are verified with the same probabilistic model
+    ('est') and, in addition, with the baseline model ('est_baseline')."""
     import glob
-    part, n_parts = int(part), int(n_parts)
+    part, n_parts, only_new = int(part), int(n_parts), int(only_new)
+    old = load('verify.json') if only_new else {}
     res = {}
     done = {}
 
-    def ver(frame, x, detail=False):
-        key = (frame, tuple(x), detail)
+    def ver(frame, x, detail=False, pm='none'):
+        key = (frame, tuple(x), detail, pm)
         if key not in done:
-            done[key] = verify_design(FRAMES[frame], x, detail=detail)
+            done[key] = verify_design(FRAMES[frame], x, detail=detail, pm=MODEL_UNC[pm])
         return done[key]
 
     for i, fn in enumerate(sorted(glob.glob(os.path.join(RES, 'opt_*.json')))):
@@ -263,6 +271,9 @@ def stage_verify(part=0, n_parts=1):
         d = load(os.path.basename(fn))
         frame = d['frame']
         key = os.path.basename(fn)[4:-5]
+        if key in old:
+            continue
+        pm = d.get('pm', 'none')
         feas = [r for r in d['runs'] if r['feasible']] or d['runs']
         b = min(feas, key=lambda r: r['weight'])
         detail = d['mode'] in ('DDO', 'RBDO-C') and key == f"{frame}_{d['mode']}"
@@ -271,9 +282,15 @@ def stage_verify(part=0, n_parts=1):
                     'beta_uls_T': d.get('beta_uls', BETA_ULS), 'beta_sls_T': d.get('beta_sls', BETA_SLS),
                     'n_mc': d.get('n_mc', N_MC_OPT), 'accept': d.get('accept', 'point'),
                     'saa': {k: b['info'][k] for k in b['info'] if k.startswith(('beta', 'nfail'))},
-                    **ver(frame, b['x'], detail)}
+                    'pm': pm, **ver(frame, b['x'], detail, pm)}
+        if pm != 'none':
+            res[key]['est_baseline'] = ver(frame, b['x'])['est']
         res[key]['runs'] = [{'seed': r['seed'], 'weight': r['weight'], 'x': r['x'], 'feasible': r['feasible'],
-                             'est': ver(frame, r['x'])['est']} for r in d['runs']]
+                             'est': ver(frame, r['x'], pm=pm)['est']} for r in d['runs']]
+    if only_new:
+        old.update(res)
+        save('verify.json', old)
+        return
     try:
         if part != 0:
             raise FileNotFoundError
@@ -334,12 +351,53 @@ def final_designs():
     return out
 
 
+def _design_for_key(key):
+    """(frame, best run) of a final design, or of any design in verify.json (e.g. S3_RBDO-C_lcb)."""
+    fd = final_designs()
+    if key in fd:
+        return fd[key]
+    v = load('verify.json')[key]
+    return key.split('_')[0], {'x': v['x']}
+
+
 def stage_validate(key):
     """Broad surrogate validation of one final design (see validation.broad_validation)."""
-    frame, b = final_designs()[key]
+    frame, b = _design_for_key(key)
     out = validation.broad_validation(FRAMES[frame], b['x'], PM, log=lambda s: log(f'{key} {s}'))
     out['x'] = b['x']
     save(f'validate_{key}.json', out)
+
+
+def stage_validateC(key):
+    """Full re-analysis of the stratum 0.70 <= U_sur < 0.85 excluded by stage_validate."""
+    frame, b = _design_for_key(key)
+    out = validation.excluded_stratum(FRAMES[frame], b['x'], PM, log=lambda s: log(f'{key} {s}'))
+    out['x'] = b['x']
+    save(f'validateC_{key}.json', out)
+
+
+def stage_driftbias(keys='base_RBDO-C,S3_RBDO-C,S9_RBDO-C,B6_RBDO-C,B10_RBDO-C,W08_RBDO-C,W16_RBDO-C'):
+    """Drift reliability of final designs when the surrogate drift is increased by 1 % and 2 %
+    (the B1-B2 surrogate underestimates the second-order drift by up to 1.0 %)."""
+    from rbo.reliability import clopper_pearson, pf_upper
+    from scipy.stats import norm
+    v = load('verify.json')
+    res = {}
+    for key in keys.split(','):
+        frame = key.split('_')[0]
+        r = analyse(FRAMES[frame], v[key]['x'])
+        t = MemberTable(r)
+        s = draw(PM, N_VERIFY, len(t.A), SEED_VERIFY)
+        drift = evaluate_samples(r, s, t)['drift']
+        res[key] = {}
+        for f in (1.0, 1.01, 1.02):
+            k = int(np.sum(drift * f >= 1))
+            lo, hi = clopper_pearson(k, N_VERIFY)
+            res[key][f'{f:.2f}'] = {'k': k, 'beta': float(-norm.ppf(k / N_VERIFY)),
+                                    'ci_beta': [float(-norm.ppf(hi)), float(-norm.ppf(lo))],
+                                    'beta_lcb': float(-norm.ppf(pf_upper(k, N_VERIFY)))}
+        log(f'driftbias {key} {res[key]}')
+    save('driftbias.json', res)
 
 
 def stage_sensitivity():
@@ -412,7 +470,7 @@ def stage_convergence():
 if __name__ == '__main__':
     st = sys.argv[1]
     if st == 'opt':
-        # opt FRAME MODE SEEDS [beta_uls=.. beta_sls=.. n_mc=.. saa_seed=.. accept=point|lcb]
+        # opt FRAME MODE SEEDS [beta_uls=.. beta_sls=.. n_mc=.. saa_seed=.. accept=point|lcb pm=none|MU-a|...]
         stage_opt(sys.argv[2], sys.argv[3], [int(s) for s in sys.argv[4].split(',')],
                   **dict(a.split('=') for a in sys.argv[5:]))
     elif st == 'validate':

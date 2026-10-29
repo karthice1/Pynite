@@ -406,3 +406,48 @@ def broad_validation(spec, x, pm, n_random=600, n_pool=200_000, n_tail=250, u_ta
                              'U_sur': ind['U'][pick], 'gov_S1': ind['U1'][pick] >= ind['U2'][pick],
                              'n_analyses': n_an}
     return out
+
+
+def excluded_stratum(spec, x, pm, n_pool=200_000, u_low=0.70, u_tail=0.85, n_C=300, seed=2024,
+                     member_E_cov=0.03, log=None):
+    """Check of the stratum that ``broad_validation`` excludes: C = {u_low <= U_sur < u_tail}.
+
+    The pool, the member modulus factors and the surrogate utilisations are regenerated
+    exactly as in ``broad_validation`` (same seeds); ``n_C`` samples of C are drawn with a
+    separate stream and re-analysed with full P-Delta. Samples with U_sur < u_low (stratum
+    D) are not analysed; their contribution is bounded separately from the observed
+    distribution of U_full / U_sur (see make_figures.val_rows)."""
+    from .reliability import evaluate_samples, Samples
+    r = analyse(spec, x)
+    t = MemberTable(r)
+    nm = len(t.A)
+    rng = np.random.default_rng([seed, 7])
+    s = draw(pm, n_pool, nm, seed)
+    s_E = _member_E_factors(rng, n_pool, nm, member_E_cov)
+    s_bar = Samples(s.d, s.l50, s.lapt, s.w50, np.mean(s_E, axis=1), s.fy, s.fab, s.th)
+    ind = evaluate_samples(r, s_bar, t)
+    rng_c = np.random.default_rng([seed, 8])
+    T = np.flatnonzero((ind['U'] >= u_low) & (ind['U'] < u_tail))
+    pick = np.sort(rng_c.choice(T, size=min(n_C, len(T)), replace=False))
+    U_full = np.zeros(len(pick))
+    n_an = 0
+    for q, k in enumerate(pick):
+        best = 0.0
+        gov = 'S1' if ind['U1'][k] >= ind['U2'][k] else 'S2'
+        for sc, us in (('S1', ind['U1'][k]), ('S2', ind['U2'][k])):
+            if us >= u_low or sc == gov:
+                Pr, Mr, Vr, _ = _full_sample(spec, x, t, s, s_E, k, sc, 1.0)
+                Um, _ = utilisation(t, {'Pr': Pr[None], 'Mr': Mr[None], 'Vr': Vr[None]},
+                                    FY_NOM * s.fy[[k]], E_STEEL * s_E[[k]], s.fab[[k]])
+                best = max(best, float(np.max(Um)))
+                n_an += 1
+        U_full[q] = best
+        if log and q % 50 == 0:
+            log(f'stratum C sample {q}/{len(pick)}')
+    # pool histogram of U_sur below u_tail (for the residual-risk bound of the unanalysed samples)
+    edges = np.round(np.arange(0.0, u_tail + 1e-9, 0.005), 3)
+    counts, _ = np.histogram(ind['U'][ind['U'] < u_tail], bins=edges)
+    return {'hist_edges': edges, 'hist_counts': counts,
+            'u_low': u_low, 'u_tail': u_tail, 'n_pool': n_pool,
+            'n_T': int(len(T)), 'p_T': len(T) / n_pool, 'n_D': int(np.sum(ind['U'] < u_low)),
+            'idx': pick, 'U_full': U_full, 'U_sur': ind['U'][pick], 'n_analyses': n_an}

@@ -60,3 +60,13 @@ opt B6 RBDO-C 2
 opt B10 RBDO-C 2
 opt S9 RBDO-C 2
 opt S3 RBDO-C 2
+opt S9 RBDO-C 1 accept=lcb
+opt B6 RBDO-C 1 accept=lcb
+opt W16 RBDO-C 1 accept=lcb
+opt B10 RBDO-C 1 accept=lcb
+opt W08 RBDO-C 1 accept=lcb
+opt base RBDO-C 1 pm=MU-a
+opt S3 RBDO-C 1 accept=lcb
+opt S3 RBDO-C 1 beta_uls=3.07
+opt S3 RBDO-C 1 pm=MU-a
+opt S3 RBDO-C 1 beta_uls=3.21 accept=lcb

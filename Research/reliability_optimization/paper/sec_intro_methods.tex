@@ -17,21 +17,34 @@ Reliability-based design optimisation (RBDO) replaces or supplements the determi
 explicit constraints on failure probabilities \citep{Frangopol1985,Enevoldsen1994,Valdebenito2010,Aoues2010}.
 Table~\ref{tab:literature} summarises the studies closest to the present one. Reliability-based
 optimisation of steel frames with discrete sections and Monte Carlo simulation was pioneered by
-Papadrakakis, Lagaros and co-workers \citep{PapadrakakisLagaros2002,Papadrakakis2004,LagarosPapadrakakis2007},
-who combined evolution strategies or NSGA-II with Monte Carlo simulation (with neural-network
-surrogates or Latin hypercube sampling) and found, for a seismically loaded planar frame, that
-the reliability-based design was heavier than the deterministic one \citep{Papadrakakis2004}.
-Multi-objective genetic algorithms have been used for probabilistic performance-based design of
-steel moment frames \citep{Foley2007} and for weight--reliability fronts of transmission towers
-\citep{Mathakari2007}; nonlinear inelastic analysis has been embedded in sampling-based RBDO of
-steel space frames \citep{TruongKim2017}; and the system reliability of frames designed by advanced
-analysis has been quantified without optimisation \citep{Buonopane2006,Zhang2016}. As far as the
-publication records we consulted show, these studies do not (i) compare reliability-based optima
-with code-based optima of the same frames under a \emph{code-calibrated} load and resistance model
-for wind and gravity, with and without the code checks as additional constraints, (ii) report the
-statistical uncertainty of the estimated failure probabilities of the final designs, (iii)
-validate the reliability surrogate against full second-order re-analysis in the failure tail of
-several designs, or (iv) release the code and raw results needed to regenerate every number.
+Papadrakakis, Lagaros and co-workers \citep{PapadrakakisLagaros2002,Papadrakakis2004,LagarosPapadrakakis2007}.
+\citet{Papadrakakis2004} optimised a seismically loaded 3-storey planar moment frame with evolution
+strategies. They imposed the Eurocode 3 and 8 checks in both the deterministic and the
+reliability-based problem, and added a Monte Carlo constraint on the probability that the interstorey
+drift exceeds 4\% of the storey height. The reliability-based optimum was heavier than the
+deterministic one (their text gives approximately 26\%; the volumes in their Table~6 differ by 34\%).
+The deterministic optimum had a failure probability of $9.3\times10^{-2}$. Their failure probabilities
+were estimated from 5000 (MCS) or 1000 (LHS) samples, without confidence intervals.
+\citet{TruongKim2017} embedded plastic-hinge advanced analysis in the RBDO of steel space frames under
+gravity and wind with harmony search. Their RBDO also kept the deterministic strength and $H/400$ drift
+constraints, and used a sampling estimator verified against crude Monte Carlo on benchmark problems.
+Drift was not a probabilistic constraint, and the failure probabilities of the final frame designs were
+not re-estimated independently. Multi-objective genetic algorithms have been used for probabilistic
+performance-based design of steel moment frames \citep{Foley2007} and for weight--reliability fronts
+of transmission towers \citep{Mathakari2007}. The system reliability of frames designed by advanced
+analysis has been quantified without optimisation \citep{Buonopane2006,Zhang2016}.
+
+Imposing code checks in addition to a reliability constraint is therefore not new
+\citep{Papadrakakis2004,TruongKim2017}, and neither is the finding that a reliability constraint can
+increase the weight \citep{Papadrakakis2004}. In the two closest studies, which we read in full, we did
+not find (i) a comparison of reliability-based optima under a code-calibrated gravity--wind model with
+deterministic optima of the same frames, including deterministic designs with tightened drift limits
+and RBDO with and without the code checks; (ii) a probabilistic serviceability (drift) constraint
+next to the ULS constraint; (iii) confidence intervals for the failure probabilities of the final
+designs, or a re-estimate of them with independent samples; (iv) a validation of the reliability
+surrogate against full second-order re-analysis in the failure tail of several optimised designs; or
+(v) a release of the code and raw results. For the other studies in Table~\ref{tab:literature},
+which we could assess only from their abstracts and records, we make no such claim.
 
 This paper addresses the research question: \emph{can uncertainty-aware optimisation produce
 lighter steel frame designs than code-based optimisation while satisfying explicit reliability and
@@ -73,8 +86,10 @@ discusses the interpretation and limitations and Section~\ref{sec:conclusions} c
 
 \begin{table}[!htbp]
 \centering
-\caption{Closely related studies. Entries are taken from the publications' abstracts and
-bibliographic records consulted by the authors; n.r.\ = not reported there; -- = not applicable.
+\caption{Closely related studies. Entries for \citet{Papadrakakis2004} and \citet{TruongKim2017}
+were taken from the full texts. Entries marked $^\dagger$ were taken from the abstracts and bibliographic
+records only, because the full texts were not available to the authors; n.r.\ = not reported there;
+-- = not applicable.
 MRF: moment-resisting frame; MCS: Monte Carlo simulation; LHS: Latin hypercube sampling; ES:
 evolution strategies; FR/PR: fully/partially restrained connections.}
 \label{tab:literature}
@@ -261,7 +276,18 @@ frame-wide lognormal model factors with unit mean on resistance ($\theta_R$), lo
 values (Section~\ref{sec:sensitivity}). Because H1-1 and the shear check are homogeneous of degree
 one in the demands and of degree minus one in the resistances, the factors act on the
 utilisation exactly as $U\theta_E/\theta_R$. Parameter uncertainty of the load statistics is
-addressed by the sensitivity study.
+addressed by the sensitivity study. The model-factor analysis has two uses in this paper. First, it is a sensitivity study of the
+final designs (Table~\ref{tab:modelunc}). Second, for the base frame and the three-storey frame, the
+factors with c.o.v.\ 0.05 are included in the reliability constraints themselves (RBDO-C-MU,
+Section~\ref{sec:optimisation}) to quantify the extra steel needed to keep the targets when this
+uncertainty is counted. Because the baseline indices exclude model-form uncertainty, they
+should not be read as estimates of real-world failure rates.
+
+\emph{Dependence and spatial variability.} The loads are fully correlated over the frame (one
+dead-load, one live-load and one wind factor per realisation), and the out-of-plumbness is a single
+frame-wide variable. These assumptions suit the small regular frames studied here. They should not
+be extrapolated to buildings in which the spatial variability of loads or imperfections is
+substantial.
 
 \begin{table}[!htbp]
 \centering
@@ -311,13 +337,32 @@ confidence bound of $\beta$ in the SAA sample instead of the point estimate. To 
 design is first evaluated on the first $10^4$ samples and the remainder is computed only if the
 screening estimate is not clearly infeasible (more than 0.4 below a target index).
 
-\emph{Acceptance rule.} A design is \emph{accepted} by the optimiser when its SAA estimates meet
-the targets (point estimates, or lower confidence bounds in the confidence-bounded variant). In
-the independent verification, a design is classified as meeting a target with $95\%$ confidence
-(``above'') when the lower end of the interval exceeds the target, as statistically
-indistinguishable from it (``within'') when the interval contains the target, and as falling short
-(``below'') when the upper end is smaller. A ``within'' result is accepted as meeting the target
-to the stated sampling resolution; a ``below'' result would require re-optimisation with a margin.
+\emph{Three claims about a target.} For a target $\beta_T$ and an estimate from $N$ samples, three
+statements of different strength are distinguished throughout the paper:
+\begin{enumerate}
+\item[(P)] the \emph{point estimate} reaches the target, $\hat\beta\ge\beta_T$;
+\item[(I)] the $95\%$ \emph{confidence interval contains} the target; the evidence is then inconclusive,
+because the true index may lie on either side of $\beta_T$;
+\item[(L)] the one-sided $95\%$ \emph{lower confidence bound} exceeds the target,
+$\beta^{lcb}\ge\beta_T$. Only this statement establishes that the target is met with $95\%$ confidence.
+\end{enumerate}
+In the independent verification, each design and target is classified as ``above'' when the lower
+end of the two-sided interval exceeds the target, so that (L) holds; ``within'' when the interval
+contains the target, i.e.\ case (I); and ``below'' when the upper end is smaller than the target. A
+``within'' result is \emph{not} reported as meeting the target. We say that such a design is
+consistent with the target at the stated sampling resolution, and give the interval.
+
+\emph{Two reliability constraints.} The optimiser imposes the targets in one of two ways. In the
+point-estimate formulations (RBDO, RBDO-C) the SAA point estimates must reach the targets, which
+corresponds to (P) on the SAA sample. In the confidence-bounded formulation (RBDO-C95,
+Section~\ref{sec:optimisation}) the one-sided $95\%$ lower confidence bounds of the SAA estimates must
+reach the targets, which corresponds to (L) on the SAA sample. The second formulation is the one
+to use when the purpose is to demonstrate a prescribed minimum reliability with $95\%$ confidence. Its
+designs are again verified with $10^6$ independent samples.
+
+All reliability indices in this paper are conditional on the probabilistic model of
+Table~\ref{tab:rv} and on the structural and resistance models. They do not include model-form
+uncertainty unless this is stated explicitly (Sections~\ref{sec:probmodel} and~\ref{sec:sensitivity}).
 
 \subsection{Optimisation formulations}\label{sec:optimisation}
 
@@ -331,6 +376,8 @@ illustrative cost model of Section~\ref{sec:costmodel}). The formulations are
 \hat\beta_{ULS}\ge\beta_T,\quad \hat\beta_{drift}\ge\beta_{SLS},\quad \hat\beta_{defl}\ge\beta_{SLS},\\
 \text{RBDO-C:}\quad &\min_{\mathbf{x}}\ m\quad\text{s.t.}\quad\text{the constraints of DDO-}h/400
 \text{ and of RBDO},\\
+\text{RBDO-C95:}\quad &\min_{\mathbf{x}}\ m\quad\text{s.t.}\quad\text{the constraints of DDO-}h/400,\nonumber\\
+&\phantom{\min_{\mathbf{x}}\ m\quad\text{s.t.}\quad}\beta^{lcb}_{ULS}\ge\beta_T,\quad \beta^{lcb}_{drift},\,\beta^{lcb}_{defl}\ge\beta_{SLS},\\
 \text{MO:}\quad &\min_{\mathbf{x}}\ \bigl(m,\,-\hat\beta_{ULS}\bigr)\quad\text{s.t.}\quad
 \hat\beta_{drift},\hat\beta_{defl}\ge\beta_{SLS},\quad \hat\beta_{ULS}\ge1,
 \end{align}
@@ -342,7 +389,14 @@ RBDO-C design is code-compliant and its mass is directly comparable with DDO. RB
 code checks is retained to show what the reliability constraints alone would select; a design
 accepted by RBDO but failing an LRFD check would have no regulatory standing under a
 prescriptive code, although it could be admissible under a reliability-based (performance-based)
-route of the kind allowed by EN~1990 \citep{EN1990}.
+route of the kind allowed by EN~1990 \citep{EN1990}. RBDO-C95 replaces the SAA point estimates of RBDO-C by their
+one-sided $95\%$ lower confidence bounds (Section~\ref{sec:mc}). It is the formulation to use when
+the target is to be demonstrated with $95\%$ confidence. The point-estimate formulation RBDO-C is used
+for the like-for-like comparisons with DDO, because DDO, too, is judged on nominal values. Two
+further variants are used for the three-storey frame and the base frame: RBDO-C with an increased
+ULS target that absorbs the surrogate discrepancy found in the validation (Section~\ref{sec:fullmc}),
+and RBDO-C with the model factors of Section~\ref{sec:probmodel} included in the reliability
+constraints (``RBDO-C-MU'').
 
 The baseline targets are $\beta_T = 3.0$ for the ULS, the value adopted by \citet{Ellingwood1980}
 for gravity load combinations in the calibration of the LRFD load factors (a lower value was
@@ -377,5 +431,9 @@ where $n_{sec}$ is the number of distinct section designations (procurement, det
 handling), $m_{beam}$ the beam mass (a proxy for the size of moment connections and their welding,
 which scale with the beam flange force), and $\tau$ and $\kappa$ are cost ratios. The number of
 members, connections and pieces is identical for all designs of a frame and therefore does not
-change the comparison. Equation~\eqref{eq:cost} is not a calibrated cost model; it is used only to
-show how large the non-mass terms would have to be to change the ranking of the designs.
+change the comparison. Equation~\eqref{eq:cost} is not a calibrated cost model. The values of $\tau$ (0.25--1~t per
+section designation) and $\kappa$ (0--0.25) are hypothetical sensitivity parameters, not estimates
+of actual fabrication or connection costs, and the ranking obtained with them has not been checked
+against project costs. The index is used only to show how large the non-mass terms would have to be
+to change the ranking of the designs. All statements on economy in this paper therefore refer to
+steel mass or to this illustrative index.
