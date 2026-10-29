@@ -1,0 +1,129 @@
+\documentclass[11pt]{article}
+\usepackage[margin=2.3cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{xr}
+\externaldocument{main}
+\usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue]{hyperref}
+\usepackage{enumitem}
+\usepackage{microtype}
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0pt}
+\newenvironment{comment}[1]{\par\medskip\noindent\textbf{Comment~#1.}\ \itshape}{\par}
+\newcommand{\resp}{\par\noindent\textbf{Response.}\ }
+
+\title{Response to the reviewer (third round)\\[0.3em]\large A reliability-constrained, multi-objective
+framework for minimum-mass design of steel frame structures under material and loading uncertainty}
+\author{[Author name]}
+\date{}
+
+\begin{document}
+\maketitle
+
+We thank the reviewer for the recommendation of minor revision and for pinpointing how the evidence
+should be characterised. We took both routes offered under Major comment~1. First, we quantified the
+uncertainty of the residual-tail correction and now report a combined lower bound. Second, we
+explicitly limited the full-model claim to the tested tail strata and the stated residual model. All
+new numbers come from the seeded scripts (function \texttt{tail\_rows} in \texttt{make\_figures.py})
+and are stored in \texttt{results/tail\_summary.json}. Section and table numbers refer to the revised
+manuscript.
+
+\begin{comment}{1 (three-storey full-model claim)}
+The $t_3$-adjusted estimate (3.52) of the margin design has no confidence interval reflecting the
+uncertainty of the fitted tail model. Either quantify it and give a conservative lower bound, or
+limit the conclusion to the tested strata and the stated $t_3$ model.
+\end{comment}
+\resp We did both.
+\begin{itemize}[itemsep=0.1em]
+\item \emph{Quantified uncertainty.} The location and scale of the fitted $\ln(U_{full}/U_s)$ model
+are now resampled by a nonparametric bootstrap (4000 resamples of the 550 re-analysed log-ratios
+per design). Each bootstrap residual is added to a draw from the Jeffreys posterior of the sampled
+strata. For the margin design (8408~kg) this gives $\hat\beta=3.52$, 95\% interval [3.41, 3.61] and
+one-sided lower bound 3.43, conditional on the $t_3$ model. With the more extreme $t_2$ model the
+point estimate is 3.16. Table~\ref{tab:tail} now has these columns for all ten designs, kept
+separate from the sampled-strata intervals.
+\item \emph{Limited claim.} Section~\ref{sec:strict} now gives two estimates of different standing:
+a statistical result on the sampled strata (3.61 [3.45, 3.73]) and a model-based engineering estimate
+for the complete full model (3.52, lower bound 3.43 under $t_3$). It states that the target is met with
+95\% confidence on the sampled strata. For the complete model it is met only under the $t_3$
+residual model, which is not a distribution-free demonstration. The abstract and Conclusion~5 use the
+same distinction.
+\end{itemize}
+
+\begin{comment}{2 (drift-bias sensitivity in the headline findings)}
+Qualify in the abstract and discussion that RBDO-C95 meets the targets under the baseline surrogate,
+that the confidence bound addresses Monte Carlo sampling only, and that results near the
+serviceability threshold are sensitive to the $B_1$--$B_2$ drift error.
+\end{comment}
+\resp
+\begin{itemize}[itemsep=0.1em]
+\item \emph{Abstract.} It now says that the RBDO-C95 designs meet both targets with 95\% confidence
+``in the baseline surrogate model''. It adds that these bounds cover sampling uncertainty only and that
+drift results near the target remain sensitive to the 1\% error of the $B_1$--$B_2$ drifts.
+\item \emph{Methods and Results.} The same qualifier was added in Section~\ref{sec:mc}: the confidence
+bound controls Monte Carlo sampling uncertainty and does not remove systematic approximation error. It
+also appears in Section~\ref{sec:strict}, in the Discussion (``Statistical confidence and acceptance'')
+and in Conclusion~4, which names the nine-storey design as becoming inconclusive under the 1\% drift
+bias.
+\item \emph{Base frame.} The RBDO-C design of the base frame is now described as meeting the drift
+target only 0.007 above the threshold. A 1\% drift bias would put it below
+(Section~\ref{sec:basedesign}).
+\end{itemize}
+
+\begin{comment}{3 (model dependence of the residual-tail validation)}
+Explain why $t_3$ is a suitable conservative sensitivity case, and state that it is a stress-test
+assumption rather than a validated tail.
+\end{comment}
+\resp A paragraph ``Why $t_3$, and what it is not'' was added to Section~\ref{sec:fullmc}. It states
+that $t_3$ is a stress-test assumption, not a validated distribution of the extreme tail. It also
+explains why it is conservative relative to the data. We compared the 5\,500 standardised
+log-ratios of strata B and C of the ten designs with the two models:
+
+\begin{center}
+\begin{tabular}{lrrr}
+Standardised log-ratio & Observed & Normal model & $t_3$ model \\
+\hline
+$>2$ & 78 & 125 & 383 \\
+$>3$ & 10 & 7.4 & 159 \\
+$>4$ & 0 & 0.2 & 77 \\
+\end{tabular}
+\end{center}
+
+The largest observed value is 3.84. The data are close to normal up to about four standard
+deviations and far lighter-tailed than $t_3$. The model is therefore pessimistic within the
+observed range, while nothing is known beyond it. The paragraph ends by stating that the residual
+estimates are conditional on this assumption. The $t_2$ case was added to show how much the result
+depends on the tail model.
+
+\begin{comment}{4 (scope of the novelty claim)}
+Keep the full-text versus abstract distinction and restrict claims to the seven frames and the stated
+assumptions.
+\end{comment}
+\resp The distinction between the two studies read in full and those assessed from abstracts only
+($^\dagger$ in Table~\ref{tab:literature}) is retained. The contribution statement still states that we
+make no claim about the latter. The scope sentence at the end of the contribution list now restricts
+what is demonstrated to the seven planar frame configurations, the component-based ULS and the stated
+probabilistic model.
+
+\section*{Additional comments}
+\begin{itemize}[itemsep=0.2em]
+\item \emph{Abstract and conclusions.} Both now separate the baseline-surrogate result, the
+sampled-strata full-model result and the residual-adjusted estimate for the three-storey frame
+(Conclusion~5 is new).
+\item \emph{Confidence terminology.} ``Meets the target with 95\% confidence'' is now used only where
+the stated lower bound exceeds the target. The model under which this holds is always named: the
+baseline surrogate model, the sampled strata, or the $t_3$ residual model.
+\item \emph{Table~\ref{tab:tail}.} It is restructured into three groups: stratum C, sampled strata
+only (statistical intervals), and sampled strata plus the $t$-model residual (model-conditional
+intervals, with the bootstrap). The caption explains the difference.
+\item \emph{Table~\ref{tab:strict}.} The caption now flags the results that become below or
+inconclusive under the 1\% drift perturbation, and it states that the lower bounds address sampling
+uncertainty only.
+\item \emph{Table~\ref{tab:mudesign}.} The caption states that RBDO-C-MU was optimised for two frame
+configurations only, and that c.o.v.\ 0.10 was not optimised.
+\item \emph{Author information.} The author and affiliation placeholders remain in this version. They
+must be completed by the authors before formal submission.
+\item \emph{Reproducibility.} The manuscript names the commit that produced its results. A release tag
+and DOI will be created on acceptance.
+\end{itemize}
+
+\end{document}

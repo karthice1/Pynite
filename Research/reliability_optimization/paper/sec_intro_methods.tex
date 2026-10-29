@@ -68,12 +68,14 @@ failure counts, an explicit acceptance rule, and a confidence-bounded variant of
 constraint), and an assessment of optimiser robustness by repeated runs, SAA variants and
 exhaustive enumeration of a reduced design space;
 \item a verification chain from closed-form solutions and an independent solver (OpenSeesPy
-\citep{McKenna2010,Zhu2018}) to full P-$\Delta$ re-analysis Monte Carlo of eight designs from six
-frame configurations, including the failure tail and the failure classification; and
+\citep{McKenna2010,Zhu2018}) to full P-$\Delta$ re-analysis Monte Carlo of ten designs from six
+frame configurations, including the failure tail, the failure classification and a model-based
+treatment of the unanalysed part of the tail; and
 \item an open release of the code, input data, seeds and raw results with a one-command reproduction.
 \end{enumerate}
-What is demonstrated is restricted to regular planar steel moment frames of three to nine storeys
-under gravity and wind, with a second-order elastic, component-based ULS. Generality to
+What is demonstrated is restricted to the seven regular planar steel moment frame configurations
+studied (three to nine storeys under gravity and wind), with a second-order elastic, component-based
+ULS and the stated probabilistic model. Generality to
 three-dimensional frames, seismic actions, inelastic collapse reliability and full cost models is
 \emph{not} demonstrated here.
 
@@ -358,7 +360,10 @@ corresponds to (P) on the SAA sample. In the confidence-bounded formulation (RBD
 Section~\ref{sec:optimisation}) the one-sided $95\%$ lower confidence bounds of the SAA estimates must
 reach the targets, which corresponds to (L) on the SAA sample. The second formulation is the one
 to use when the purpose is to demonstrate a prescribed minimum reliability with $95\%$ confidence. Its
-designs are again verified with $10^6$ independent samples.
+designs are again verified with $10^6$ independent samples. Both formulations control only the Monte Carlo
+\emph{sampling} uncertainty of the estimates. Neither removes systematic errors of the surrogate or of
+the models (Sections~\ref{sec:fullmc} and~\ref{sec:strict}), and a lower confidence bound is conditional
+on the model under which it is computed.
 
 All reliability indices in this paper are conditional on the probabilistic model of
 Table~\ref{tab:rv} and on the structural and resistance models. They do not include model-form

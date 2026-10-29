@@ -1,29 +1,25 @@
 \begin{abstract}
-Minimum-mass design of steel frames is usually carried out against deterministic code checks,
-which leaves the reliability of the optimised frame unquantified. This paper presents an open,
-reproducible framework for reliability-constrained, multi-objective optimisation of planar steel
-moment frames built on the PyNite finite element library. Discrete W-shape sections are checked
-against AISC 360-16 with the Direct Analysis Method. The ultimate limit state is component-based:
-the first attainment of a member strength limit state in a second-order elastic analysis
-($B_1$--$B_2$ amplification of superposed linear responses), not structural collapse. It is
-considered together with 50-year drift and deflection serviceability under load, material,
-fabrication and imperfection uncertainty. A sample average approximation turns the reliability
-constraints into deterministic functions of the design for a genetic algorithm and NSGA-II. The
-targets are imposed either on point estimates or on one-sided 95\% lower confidence bounds, always
-in addition to all code checks. Every optimum is re-verified with $10^6$ independent samples and
-exact binomial confidence intervals. The paper distinguishes a point estimate that reaches a target,
-an interval that contains it, and a lower bound that exceeds it. The surrogate is validated against
-OpenSeesPy and against full second-order re-analysis of ten designs in the failure tail; it is
-slightly unconservative for a three-storey frame.
+Minimum-mass design of steel frames against deterministic code checks leaves the reliability of the
+optimised frame unquantified. This paper presents an open, reproducible framework for
+reliability-constrained optimisation of planar steel moment frames, built on PyNite, with discrete
+W-shapes checked to AISC 360-16. The ultimate limit state is component-based: the first attainment of
+a member limit state in a second-order elastic analysis ($B_1$--$B_2$ amplification of superposed
+linear responses), not collapse. It is combined with 50-year drift and deflection serviceability.
+A sample average approximation makes the reliability constraints deterministic for a genetic
+algorithm. The targets are imposed on point estimates or on 95\% lower confidence bounds, always in
+addition to all code checks. Optima are re-verified with $10^6$ independent samples and exact binomial
+intervals. The paper distinguishes a point estimate that reaches a target, an interval that contains
+it, and a lower bound that exceeds it. The surrogate is validated against OpenSeesPy and against full
+second-order re-analysis in the failure tail of ten designs.
 
-For seven frames, the deterministic optima had ultimate reliability indices of 2.88--3.66 and
-50-year drift indices of 0.89--2.54. With point-estimate constraints (targets 3.0 and 1.5), the
-reliability-based optima were 1.1--10.1\% heavier than the deterministic optima, and six of seven
-met both targets with 95\% confidence. With confidence-bounded constraints, all seven met both
-targets with 95\% confidence at 1.1--11.7\% more steel than the deterministic optima. For the
-three-storey frame, meeting the target with 95\% confidence in the full second-order model needed a
-margin and 2.7\% more steel. Uncertainty-aware optimisation did not reduce the steel mass relative to
-code-based optimisation; its benefit is a least-mass design at a stated reliability. All indices are
-conditional on the probabilistic and structural models: frame-wide model uncertainty with a
-coefficient of variation of 0.10 would lower them by about 0.9.
+For seven frames, deterministic optima had ultimate reliability indices of 2.88--3.66 and drift indices
+of 0.89--2.54. With point-estimate constraints (targets 3.0 and 1.5), six of seven reliability-based
+optima met both targets with 95\% confidence, at 1.1--10.1\% more steel. With confidence-bounded
+constraints, all seven did so in the baseline surrogate model, at 1.1--11.7\% more steel. These bounds
+cover sampling uncertainty only, and drift results near the target remain sensitive to the 1\% error
+of the $B_1$--$B_2$ drifts. For a three-storey frame the surrogate was unconservative. A design with
+2.7\% more steel met the target on the re-analysed tail samples; for the complete full model this
+rests on an assumed heavy-tailed residual model, not on a distribution-free bound. Uncertainty-aware
+optimisation did not reduce steel mass; its benefit is a least-mass design at a stated reliability,
+conditional on the probabilistic and structural models.
 \end{abstract}

@@ -18,4 +18,4 @@ python run_experiments.py modelunc
 python run_experiments.py sensitivity
 python run_experiments.py convergence
 python make_figures.py
-cd paper && pdflatex -interaction=batchmode main && bibtex main && pdflatex -interaction=batchmode main && pdflatex -interaction=batchmode main
+cd paper && pdflatex -interaction=batchmode main && bibtex main && pdflatex -interaction=batchmode main && pdflatex -interaction=batchmode main && python to_docx.py

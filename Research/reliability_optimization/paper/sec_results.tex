@@ -102,6 +102,11 @@ estimate is computed for all unanalysed samples with $U_s<0.85$. For this, $\ln(
 fitted to the re-analysed samples of strata B and C by a normal distribution and, as a deliberately
 heavy-tailed alternative, by a Student $t$ distribution with three degrees of freedom and the same
 scale. The probability $P(U_{full}/U_s\ge1/U_s)$ is then summed over the pool's histogram of $U_s$.
+The uncertainty of the fitted location and scale is propagated by a nonparametric bootstrap of the
+log-ratios (4000 resamples). Each bootstrap residual is added to a draw from the posterior of the
+sampled strata, which gives a $95\%$ interval and a one-sided lower bound for the combined estimate.
+These quantities are conditional on the $t_3$ model of the tail. A $t$ distribution with two
+degrees of freedom is used as a further, more extreme case.
 \end{itemize}
 The base RBDO-C design was in addition analysed under doubled wind (1000 samples) as a stress test
 that produces failure fractions large enough to be compared directly.
@@ -132,14 +137,29 @@ estimates unchanged. It does, however, widen the $95\%$ intervals considerably (
 0.35--0.53 below the point estimates), because stratum C carries 6--37\% of the pool probability and
 300 failure-free samples cannot bound a probability of order $10^{-3}$ in it. A distribution-free
 bound of the required tightness would need tens of thousands of full analyses per design. The
-residual-risk estimate is negligible under the normal model of the ratio ($<10^{-23}$). Under the
-heavy-tailed $t_3$ model it is $2.7\times10^{-5}$--$9.0\times10^{-5}$, i.e.\ 4--8\% of $\hat P_f$
-for six designs, 23\% for nine storeys and 80\% for the 6-m bay design, whose $P_f$ is small
-($8.5\times10^{-5}$). Adding it
-lowers $\hat\beta^{full}_{ULS}$ by 0.01--0.02 for six designs, by 0.06 for nine storeys and by 0.15
-for 6-m bays (Table~\ref{tab:tail}). The conclusions on the target classification below are not
-affected for any design except the three-storey design, which is already below the target in the
-full model.
+residual-risk estimate is negligible under the normal model of the ratio ($<10^{-23}$).
+
+\emph{Why $t_3$, and what it is not.} The $t_3$ model is used as a stress test, not as a validated
+distribution of the extreme tail of $U_{full}/U_s$. It has the same centre and scale as the data but
+a power-law tail: it assigns probabilities many orders of magnitude larger than the normal model to
+deviations of 10 or more standard deviations, which are the deviations needed for a sample with
+$U_s<0.85$ to fail. Within the observed range, the $t_3$ model is markedly more pessimistic than the
+data. Over the 5\,500 standardised log-ratios of strata B and C of the ten designs, 78 exceed 2,
+10 exceed 3 and none exceeds 4 standard deviations (largest 3.84). The normal model predicts 125,
+7.4 and 0.2, and the $t_3$ model 383, 159 and 77. The data are therefore close to normal up to about
+four standard deviations and much lighter-tailed than $t_3$. Nothing is known about the tail beyond
+the observed range, and the residual estimates below are conditional on the assumed model.
+
+Under the $t_3$ model the residual is $2.7\times10^{-5}$--$1.8\times10^{-4}$ (Table~\ref{tab:tail}),
+i.e.\ 4--8\% of $\hat P_f$ for six of the eight main designs, 23\% for nine storeys and 80\% for the
+6-m bay design, whose $P_f$ is small ($8.5\times10^{-5}$). Adding it lowers
+$\hat\beta^{full}_{ULS}$ by 0.01--0.02 for six designs, by 0.06 for nine storeys and by 0.15 for 6-m
+bays. Including the bootstrap uncertainty of the fit, the combined intervals are 0.07--0.12 wide on
+the lower side. Under the more extreme $t_2$ model the indices fall by a further 0.1--0.5. The target
+classification of the main designs does not change under $t_3$, except for the three-storey design,
+which is already below the target in the full model. Table~\ref{tab:tail} keeps the sampled-strata
+intervals, which are statistical statements about the full model on the analysed strata, separate
+from the combined estimates, which also depend on the residual model.
 
 In summary, the surrogate reproduces the full second-order reliability within $-0.07$ to $+0.05$ in
 $\beta_{ULS}$ on the sampled strata of the eight designs ($-0.09$ for the heavier three-storey
@@ -147,18 +167,21 @@ design of Section~\ref{sec:strict}), and the drift reliability without detectabl
 it errs on the conservative side in six of eight designs. The validation is statistical: it rests
 on the observed distribution of $U_{full}/U_s$, whose tail beyond the observed maximum of 1.06 is
 modelled, not observed. The three-storey result shows that agreement is not guaranteed. There,
-the surrogate design with $\hat\beta_{ULS}=2.995$ has a full-model index of 2.94 (2.92 with the
-$t_3$ residual), so it does not meet the target in the full model. The consequences for the design
+the surrogate design with $\hat\beta_{ULS}=2.995$ has a full-model index of 2.94 [2.84, 3.01] on the
+sampled strata (2.92 with the $t_3$ residual), so it does not meet the target in the full model. The consequences for the design
 are examined in Section~\ref{sec:s3}. A validation of this kind should accompany any application of
 the surrogate to frame types outside the tested range.
 
 \begin{table}[!htbp]
 \centering
 \caption{Check of the samples excluded by the tail-stratified estimator (pool $2\times10^5$). Stratum
-$C$: probability, full-model failures in 300 re-analysed samples, largest observed ratio and s.d.\
-of $\ln(U_{full}/U_s)$ over strata B and C. $\hat\beta^{full}_{ULS}$ with the threshold 0.85 (strata A,
-B) and 0.70 (A, B, C; Jeffreys $95\%$ interval). Residual: model-based estimate of the full-model
-failure probability contributed by all unanalysed samples with $U_s<0.85$.}
+$C$: probability, full-model failures in 300 re-analysed samples, largest observed ratio. Sampled
+strata only: $\hat\beta^{full}_{ULS}$ with threshold 0.85 (strata A, B) and 0.70 (A, B, C), with
+Jeffreys $95\%$ intervals. These are statistical statements about the analysed strata. Sampled strata
++ residual: $R_{t_3}$ is the model-based failure probability of all unanalysed samples with $U_s<0.85$
+under a $t_3$ model of $\ln(U_{full}/U_s)$; the interval and one-sided lower bound $\beta^{lcb}$ also
+propagate the bootstrap uncertainty of the fit, and are conditional on the $t_3$ model (a stress-test
+assumption, not a validated tail). Last column: point estimate with a $t_2$ model.}
 \label{tab:tail}
 \scriptsize
 \fittable{\input{tables/tail.tex}}
@@ -299,7 +322,9 @@ probability of about 0.19, and serviceability checks carry no load factor.
 The RBDO-C design ($\beta_T = 3.0$, $\beta_{SLS}=1.5$) weighs 18\,787~kg (+2.88\%), satisfies all
 LRFD checks (strength ratio 0.977) and has $\hat\beta_{ULS}=3.049$ $[3.03, 3.07]$ ($k=1148$) and
 $\hat\beta_{drift}=1.507$ $[1.50, 1.51]$; both reliability constraints are active and both targets
-are met with $95\%$ confidence. It is the same design as found by RBDO without code constraints,
+are met with $95\%$ confidence in the baseline surrogate model. The drift index is only 0.007 above
+its target, so a 1\% underestimate of the drift by the $B_1$--$B_2$ surrogate would put it below
+(Section~\ref{sec:strict}). It is the same design as found by RBDO without code constraints,
 so for the base frame the code checks are not binding once the reliability targets are imposed.
 The additional steel is placed where it buys stiffness most cheaply: the lower-storey beams are
 deepened (W21$\times$50 to W24$\times$55) and the interior columns of storeys 3--4 increased; its
@@ -522,8 +547,9 @@ the best of the two RBDO-C runs. That design is also feasible for RBDO-C, so thi
 further indication of the limited search budget (Section~\ref{sec:robust}). In the three-storey frame,
 RBDO-C95 costs $+1.15\%$ and turns the inconclusive result (I) into claim L:
 $\hat\beta_{ULS}=3.068$ with a lower bound of 3.053. All RBDO-C95 designs therefore meet both targets
-with $95\%$ confidence in the surrogate model, at 0 to 1.6\% more steel than RBDO-C and 1.1 to 11.7\%
-more than DDO.
+with $95\%$ confidence in the baseline surrogate model, at 0 to 1.6\% more steel than RBDO-C and 1.1 to
+11.7\% more than DDO. The confidence bound controls Monte Carlo sampling uncertainty only. It does not
+remove systematic errors of the surrogate, which are examined next.
 
 \emph{Drift bias of the surrogate.} The $B_1$--$B_2$ drifts are up to 1.0\% lower than the
 second-order drifts in some storeys (Section~\ref{sec:opensees}), and the random validation sets
@@ -548,13 +574,23 @@ with the $t_3$ residual of the excluded samples the estimate is 2.97.
 \item RBDO-C95 with a margin (8408~kg): the ULS target is raised to $\beta_T=3.21$, i.e.\ by the upper
 end of the observed discrepancy, so that the target is still met in the full model if the surrogate
 error is as large as the validation allows. Because the catalogue is discrete, the optimum jumps to a
-design with $\hat\beta_{ULS}=3.621$ [3.58, 3.66] in the surrogate. In the full model it has
-$\hat\beta^{full}_{ULS}=3.61$ [3.45, 3.73] (3.52 with the $t_3$ residual), which meets the target
-with $95\%$ confidence on the sampled strata.
+design with $\hat\beta_{ULS}=3.621$ [3.58, 3.66] in the surrogate. In the full model it has two
+estimates of different standing:
+\begin{itemize}
+\item on the sampled strata, $\hat\beta^{full}_{ULS}=3.61$ [3.45, 3.73], a statistical result for the
+analysed strata;
+\item with the $t_3$ residual of the unanalysed samples, a model-based engineering estimate of 3.52,
+95\% interval [3.41, 3.61] and lower bound 3.43, including the bootstrap uncertainty of the fit.
 \end{itemize}
-Meeting the ULS target for the three-storey frame with $95\%$ confidence in the full second-order
-model thus costs $+2.69\%$ of steel relative to RBDO-C ($+5.17\%$ relative to DDO), compared with
-$+1.15\%$ when only the sampling uncertainty of the surrogate is controlled. The surrogate
+Both lie above the target. Even the more extreme $t_2$ residual gives 3.16.
+\end{itemize}
+For this margin design, the ULS target is therefore met with $95\%$ confidence on the sampled
+strata. For the complete full model, it is met with $95\%$ confidence under the $t_3$ residual
+model. This is not a distribution-free demonstration, because the tail of $U_{full}/U_s$ beyond the
+observed range is assumed, not observed (Section~\ref{sec:fullmc}). On this basis, meeting the ULS
+target for the three-storey frame in the full second-order model costs $+2.69\%$ of steel relative to
+RBDO-C ($+5.17\%$ relative to DDO). Controlling only the sampling uncertainty of the surrogate costs
+$+1.15\%$. The surrogate
 discrepancy is systematic for this frame ($\Delta\beta=-0.07$ and $-0.09$ for two different
 designs). Its cause has not been isolated. The surrogate uses one frame-wide modulus factor and nominal
 section stiffness, whereas the full model gives every member its own modulus and fabrication factor;
@@ -577,7 +613,9 @@ another 0.6, so the corresponding designs would be heavier still. They were not 
 samples). $\beta^{lcb}$: one-sided $95\%$ lower confidence bound. Claim: L = lower bound $\ge$ target
 ($95\%$ confidence); P, I = point estimate $\ge$ target, interval contains it; I = point estimate
 $<$ target, interval contains it; below = interval below the target. Last columns: drift index if
-all surrogate drifts are increased by 1\%.}
+all surrogate drifts are increased by 1\%; a claim other than L there (base and high-wind RBDO-C: below;
+nine storeys, both formulations: P, I) marks a result that is sensitive to the $B_1$--$B_2$ drift
+approximation. The lower bounds address Monte Carlo sampling uncertainty only.}
 \label{tab:strict}
 \scriptsize
 \fittable{\input{tables/strict.tex}}
@@ -585,9 +623,10 @@ all surrogate drifts are increased by 1\%.}
 
 \begin{table}[!htbp]
 \centering
-\caption{Model-uncertainty-aware designs (RBDO-C-MU): reliability constraints include the model
-factors $\theta_R,\theta_E,\theta_\delta$ with c.o.v.\ 0.05 ($10^6$ independent samples). Last column:
-indices of the same designs without model factors.}
+\caption{Model-uncertainty-aware designs (RBDO-C-MU), optimised for two frames only (three storeys and
+base): the reliability constraints include the model factors $\theta_R,\theta_E,\theta_\delta$ with c.o.v.\
+0.05 ($10^6$ independent samples). Designs for c.o.v.\ 0.10 were not optimised. Last column: indices of
+the same designs without model factors.}
 \label{tab:mudesign}
 \scriptsize
 \fittable{\input{tables/mudesign.tex}}
@@ -705,8 +744,11 @@ $\pm0.1$ in $\beta_{ULS}$. A design whose SAA point estimate reaches the target 
 therefore have a verified interval that contains the target (claim I). This happened for one RBDO-C
 design and two RBDO designs (Table~\ref{tab:verification}). An interval that contains the target
 shows only that the data cannot decide; it does not show that the target is met. The
-confidence-bounded formulation RBDO-C95 removes this ambiguity: all its designs meet both targets
-with $95\%$ confidence (claim L) in the surrogate model. It costs 1.2--1.6\% more steel than RBDO-C in three
+confidence-bounded formulation RBDO-C95 removes this ambiguity for the sampling error: all its
+designs meet both targets with $95\%$ confidence (claim L) in the baseline surrogate model. It does not
+remove systematic approximation errors. Under a 1\% drift bias the nine-storey design becomes
+inconclusive for the drift target, and the three-storey design falls below the ULS target in the full
+second-order model. It costs 1.2--1.6\% more steel than RBDO-C in three
 frames and nothing in three. In the 6-m bay frame the RBDO-C95 run even found a design 0.26\%
 lighter than the best RBDO-C run (Table~\ref{tab:strict}). We therefore recommend RBDO-C95 whenever
 a minimum reliability is to be \emph{demonstrated}. The point-estimate formulation RBDO-C is
@@ -765,10 +807,16 @@ designs (RBDO-C) were 1.1--10.1\% heavier than DDO. In independent $10^6$-sample
 seven met both targets with $95\%$ confidence. For the seventh (three storeys) the interval contained
 the target, and the full second-order model placed it below the target.
 \item With the targets imposed on one-sided $95\%$ lower confidence bounds (RBDO-C95), all seven
-designs met both targets with $95\%$ confidence in the surrogate model. They were 1.1--11.7\% heavier
-than DDO and 0--1.6\% heavier than RBDO-C. For the three-storey frame, meeting the ULS target with
-$95\%$ confidence in the full second-order model required a margin and $+2.7\%$ of steel relative to
-RBDO-C. We recommend RBDO-C95 when a minimum reliability is to be demonstrated.
+designs met both targets with $95\%$ confidence in the baseline surrogate model. They were 1.1--11.7\%
+heavier than DDO and 0--1.6\% heavier than RBDO-C. These bounds address Monte Carlo sampling
+uncertainty only. Results close to the drift target remain sensitive to the $B_1$--$B_2$ approximation:
+a 1\% drift bias makes the nine-storey design inconclusive. We recommend RBDO-C95 when a minimum
+reliability is to be demonstrated, together with a check of systematic errors near the thresholds.
+\item For the three-storey frame, the surrogate is unconservative. A design with a ULS margin
+($+2.7\%$ of steel relative to RBDO-C) meets the target with $95\%$ confidence on the sampled strata of
+the full second-order model ($\hat\beta=3.61$ [3.45, 3.73]). Including the unanalysed samples through a
+$t_3$ residual model, it has a model-based estimate of 3.52 with a lower bound of 3.43. This is an
+engineering estimate conditional on the residual model, not a distribution-free bound.
 \item Uncertainty-aware optimisation therefore did not reduce steel mass relative to code-based
 optimisation. It delivered designs with a stated, uniform reliability, generally at less steel than
 tightened deterministic drift limits that meet the same targets. Economic statements are limited to

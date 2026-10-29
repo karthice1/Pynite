@@ -1030,6 +1030,23 @@ def tail_rows(n_sim=200_000, seed=2):
         p70 = p85 + pr[:, 2] * fC
         sur = pr[:, 0]
         b = lambda p: -st.norm.ppf(p)
+        # combined estimate: sampled strata (Jeffreys posterior) + t3 residual of all samples with
+        # U_sur < 0.85, with the uncertainty of the fitted (mu, sd) propagated by a nonparametric
+        # bootstrap of the log-ratios. Conditional on the t3 family; not distribution-free.
+        need85 = np.log(1 / edges[1:])
+        n_boot = 4000
+        R_boot = np.empty(n_boot)
+        for i in range(n_boot):
+            lb = rng.choice(lr, size=len(lr), replace=True)
+            m_b, s_b = lb.mean(), lb.std(ddof=1)
+            R_boot[i] = np.sum(cnt * st.t.sf((need85 - m_b) / s_b, 3)) / N
+        comb = rng.choice(p85, n_boot) + R_boot
+        b_comb = b(comb)
+        R85_t2 = float(np.sum(cnt * st.t.sf((need85 - mu) / sd, 2)) / N)
+        # observed tail of the standardised log-ratios vs. normal and t3 predictions
+        z = (lr - mu) / sd
+        tailcmp = {f'gt{q}': [int(np.sum(z > q)), float(len(z) * st.norm.sf(q)), float(len(z) * st.t.sf(q, 3))]
+                   for q in (2, 3, 4)}
         out.append({'key': k, 'NC': NC, 'pC': NC / N, 'nC': nC, 'kC': kC, 'ND': NDD, 'pD': NDD / N,
                     'max_ratio_C': float(rC.max()), 'mu_logR': mu, 'sd_logR': sd,
                     'pf_sur': NA / N, 'pf85': pf85, 'pf70': pf70,
@@ -1039,6 +1056,11 @@ def tail_rows(n_sim=200_000, seed=2):
                     'RC_norm': RC_norm, 'RC_t3': RC_t3, 'RD_norm': RD_norm, 'RD_t3': RD_t3,
                     'R85_norm': RC_norm + RD_norm, 'R85_t3': RC_t3 + RD_t3,
                     'beta85_t3': float(b(pf85 + RC_t3 + RD_t3)),
+                    'beta_comb_ci': [float(x) for x in np.quantile(b_comb, [0.025, 0.975])],
+                    'beta_comb_lcb': float(np.quantile(b_comb, 0.05)),
+                    'R85_t3_ci': [float(x) for x in np.quantile(R_boot, [0.025, 0.975])],
+                    'beta85_t2': float(b(pf85 + R85_t2)), 'R85_t2': R85_t2,
+                    'n_lr': int(len(lr)), 'z_max': float(z.max()), 'tailcmp': tailcmp,
                     'beta85': float(b(pf85)), 'beta70': float(b(pf70)),
                     'beta70_ci': [float(x) for x in b(np.quantile(p70, [0.975, 0.025]))],
                     'beta70_t3': float(b(pf70 + RD_t3)),
@@ -1049,17 +1071,22 @@ def tail_rows(n_sim=200_000, seed=2):
 
 def tab_tail():
     rows = tail_rows()
-    lines = [r'\begin{tabular}{lrrrrrlrrr}', r'\toprule',
-             r' & \multicolumn{4}{c}{Stratum $C$: $0.70\leq U_s<0.85$} & \multicolumn{2}{c}{$\hat\beta_{ULS}^{full}$, sampled strata} & '
-             r'\multicolumn{3}{c}{Residual of $U_s<0.85$ (model of $U_f/U_s$)} \\',
-             r'\cmidrule(lr){2-5}\cmidrule(lr){6-7}\cmidrule(lr){8-10}',
-             r'Design & $P(C)$ & $k_C/n_C$ & max $U_f/U_s$ & s.d.\ $\ln U_f/U_s$ & $A,B$ & $A,B,C$ [95\% CI] & '
-             r'normal & $t_3$ & $\hat\beta^{full}_{ULS}$ incl.\ $t_3$ \\', r'\midrule']
+    lines = [r'\begin{tabular}{lrrrllrll}', r'\toprule',
+             r' & \multicolumn{3}{c}{Stratum $C$: $0.70\leq U_s<0.85$} & '
+             r'\multicolumn{2}{c}{Sampled strata only (Jeffreys 95\% CI)} & '
+             r'\multicolumn{3}{c}{Sampled strata + $t$-model residual of $U_s<0.85$} \\',
+             r'\cmidrule(lr){2-4}\cmidrule(lr){5-6}\cmidrule(lr){7-9}',
+             r'Design & $P(C)$ & $k_C/n_C$ & max $U_f/U_s$ & $A,B$ & $A,B,C$ & '
+             r'$R_{t_3}$ & $\hat\beta$ [95\% CI] ($\beta^{lcb}$), $t_3$ & $\hat\beta$, $t_2$ \\', r'\midrule']
+    from scipy import stats as st
     for r in rows:
         lo, hi = r['beta70_ci']
+        l85, h85 = [float(-st.norm.ppf(x)) for x in r['pf85_ci'][::-1]]
+        cl, ch = r['beta_comb_ci']
         lines.append(f"{val_label(r['key'])} & {r['pC']:.3f} & {r['kC']}/{r['nC']} & {r['max_ratio_C']:.3f} & "
-                     f"{r['sd_logR']:.3f} & {r['beta85']:.3f} & {r['beta70']:.3f} [{lo:.2f}, {hi:.2f}] & "
-                     f"{sci(r['R85_norm'])} & {sci(r['R85_t3'])} & {r['beta85_t3']:.3f} \\\\")
+                     f"{r['beta85']:.3f} [{l85:.2f}, {h85:.2f}] & {r['beta70']:.3f} [{lo:.2f}, {hi:.2f}] & "
+                     f"{sci(r['R85_t3'])} & {r['beta85_t3']:.3f} [{cl:.2f}, {ch:.2f}] ({r['beta_comb_lcb']:.2f}) & "
+                     f"{r['beta85_t2']:.3f} \\\\")
     lines += [r'\bottomrule', r'\end{tabular}']
     write_table('tail', '\n'.join(lines))
     with open(os.path.join(RES, 'tail_summary.json'), 'w') as f:
