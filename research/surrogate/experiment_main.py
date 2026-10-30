@@ -36,7 +36,7 @@ def main(threads=4):
     os.makedirs('results', exist_ok=True)
     D = pickle.load(open('data/frames.pkl', 'rb'))
     G = {k: [FT.graph(r) for r in v] for k, v in D.items()}
-    train, val = G['pool'][:N_TRAIN], G['val']
+    train, _val = G['pool'][:N_TRAIN], G['val']
     results, preds, times = {}, {}, {}
 
     # --- Mechanics-constrained graph ensemble ---------------------------------
