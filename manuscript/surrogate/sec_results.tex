@@ -1,0 +1,146 @@
+%% ---------------------------------------------------------------------------
+\section{Results}\label{sec:results}
+
+All numbers in this section are produced by the released scripts from a single dataset and a single training run of each model, except the adaptive-sampling study, which is repeated with two random seeds. Errors are medians over 600 test frames unless stated otherwise.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig_frames.pdf}
+\caption{Example frames from the three test sets. Blue: columns; black: beams; shaded: gravity line loads (scaled); red arrows: lateral floor forces; squares and triangles: fixed and pinned bases. The unseen-geometry frame is taller and wider than any training frame; the unseen-loading frame carries pattern gravity loads and a parabolic lateral profile.}\label{fig:frames}
+\end{figure}
+
+\subsection{Dataset}
+The 5{,}000-frame pool contains frames with 3 to 45 members (18 on average), the OOD-G set frames with 11 to 104 members (56 on average). A PyNite analysis of one frame (both load cases, including model construction and result extraction) took 37.5\,ms on average for the ID frames and 104.7\,ms for the larger OOD-G frames on the CPU used here (Section~\ref{sec:cost}). The median largest inter-storey drift ratio is 0.46\% in the ID test set and 0.79\% in the OOD-G set; 15\% and 25\% of the frames, respectively, exceed 2\%, because sections and loads are sampled independently and are not sized for serviceability. Since the surrogate and the baselines all predict dimensionless responses that are exactly invariant to the load intensities and to $E$ (Section~\ref{sec:scaling}), the relative errors reported below would be identical for any rescaling of the loads, so the presence of very flexible frames does not bias the comparison.
+
+\subsection{Accuracy on seen and unseen frames}\label{sec:accuracy}
+
+\begin{table}[p]
+\centering
+\caption{Prediction errors on the three test sets (medians over 600 frames, in \%, except the 95th percentile of $e_M$ and the equilibrium residual). $e_{u_x}$: horizontal displacements; $e_\mathrm{drift}$: largest inter-storey drift ratio; $e_M$: end moments; $e_N$: axial forces; $e_{M,\max}$: largest end moment; last column: median relative nodal out-of-balance force. Bold: best value per column and test set.}\label{tab:main}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{lrrrrrrr}
+\toprule
+Model & $e_{u_x}$ & $e_\mathrm{drift}$ & $e_M$ & $e_M$ (p95) & $e_N$ & $e_{M,\max}$ & Out-of-balance \\
+\midrule
+\inputtable{tables/tab_main.tex}
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+Table~\ref{tab:main} compares the proposed surrogate (the five-network ensemble with variance-weighted equilibrium projection) with the five baselines, and Fig.~\ref{fig:cdf} shows the full error distributions. On the in-distribution test set the proposed surrogate reaches median errors of 4.5\% for the horizontal displacement field, 4.9\% for the governing drift ratio, 2.4\% for the end-moment field, 0.6\% for the axial forces and 0.8\% for the largest end moment of the frame. The best baseline, gradient boosting, has 29.0\%, 30.2\%, 10.0\%, 3.2\% and 3.4\% respectively, so the graph surrogate is about four times more accurate for the member forces and six times more accurate for the displacements, although the baselines receive the same mechanics-informed features, targets and boundary conditions. The gap is largest for displacements, which depend on the stiffness of the whole frame and not only on local quantities; this is the information that message passing over the structural graph supplies and that per-node regression cannot reconstruct from local features. Linear and quadratic ridge regression perform worst, which shows that the input--output map is strongly nonlinear even though the structural response is linear in the loads.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig_error_cdf.pdf}
+\caption{Cumulative distributions of the per-frame relative errors of the horizontal displacement field (top) and of the end-moment field (bottom).}\label{fig:cdf}
+\end{figure}
+
+All models lose accuracy on the unseen frames, but the ranking is unchanged. For unseen geometries (frames up to eight storeys and six bays, against at most five and four in training) the proposed surrogate has a median moment error of 7.5\% and a median displacement error of 11.4\%, against 22.5\% and 43.1\% for gradient boosting; the governing drift error is 13.7\%, whereas the tabular baselines have errors of 72--143\%. For unseen load patterns the median moment error is 8.7\% (gradient boosting 17.3\%, MLP 16.8\%) and the displacement error 5.6\%. The global quantities that usually govern design are predicted more accurately than the full fields: the largest end moment of a frame is within 2.2\% (OOD-G) and 2.5\% (OOD-L) of PyNite at the median. The tails, however, are heavy: the 95th percentile of the moment error is 22.6\% for unseen geometries and 21.4\% for unseen loading, which is not acceptable for design without further checks and motivates the referral mechanism of Section~\ref{sec:triage}. Figure~\ref{fig:parity} shows the corresponding parity plots for the roof displacement and the largest end moment, and Fig.~\ref{fig:example} the end moments of a typical unseen-geometry frame.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig_parity.pdf}
+\caption{Predicted versus PyNite roof displacement (top; mean of the roof nodes) and largest absolute end moment (bottom) for the proposed surrogate and the best baseline.}\label{fig:parity}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig_example.pdf}
+\caption{End moments of all members of an unseen-geometry frame (the OOD-G frame with the median number of members): PyNite, proposed surrogate and gradient boosting.}\label{fig:example}
+\end{figure}
+
+\subsection{Equilibrium and the projection layer}\label{sec:eqresults}
+Without the projection, every model produces member forces that are not in equilibrium with the applied loads (Fig.~\ref{fig:equilibrium}). The median out-of-balance force is 4\% of the load vector for the raw graph ensemble and 7--43\% for the baselines on in-distribution frames, rising to 16\% and 18--120\% for unseen geometries. A soft equilibrium penalty in the training loss barely changes this (Table~\ref{tab:ablation}): the residual of a single network falls from 6.7\% to 6.3\%. After projection (Eq.~\ref{eq:projection}) the residual is at machine precision ($\approx10^{-16}$) for every frame and every model, as guaranteed by construction, so the support reactions balance the loads and every nodal free body is in equilibrium.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.62\textwidth]{fig_equilibrium.pdf}
+\caption{Relative nodal out-of-balance force of the predicted member forces on the in-distribution test set (box: quartiles; whiskers: 5th--95th percentiles). Only the projected surrogate is statically admissible.}\label{fig:equilibrium}
+\end{figure}
+
+The projection also changes the accuracy, and the metric matters. With the variance-weighted metric the median moment error of the ensemble decreases from 2.5\% to 2.4\% (ID), from 8.3\% to 7.5\% (OOD-G) and from 9.1\% to 8.7\% (OOD-L), and the axial-force error decreases by a factor of 2--3.5 (1.8\%$\to$0.6\%, 5.3\%$\to$1.5\%, 3.5\%$\to$1.6\%), because axial forces are largely fixed by statics once the moments are known. The 95th percentile of the moment error is essentially unchanged on the unseen sets and increases slightly on the ID set (5.9\%$\to$6.5\%). With the Euclidean metric, by contrast, the projection degrades the moments (2.5\%$\to$4.0\% on ID, 8.3\%$\to$12.6\% on OOD-G) while still improving the axial forces. This is consistent with Proposition~\ref{prop:projection}: the error can only decrease in the metric of the projection, and the Euclidean metric on dimensionless forces lets the correction flow into the moments, whose uncertainty it ignores. Weighting by the ensemble variance directs the correction to the least certain components.
+
+\begin{table}[t]
+\centering
+\caption{Effect of the Euclidean equilibrium projection on the baselines: median moment error $e_M$ and axial-force error $e_N$ (\%) before $\to$ after projection.}\label{tab:projbase}
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{lrrrrrrrrrrrr}
+\toprule
+& \multicolumn{4}{c}{In-distribution} & \multicolumn{4}{c}{Unseen geometries} & \multicolumn{4}{c}{Unseen loading}\\
+\cmidrule(lr){2-5}\cmidrule(lr){6-9}\cmidrule(lr){10-13}
+Model & $e_M$ & $\to$ & $e_N$ & $\to$ & $e_M$ & $\to$ & $e_N$ & $\to$ & $e_M$ & $\to$ & $e_N$ & $\to$\\
+\midrule
+\inputtable{tables/tab_proj_baselines.tex}
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+Because the layer is model-agnostic, it was also applied to the baselines (Table~\ref{tab:projbase}). The baselines provide no per-output variance, so the Euclidean metric is used. The axial-force errors decrease for every baseline and test set, typically by a factor of about two. The moment errors decrease for gradient boosting (10.0\%$\to$9.1\% ID, 22.5\%$\to$21.4\% OOD-G, 17.3\%$\to$16.5\% OOD-L) and for the MLP on two of the three sets, but increase for the linear ridge model and the random forest. Thus the projection always delivers admissible forces and always improves the axial forces, while its effect on the moments depends on whether the metric reflects where the prediction errors actually are.
+
+\subsection{Ablation of the mechanics constraints}\label{sec:ablation}
+
+\begin{table}[t]
+\centering
+\caption{Ablation with single networks (same seed, data and training budget). Median $e_{u_x}$ and $e_M$ (\%) and median relative out-of-balance force.}\label{tab:ablation}
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{lrrrrrrrrr}
+\toprule
+& \multicolumn{3}{c}{In-distribution} & \multicolumn{3}{c}{Unseen geometries} & \multicolumn{3}{c}{Unseen loading}\\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}
+Variant & $e_{u_x}$ & $e_M$ & res. & $e_{u_x}$ & $e_M$ & res. & $e_{u_x}$ & $e_M$ & res.\\
+\midrule
+\inputtable{tables/tab_ablation.tex}
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+Table~\ref{tab:ablation} isolates the constraints with single networks. Replacing the exact load-case superposition by a single combined load scale roughly doubles the displacement errors (6.8\%$\to$12.2\% ID, 14.6\%$\to$24.5\% OOD-G, 8.1\%$\to$15.1\% OOD-L) and increases the moment errors on all sets (3.7\%$\to$5.4\% ID, 11.0\%$\to$15.0\% OOD-G); the governing-drift error on unseen geometries rises from 27\% to 69\% (all metrics are in the released \texttt{results/main.json}). This confirms the scaling argument of Section~\ref{sec:scaling}: in the combined case the lateral sway is masked by the much larger gravity scale. The soft equilibrium penalty neither improves accuracy nor materially reduces the residual at the weight used, which supports enforcing equilibrium exactly instead of through the loss. Finally, ensembling five networks reduces the median moment error from 3.7\% to 2.5\% and the displacement error from 6.8\% to 4.5\% on the ID set (Table~\ref{tab:main}), in addition to providing the uncertainty estimate.
+
+\subsection{Uncertainty and FE referral}\label{sec:triage}
+
+\begin{table}[t]
+\centering
+\caption{Quality of the uncertainty estimate and FE referral. $\rho_s$: Spearman rank correlation between a frame-level score and the true moment error $e_M$; coverage: fraction of end moments within the ensemble mean $\pm2\sigma$; ``$>$10\%'': fraction of frames with $e_M>10\%$; recall: share of those frames caught when the 20\% highest-scoring frames are referred to PyNite; p95 after referral: 95th percentile of $e_M$ over the accepted 80\%; speed-up: average cost of PyNite divided by the cost of the workflow with 20\% referral (Section~\ref{sec:cost}).}\label{tab:uq}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{lrrrrrrr}
+\toprule
+Test set & $\rho_s$ (spread) & $\rho_s$ (residual) & Coverage (\%) & $>$10\% (\%) & Recall (\%) & p95 after (\%) & Speed-up\\
+\midrule
+\inputtable{tables/tab_uq.tex}
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.75\textwidth]{fig_uq_scatter.pdf}
+\caption{Frame-level ensemble spread of the end moments (Eq.~\ref{eq:score}) against the true relative moment error.}\label{fig:uqscatter}
+\end{figure}
+
+The ensemble spread ranks the frames by their actual error well on in-distribution frames and on unseen geometries (Spearman $\rho_s=0.81$ and $0.92$; Fig.~\ref{fig:uqscatter} and Table~\ref{tab:uq}), and the $\pm2\sigma$ intervals of the end moments contain 92\% of the PyNite values in both sets, close to the nominal 95\%. It is much weaker for unseen load patterns ($\rho_s=0.66$, coverage 67\%): the networks agree with each other on these frames while being wrong together, which is the known failure mode of ensembles under distribution shift~\cite{ovadia2019shift}. The label-free equilibrium residual is a weaker but non-trivial indicator ($\rho_s=0.43$--$0.59$).
+
+Figure~\ref{fig:triage} shows the 95th percentile of the moment error among the accepted predictions as a function of the fraction of frames referred to PyNite. On the ID set, referring the 20\% most uncertain frames lowers it from 6.5\% to 4.8\% and catches 78\% of the few frames (1.5\%) with errors above 10\%. On unseen geometries, where 35\% of the frames exceed 10\%, the same referral lowers the tail from 22.6\% to 15.0\%, and referring 50\% brings it to about 9\%, close to the oracle that knows the true errors. On unseen load patterns the spread-based referral is little better than random (21.4\%$\to$20.5\% at 20\%), so the workflow cannot by itself detect this kind of shift; a domain check on the load pattern, which is known before any analysis, is the obvious complement.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig_triage.pdf}
+\caption{Risk--coverage curves: 95th percentile of the moment error over the accepted predictions when the highest-scoring frames are referred to PyNite, for the ensemble spread, the equilibrium residual, random referral and an oracle ranking by the true error.}\label{fig:triage}
+\end{figure}
+
+\subsection{Uncertainty-driven adaptive FE data generation}\label{sec:adaptive}
+\input{adaptive_text}
+
+\subsection{Computational cost}\label{sec:cost}
+\input{cost_text}

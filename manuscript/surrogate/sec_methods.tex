@@ -1,0 +1,142 @@
+%% ---------------------------------------------------------------------------
+\section{Finite element data generation with PyNite}\label{sec:data}
+
+\subsection{Parametric frame family}
+The study considers planar, multi-storey, multi-bay moment-resisting frames with rigid beam--column joints, a family that is routinely re-analysed during preliminary design and assessment. A frame is defined by the number of storeys $n_s$ and bays $n_b$, the bay widths $L_b$, the storey heights $h_s$, Young's modulus $E$, the second moments of area of the columns ($I_{c,s}$) and beams ($I_{b,s}$) in each storey, the corresponding cross-sectional areas $A = I/r^2$ obtained from a sampled radius of gyration $r$, the base condition (fixed or pinned), the uniformly distributed gravity load $w_{s,b}$ on each beam and a lateral force $F_s$ at each floor. All columns of a storey share one section and column stiffness may decrease with height through a taper factor. Units are kN and m throughout. The sampling ranges are listed in Table~\ref{tab:ranges}; $E$ spans concrete-like to steel-like values so that the surrogate cannot rely on a fixed material.
+
+Three scenarios are generated (Fig.~\ref{fig:frames}):
+\begin{itemize}
+\item \emph{Training design space (ID).} $1\le n_s\le 5$, $1\le n_b\le 4$; the gravity load is uniform along each floor but varies between floors; the lateral profile is either uniform or inverted-triangular, in either direction.
+\item \emph{Unseen geometries (OOD-G).} Frames with $6$--$8$ storeys and/or $5$--$6$ bays, and in half of the cases a tall first storey ($4.5$--$6.0$\,m), all outside the training ranges.
+\item \emph{Unseen loading (OOD-L).} Training geometries subjected to pattern gravity loading, in which the live part of the load is randomly removed from individual bays, and to lateral profiles that were never seen in training (parabolic, or a single force at the roof).
+\end{itemize}
+The OOD-G set tests extrapolation in topology and size, the OOD-L set tests extrapolation in the load pattern; neither is used for training, model selection or early stopping.
+
+\begin{table}[t]
+\centering
+\caption{Sampling ranges of the frame family. $\mathcal{U}$: uniform, $\log\mathcal{U}$: log-uniform. Units: kN, m.}\label{tab:ranges}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{p{3.4cm}p{5.4cm}p{4.6cm}}
+\toprule
+Parameter & Training design space (ID) & Unseen scenarios \\
+\midrule
+Storeys $n_s$ & $\{1,\dots,5\}$ & OOD-G: $\{6,7,8\}$ or $n_b\in\{5,6\}$ \\
+Bays $n_b$ & $\{1,\dots,4\}$ & OOD-G: up to $6$ \\
+Bay width $L_b$ & $\mathcal{U}(3,9)$ & same \\
+Storey height $h_s$ & $\mathcal{U}(2.8,4.5)$ & OOD-G: first storey $\mathcal{U}(4.5,6.0)$ in 50\% \\
+Young's modulus $E$ (kN/m$^2$) & $\log\mathcal{U}(2.5\times10^7, 2.1\times10^8)$ & same \\
+Column $I_{c}$ at base (m$^4$) & $\log\mathcal{U}(5\times10^{-5},2\times10^{-3})$, taper $\mathcal{U}(0.5,1)$ & same \\
+Beam $I_{b,s}$ (m$^4$) & $\log\mathcal{U}(5\times10^{-5},2\times10^{-3})$ per storey & same \\
+Radius of gyration $r$ & $\mathcal{U}(0.08,0.30)$ (columns, beams) & same \\
+Base condition & fixed (70\%) / pinned (30\%) & same \\
+Gravity load $w$ (kN/m) & $\mathcal{U}(5,40)$ per floor, all bays & OOD-L: 30--60\% of $w$ in random bays \\
+Lateral profile & uniform or inverted triangle & OOD-L: parabolic or roof-only \\
+Roof lateral force (kN) & $\mathcal{U}(5,80)$, random sign & same \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\subsection{PyNite analyses and statics verification}
+Each frame is built as an \texttt{FEModel3D} in PyNite~\cite{pynite} (version~3.2.0 of the fork cited) with one Euler--Bernoulli member per column and beam segment. Out-of-plane translations and rotations are restrained at every node so that the 3D solver reproduces planar behaviour. The lateral and gravity loads are defined as two separate load cases, W and G, and solved by a single first-order linear analysis (\texttt{analyze\_linear}). For each case the nodal displacements $(u_x,u_y,\theta_z)$ and the global member end forces are extracted; the latter are converted to the basic forces of Section~\ref{sec:statics}. The wall-clock time of the complete PyNite call chain (model construction, analysis and result extraction) is recorded for every frame and later used for the cost comparison.
+
+As a guard against convention errors, every FE result is checked against an independent implementation of the frame statics (Section~\ref{sec:statics}): the out-of-balance nodal force computed from the PyNite member forces must vanish. All 7{,}200 analyses pass with residuals at round-off level (below $10^{-6}$ of the largest applied load; typically $10^{-11}$\,kN). The data comprise a candidate pool of 5{,}000 ID frames, 400 ID validation frames, and three test sets of 600 frames each (ID, OOD-G, OOD-L), generated with disjoint random seeds.
+
+%% ---------------------------------------------------------------------------
+\section{Mechanics-constrained surrogate}\label{sec:method}
+
+The surrogate maps the frame description to the full response field: all nodal displacements and the basic forces of all members. Three kinds of mechanics are built into it, in decreasing order of strictness: (i) exact constraints that hold for any network output (boundary conditions, homogeneity in the load intensities, nodal equilibrium after projection); (ii) mechanics-derived inputs that are exact statical quantities or classical approximations; and (iii) an inductive bias in the architecture (message passing on the structural graph).
+
+\subsection{Statics of the frame and the equilibrium constraint}\label{sec:statics}
+For member $e$ between nodes $i$ and $j$ with length $L_e$ and direction cosines $(c_e,s_e)$, the basic forces are $\mathbf{q}_e = [N_e, M_{i,e}, M_{j,e}]^{\mathsf T}$: the axial force (tension positive) and the two end moments acting on the member. For a member carrying a transverse distributed load $w_e$, the six local end forces are
+\begin{equation}
+\mathbf{f}_e = \mathbf{b}_e\mathbf{q}_e + \mathbf{f}^{0}_e, \qquad
+\mathbf{b}_e = \begin{bmatrix} -1 & 0 & 0\\ 0 & 1/L_e & 1/L_e \\ 0 & 1 & 0 \\ 1 & 0 & 0 \\ 0 & -1/L_e & -1/L_e \\ 0 & 0 & 1 \end{bmatrix},
+\end{equation}
+where $\mathbf{f}^{0}_e = -\tfrac{1}{2}w_eL_e\,[0,1,0,0,1,0]^{\mathsf T}$ is the simply supported particular solution. This parametrisation satisfies member equilibrium identically \cite{mcguire2000matrix}. Rotating to global axes and assembling at the nodes gives the nodal equilibrium equations at the $n_f$ free degrees of freedom (DOFs),
+\begin{equation}\label{eq:equilibrium}
+\mathbf{C}\,\mathbf{q} = \mathbf{d}, \qquad \mathbf{C}\in\mathbb{R}^{n_f\times 3m},\quad \mathbf{d} = \mathbf{P}_f - \mathbf{p}^0_f ,
+\end{equation}
+where $\mathbf{q}$ stacks the basic forces of all $m$ members, $\mathbf{P}_f$ are the applied nodal loads and $\mathbf{p}^0_f$ the assembled particular solutions. $\mathbf{C}$ is the equilibrium (statics) matrix. For a kinematically stable frame it has full row rank and $3m-n_f$ equals the degree of static indeterminacy, so Eq.~\eqref{eq:equilibrium} defines an affine set of dimension $3m-n_f>0$ that contains the exact FE solution but also every other statically admissible force field. Equilibrium alone therefore cannot determine the forces, which is precisely why a learned prior is needed; conversely, any force prediction that violates Eq.~\eqref{eq:equilibrium} is mechanically inadmissible. Support reactions follow from $\mathbf{q}$ at the restrained DOFs, so a force field satisfying Eq.~\eqref{eq:equilibrium} also satisfies global equilibrium. Assembling $\mathbf{C}$ costs $\mathcal{O}(m)$ and requires no stiffness matrix.
+
+\subsection{Dimensional analysis and exact load-case superposition}\label{sec:scaling}
+For a linear elastic frame the response is linear in the loads and inversely proportional to $E$. The surrogate enforces this exactly through dimensional analysis~\cite{buckingham1914pi}. With the mean storey height $H$ and the reference rigidity $EI_\mathrm{ref}=E\,\overline{I_c}$, each load case $c\in\{\mathrm{W},\mathrm{G}\}$ is scaled by its own intensity, the signed base shear $\lambda_\mathrm{W}=\sum_s F_s$ and the total gravity load $\lambda_\mathrm{G}=\sum_e |w_e|L_e$, and the response is written as
+\begin{equation}\label{eq:superposition}
+\begin{aligned}
+(u_x,u_y) &= \sum_{c} \frac{\lambda_c H^3}{EI_\mathrm{ref}}\,(\hat u_{x,c},\hat u_{y,c})(\boldsymbol{\pi}), &
+\theta_z &= \sum_{c} \frac{\lambda_c H^2}{EI_\mathrm{ref}}\,\hat\theta_{c}(\boldsymbol{\pi}),\\
+N &= \sum_c \lambda_c \hat N_c(\boldsymbol{\pi}), &
+M &= \sum_c \lambda_c H\,\hat M_c(\boldsymbol{\pi}),
+\end{aligned}
+\end{equation}
+where hats denote the network outputs and $\boldsymbol{\pi}$ is a set of dimensionless input groups: lengths divided by $H$, sections divided by $I_\mathrm{ref}$ (areas as $AH^2/I_\mathrm{ref}$), lateral loads divided by $\lambda_\mathrm{W}$ and gravity loads by $\lambda_\mathrm{G}$. Because $\boldsymbol{\pi}$ is invariant to the load magnitudes and to $E$, Eq.~\eqref{eq:superposition} is exactly homogeneous of degree one in each load-case intensity and of degree $-1$ in $E$, and reversing the lateral load reverses the lateral response exactly. Predicting the two cases separately also avoids a severe scaling problem: in the combined case the lateral sway is often orders of magnitude smaller than the gravity-induced quantities, so a single scale under-weights it. The ablation in Section~\ref{sec:ablation} quantifies this choice. Restrained DOFs are multiplied by zero, so the boundary conditions also hold exactly.
+
+\subsection{Mechanics-informed features}\label{sec:features}
+Each node carries 25 dimensionless features and each member 10. Beyond position, topology and section ratios, they include quantities from elementary statics that are exact and cost $\mathcal{O}(n)$: the storey shear $V_s=\sum_{k\ge s}F_k$, the overturning moment of the loads above the storey, and the gravity load carried by each column line (tributary, exact for simply supported beams). Two classical approximations are added: the beam-to-column stiffness ratio of each storey, $\rho_s = (n_b I_{b,s}/\bar L_b)/((n_b+1)I_{c,s}/h_s)$, and the shear-building drift estimate $\delta_s = V_s/k_s$ with $k_s=(n_b+1)\,12EI_{c,s}/h_s^3$ (or $3EI/h^3$ for a pinned first storey), together with its height-wise cumulative sum. The network learns the correction from these simple estimates to the FE response, which is a much smoother target than the response itself. The same features are given to all baselines.
+
+\subsection{Graph network}\label{sec:gnn}
+Frames of different size and topology are represented as graphs whose nodes are joints and whose edges are members, and processed with an encode--process--decode message passing network~\cite{battaglia2018relational,gilmer2017mpnn,sanchez2020learning,pfaff2021meshgraphnets}. Node and edge features are encoded by two-layer perceptrons (width 96, SiLU, layer normalisation). Each of the eight processing steps updates every edge from its own state and the states of its end nodes, $\mathbf{z}_e \leftarrow \mathbf{z}_e + \phi_e([\mathbf{z}_e,\mathbf{h}_i,\mathbf{h}_j])$, and every node from the sums of the messages of the members that start and end at it, kept separate so that the network can distinguish the two ends of a member, $\mathbf{h}_i \leftarrow \mathbf{h}_i + \phi_n([\mathbf{h}_i,\sum_{e:i=\mathrm{start}}\mathbf{z}_e,\sum_{e:i=\mathrm{end}}\mathbf{z}_e])$. Eight steps nearly cover the graph diameter of the training frames (at most nine members), and frame-level information is supplied in addition through the statics features. Decoders output six dimensionless displacements per node and six dimensionless basic forces per member (three per load case). The loss is the mean squared error of the outputs standardised per component, over free DOFs only. Training uses AdamW~\cite{loshchilov2019adamw} with a one-cycle learning-rate schedule (peak $2\times10^{-3}$), batches of 32 frames, gradient clipping at 1.0 and 150 epochs, implemented in PyTorch~\cite{paszke2019pytorch}. A variant with a soft equilibrium penalty $\|\mathbf{C}\hat{\mathbf{q}}_c-\mathbf{d}_c\|^2$ added to the loss is examined in the ablation.
+
+\subsection{Equilibrium projection}\label{sec:projection}
+A data-driven prediction $\hat{\mathbf{q}}$ will in general violate Eq.~\eqref{eq:equilibrium}. The proposed constraint layer replaces it with the closest statically admissible force field in a metric $\boldsymbol{\Sigma}^{-1}$:
+\begin{equation}\label{eq:projection}
+\mathbf{q}^\star = \arg\min_{\mathbf{C}\mathbf{q}=\mathbf{d}} (\mathbf{q}-\hat{\mathbf{q}})^{\mathsf T}\boldsymbol{\Sigma}^{-1}(\mathbf{q}-\hat{\mathbf{q}})
+= \hat{\mathbf{q}} + \boldsymbol{\Sigma}\mathbf{C}^{\mathsf T}\left(\mathbf{C}\boldsymbol{\Sigma}\mathbf{C}^{\mathsf T}\right)^{-1}\left(\mathbf{d}-\mathbf{C}\hat{\mathbf{q}}\right),
+\end{equation}
+which follows from the Karush--Kuhn--Tucker conditions of the equality-constrained quadratic programme~\cite{nocedal2006numerical}. It is applied separately to each load case in dimensionless form. Two metrics are compared: the Euclidean metric on the dimensionless forces ($\boldsymbol{\Sigma}=\mathbf{I}$), and the \emph{variance-weighted} metric $\boldsymbol{\Sigma}=\mathrm{diag}(\boldsymbol{\sigma}^2)$ built from the ensemble variance of each predicted force component (Section~\ref{sec:uq}), so that the components the model is least sure of absorb most of the correction. If $\hat{\mathbf{q}}$ is read as the mean of a Gaussian belief with covariance $\boldsymbol{\Sigma}$, Eq.~\eqref{eq:projection} is the exact posterior mean after conditioning on the equilibrium equations.
+
+\begin{proposition}\label{prop:projection}
+Let $\mathbf{q}_\mathrm{FE}$ be the exact solution, so that $\mathbf{C}\mathbf{q}_\mathrm{FE}=\mathbf{d}$. For any prediction $\hat{\mathbf{q}}$ and any symmetric positive definite $\boldsymbol{\Sigma}$, the projected forces satisfy
+$\|\mathbf{q}^\star-\mathbf{q}_\mathrm{FE}\|^2_{\boldsymbol{\Sigma}^{-1}} = \|\hat{\mathbf{q}}-\mathbf{q}_\mathrm{FE}\|^2_{\boldsymbol{\Sigma}^{-1}} - \|\hat{\mathbf{q}}-\mathbf{q}^\star\|^2_{\boldsymbol{\Sigma}^{-1}} \le \|\hat{\mathbf{q}}-\mathbf{q}_\mathrm{FE}\|^2_{\boldsymbol{\Sigma}^{-1}}$.
+\end{proposition}
+\begin{proof}
+$\mathbf{q}^\star$ is the $\boldsymbol{\Sigma}^{-1}$-orthogonal projection of $\hat{\mathbf{q}}$ onto the affine set $\mathcal{A}=\{\mathbf{q}:\mathbf{C}\mathbf{q}=\mathbf{d}\}$. Since $\mathbf{q}^\star-\mathbf{q}_\mathrm{FE}$ lies in $\ker\mathbf{C}$ and $\hat{\mathbf{q}}-\mathbf{q}^\star=\boldsymbol{\Sigma}\mathbf{C}^{\mathsf T}\boldsymbol{\mu}$ for some $\boldsymbol{\mu}$, their $\boldsymbol{\Sigma}^{-1}$-inner product is $\boldsymbol{\mu}^{\mathsf T}\mathbf{C}(\mathbf{q}^\star-\mathbf{q}_\mathrm{FE})=0$, and the identity follows from Pythagoras' theorem.
+\end{proof}
+The projection can therefore never increase the error measured in its own metric, and it removes exactly the part of the error that is visible to statics. It does not guarantee a reduction of every individual component (for example the end moments alone), which is why the choice of metric matters and is examined empirically. The projection needs one dense solve of size $n_f$ per load case, which for the frames considered here takes a fraction of a millisecond, and it is model-agnostic: it is applied below to the baselines as well.
+
+\subsection{Predictive uncertainty}\label{sec:uq}
+Epistemic uncertainty~\cite{derkiureghian2009aleatory} is estimated with a deep ensemble~\cite{lakshminarayanan2017ensembles} of $M=5$ networks that differ in initialisation and batch order and share the training data and normalisation. The ensemble mean is the prediction and the ensemble variance $\sigma^2$ of each output feeds the projection metric. For decisions at the level of a whole frame, the relative spread of the end moments,
+\begin{equation}\label{eq:score}
+s = \frac{\|\boldsymbol{\sigma}_M\|_2}{\|\hat{\mathbf{M}}\|_2},
+\end{equation}
+is used, where $\boldsymbol{\sigma}_M$ collects the physical standard deviations of all end moments. A second, label-free indicator is also examined: the equilibrium residual $\|\mathbf{C}\hat{\mathbf{q}}-\mathbf{d}\|/\|\mathbf{d}\|$ of the unprojected ensemble mean, which measures how far the raw prediction is from being statically admissible.
+
+%% ---------------------------------------------------------------------------
+\section{Uncertainty-guided workflow}\label{sec:workflow}
+
+The surrogate is embedded in a workflow with two uses of the uncertainty estimate (Fig.~\ref{fig:workflow}).
+
+\paragraph{Adaptive FE data generation} Training starts from $N_0$ randomly chosen frames of the candidate pool, analysed with PyNite. In each round an ensemble is trained, every remaining candidate is scored without any FE analysis, the $B$ highest-scoring candidates are analysed with PyNite and added to the training set. This is pool-based active learning~\cite{settles2009active} in the spirit of adaptive surrogate methods in structural reliability~\cite{bichon2008egra,echard2011akmcs}. Three acquisition rules are compared: random sampling, the ensemble variance (mean normalised variance over all outputs), and the equilibrium residual of the raw prediction. The candidates are labelled in advance for convenience, but a label is revealed to the learner only when the strategy requests that analysis, and the recorded PyNite time of each requested analysis is charged to the budget.
+
+\paragraph{FE referral at deployment} For a batch of new frames, all are first predicted and projected. Frames whose score $s$ (Eq.~\ref{eq:score}) is among the largest fraction $\alpha$ are sent to PyNite and their surrogate results discarded; the remaining predictions are accepted. The fraction $\alpha$ (or an equivalent threshold on $s$) sets the trade-off between cost and the worst accepted error, which is evaluated with risk--coverage curves~\cite{geifman2017selective}.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[node distance=4mm and 11mm, every node/.style={font=\footnotesize, align=center},
+  box/.style={draw, rounded corners=2pt, minimum height=9mm, text width=18mm, fill=blue!4},
+  fe/.style={box, fill=orange!10}, arr/.style={-{Stealth[length=2mm]}, thick}]
+\node[box] (param) {Frame parameters\\(geometry, sections,\\loads, supports)};
+\node[box, right=of param] (feat) {Dimensionless\\graph + statics\\features};
+\node[box, right=of feat] (gnn) {GNN ensemble\\(per load case)};
+\node[box, right=of gnn] (proj) {Superposition +\\equilibrium\\projection};
+\node[box, below=9mm of proj] (score) {Uncertainty\\score $s$};
+\node[box, below=9mm of gnn, fill=green!8] (accept) {Accept surrogate\\response};
+\node[fe, below=9mm of feat] (fe) {PyNite FE\\analysis};
+\node[fe, below=9mm of param] (train) {Training set\\(adaptive growth)};
+\draw[arr] (param) -- (feat); \draw[arr] (feat) -- (gnn); \draw[arr] (gnn) -- (proj);
+\draw[arr] (proj) -- (score);
+\draw[arr] (score) -- node[above, font=\scriptsize]{$s\le\tau$} (accept);
+\draw[arr] (score.south) -- ++(0,-4mm) -| node[pos=0.25, below]{$s>\tau$: refer} (fe.south);
+\draw[arr] (fe) -- (train);
+\draw[arr] (train.north) -- node[left]{retrain} (param.south);
+\end{tikzpicture}
+\caption{Proposed workflow. Exact mechanics (superposition, boundary conditions, equilibrium) is imposed around a learned graph ensemble; the ensemble spread decides which frames are analysed with PyNite, both while the training set is built and at deployment.}\label{fig:workflow}
+\end{figure}
+
+%% ---------------------------------------------------------------------------
+\section{Baselines and evaluation protocol}\label{sec:protocol}
+
+\paragraph{Baselines} Five baselines represent conventional regression and widely used machine learning: ridge regression~\cite{hoerl1970ridge} on the features (linear) and on all their pairwise products (quadratic), random forests~\cite{breiman2001rf} (200 trees), histogram gradient boosting~\cite{friedman2001gbm} (600 iterations, one model per output) and a three-layer perceptron (256 units per layer, early stopping), all from scikit-learn~\cite{pedregosa2011sklearn}. Because fixed-length regressors cannot ingest graphs of varying size, they predict per node (displacements, from the 25 node features) and per member (basic forces, from the 10 member features concatenated with the features of both end nodes). They receive the same dimensionless, superposition-split targets and the same hard boundary conditions as the graph network, so that the comparison isolates the learning model and the constraint layer rather than the preprocessing. The quadratic ridge model is fitted on a random subset of 30{,}000 rows to keep the design matrix in memory. All models are trained on the same first 3{,}000 frames of the ID pool.
+
+\paragraph{Metrics} All errors are computed per frame in physical units against PyNite and then summarised over the test set by the median and the 95th percentile. They are the relative $L_2$ errors of the horizontal displacements of all nodes ($e_{u_x}$), of all member end moments ($e_M$) and of all axial forces ($e_N$); the relative error of the largest inter-storey drift ratio ($e_\mathrm{drift}$) and of the largest absolute end moment ($e_{M,\max}$), which are the quantities that usually govern serviceability and member design; and the relative nodal out-of-balance force $\|\mathbf{r}\|/\|\mathbf{d}\|$ with $\mathbf{r}=\sum_c\lambda_c(\mathbf{C}\hat{\mathbf{q}}_c-\mathbf{d}_c)$.

@@ -1,0 +1,60 @@
+\documentclass[preprint,12pt]{elsarticle}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{adjustbox}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta}
+\usepackage[hidelinks]{hyperref}
+\usepackage{lineno}
+
+\newtheorem{proposition}{Proposition}
+\makeatletter\let\inputtable\@@input\makeatother
+\graphicspath{{figures/}}
+
+\journal{Engineering Structures}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{A mechanics-constrained surrogate modelling framework for rapid structural response prediction with adaptive finite element data generation}
+
+\author[1]{Karthik Research\corref{cor1}}
+\ead{karthikresearchworks@gmail.com}
+\cortext[cor1]{Corresponding author. Author names and affiliations are placeholders to be completed by the authors before submission.}
+\affiliation[1]{organization={Affiliation to be completed},
+            country={Country}}
+
+\input{abstract}
+
+\begin{keyword}
+Physics-informed machine learning \sep Surrogate model \sep Graph neural network \sep Equilibrium constraint \sep Deep ensemble \sep Active learning \sep Frame structures \sep Finite element analysis
+\end{keyword}
+
+\end{frontmatter}
+
+\input{sec_intro}
+\input{sec_methods}
+\input{sec_results}
+\input{sec_discussion}
+
+\section*{Data and code availability}
+All scripts used to generate the PyNite dataset, train the models, run the experiments and produce every figure and table are in the \texttt{research/surrogate} folder of the PyNite fork (\url{https://github.com/karthice1/Pynite}). The dataset is regenerated deterministically from the seeds in \texttt{generate\_dataset.py}.
+
+\section*{CRediT authorship contribution statement}
+To be completed by the authors.
+
+\section*{Declaration of competing interest}
+The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
+
+\section*{Declaration of generative AI and AI-assisted technologies in the manuscript preparation process}
+During the preparation of this work the authors used an AI assistant (Claude, Anthropic) to write the analysis code, run the experiments and draft the manuscript. All numerical results were produced by the released scripts. After using this tool, the authors reviewed and edited the content as needed and take full responsibility for the content of the published article.
+
+\bibliographystyle{elsarticle-num}
+\bibliography{references}
+
+\end{document}
