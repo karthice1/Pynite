@@ -86,7 +86,6 @@ def fig_parity(G, preds):
                 u, q = FT.physical(g, pr['u'], pr['q'])
                 top = g['t']['level'] == g['t']['level'].max()
                 roof_t.append(np.mean(g['u_true'][top, 0]) * 1e3); roof_p.append(np.mean(u[top, 0]) * 1e3)
-                np.argmax(np.abs(g['q_true'][:, 1:]))
                 M_t.append(np.abs(g['q_true'][:, 1:]).max()); M_p.append(np.abs(q[:, 1:]).max())
             axs[0, c].plot(roof_t, roof_p, mk, ms=2.5, alpha=0.6, color=COL[name], label=SHORT[name])
             axs[1, c].plot(M_t, M_p, mk, ms=2.5, alpha=0.6, color=COL[name], label=SHORT[name])
