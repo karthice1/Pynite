@@ -1,0 +1,19 @@
+Timings were measured serially on the otherwise idle machine (Section~\ref{sec:protocol}), five times for 200 frames of each test set (Table~\ref{tab:timing}). Besides PyNite, two other solvers were timed on the same frames for both load cases: OpenSeesPy and the vectorised sparse direct-stiffness solver written for the verification (Section~\ref{sec:validation}), which represents an optimised minimal FE pipeline for this problem class. A PyNite analysis of one frame (two load cases, including model construction and result extraction) costs $33.6\pm1.6$\,ms for ID frames and $98.0\pm4.0$\,ms for the larger OOD-G frames. Evaluated in batches, the proposed surrogate costs 2.7\,ms (ID and OOD-L) and 7.0\,ms (OOD-G) per frame, including the Python feature construction (the largest part), the five-network ensemble and the projection (0.1--0.6\,ms), i.e.\ 12--14 times less than PyNite. For a single frame evaluated in isolation the overhead of the network framework dominates and the surrogate (20--87\,ms) is not faster than PyNite.
+
+\begin{table}[t]
+\centering
+\caption{Wall-clock time per frame (ms; mean $\pm$ standard deviation over five repetitions of 200 frames, 4-core 2.1\,GHz CPU, networks evaluated with 4 threads): PyNite, OpenSeesPy and the sparse direct-stiffness solver (DSM) for both load cases; the proposed surrogate evaluated in batches and for one frame alone; batched speed-up relative to PyNite and to the DSM solver.}\label{tab:timing}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{lrrrrrrr}
+\toprule
+Set & PyNite & OpenSeesPy & DSM & Surrogate (batched) & Surrogate (single) & vs PyNite & vs DSM\\
+\midrule
+\inputtable{tables/tab_timing.tex}
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+The comparison with an optimised solver changes the picture. OpenSeesPy and the sparse direct-stiffness solver analyse a frame in 1.2--2.8\,ms, faster than the batched surrogate on every test set (speed-up of the surrogate over the DSM solver 0.34--0.65). Most of the cost of a PyNite analysis is the construction of the general three-dimensional model and the extraction of results through its object interface, not the solution of the linear system, which for frames with at most a few hundred DOFs takes well under a millisecond. Against PyNite, the batched surrogate pays back its one-off cost (about 41\,min of CPU time to train the five networks, while the 3{,}000 training analyses cost about 2\,min) only after roughly $8\times10^4$ ID frames without referral and $1.1\times10^5$ with 20\% of the frames referred to PyNite; against an optimised solver it never does. For first-order linear analysis of frames of this size the surrogate therefore offers no speed advantage over a well-implemented FE solver. Its value in this setting lies elsewhere: a differentiable, batched map from the frame parameters to the full response with a calibrated referral rule, which is useful for gradient-based design and for screening, and a template for analyses that are genuinely expensive (nonlinear, dynamic, or much larger models), which this paper does not test.

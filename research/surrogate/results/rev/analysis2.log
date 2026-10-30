@@ -1,0 +1,18 @@
+run 0 {'test_id': 0.0236, 'test_oodG': 0.0751, 'test_oodL': 0.0873, 'test_real': 0.02}
+run 1 {'test_id': 0.0234, 'test_oodG': 0.074, 'test_oodL': 0.0918, 'test_real': 0.0211}
+run 2 {'test_id': 0.0235, 'test_oodG': 0.0761, 'test_oodL': 0.0906, 'test_real': 0.0199}
+run 3 {'test_id': 0.024, 'test_oodG': 0.0804, 'test_oodL': 0.0846, 'test_real': 0.0187}
+run 4 {'test_id': 0.0239, 'test_oodG': 0.0768, 'test_oodL': 0.0852, 'test_real': 0.0198}
+== runs done in 33s
+Proposed, single network (depth 8) {'test_id': (0.0669, 0.0365), 'test_oodG': (0.1408, 0.1127), 'test_oodL': (0.0806, 0.0997), 'test_real': (0.0723, 0.0329)}
+Depth 4 {'test_id': (0.0914, 0.0418), 'test_oodG': (0.2008, 0.1252), 'test_oodL': (0.108, 0.1045), 'test_real': (0.1026, 0.0398)}
+Depth 12 {'test_id': (0.0625, 0.0363), 'test_oodG': (0.1305, 0.1123), 'test_oodL': (0.077, 0.0988), 'test_real': (0.0635, 0.0338)}
+Depth 16 {'test_id': (0.0584, 0.0359), 'test_oodG': (0.118, 0.1116), 'test_oodL': (0.0747, 0.1014), 'test_real': (0.0619, 0.0341)}
+Global pooling {'test_id': (0.0649, 0.0366), 'test_oodG': (0.1113, 0.1093), 'test_oodL': (0.0827, 0.1032), 'test_real': (0.0645, 0.0344)}
+Conventional GNN (physical inputs) {'test_id': (0.1432, 0.0538), 'test_oodG': (0.342, 0.169), 'test_oodL': (0.2218, 0.084), 'test_real': (0.2792, 0.0426)}
+StructGNN-style (storey pseudo nodes) {'test_id': (0.0626, 0.0415), 'test_oodG': (0.1225, 0.1185), 'test_oodL': (0.0707, 0.0968), 'test_real': (0.0737, 0.0388)}
+Displacement-only + force recovery {'test_id': (0.074, 0.2015), 'test_oodG': (0.1474, 0.7466), 'test_oodL': (0.0868, 0.2598), 'test_real': (0.0735, 0.0597)}
+Displacement-only + stiffness residual (Leng-style) {'test_id': (0.4822, 0.4602), 'test_oodG': (0.5964, 0.7588), 'test_oodL': (0.5422, 0.4875), 'test_real': (0.4637, 0.1475)}
+Soft equilibrium penalty {'test_id': (0.0642, 0.0364), 'test_oodG': (0.1369, 0.1129), 'test_oodL': (0.0813, 0.0995), 'test_real': (0.0703, 0.0339)}
+No load-case superposition {'test_id': (0.1248, 0.0549), 'test_oodG': (0.2601, 0.1484), 'test_oodL': (0.1552, 0.1003), 'test_real': (0.3485, 0.0417)}
+== graphs done in 95s

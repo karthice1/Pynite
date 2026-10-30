@@ -1,0 +1,26 @@
+The adaptive study starts from 200 randomly chosen PyNite analyses and adds 200 per round up to 1{,}200, training a three-network ensemble (100 epochs) in every round. Each acquisition rule is repeated with five random initial sets (seeds 0--4; the initial set and the training seeds of a given seed are the same for all rules). Figure~\ref{fig:adaptive} shows the mean and standard deviation over the five repetitions and Table~\ref{tab:adaptive} the errors at the final budget. Because these ensembles are smaller and trained on fewer frames for fewer epochs, their errors are higher than those of the main model.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{fig_adaptive.pdf}
+\caption{Moment error (median, top; 95th percentile, bottom) versus the number of PyNite analyses used for training, for four acquisition rules. Lines: mean over five repetitions; bands: $\pm$ one standard deviation. Predictions include the variance-weighted projection.}\label{fig:adaptive}
+\end{figure}
+
+\begin{table}[t]
+\centering
+\caption{Moment errors (\%) after 1{,}200 PyNite analyses (mean $\pm$ standard deviation over five repetitions; number of repetitions in brackets) and number of analyses after which the mean median error first reaches the final error of random sampling (--: not reached).}\label{tab:adaptive}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{lrrrrrrrrr}
+\toprule
+& \multicolumn{3}{c}{In-distribution} & \multicolumn{3}{c}{Unseen geometries} & \multicolumn{3}{c}{Unseen loading}\\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}
+Acquisition rule & $e_M$ & $e_M$ p95 & $n$ & $e_M$ & $e_M$ p95 & $n$ & $e_M$ & $e_M$ p95 & $n$\\
+\midrule
+\inputtable{tables/tab_adaptive.tex}
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+Acquiring frames by the equilibrium residual of the raw prediction gives the lowest errors on every test set, and the advantage is largest where it matters most, on unseen geometries: after 1{,}200 analyses the median moment error is $12.1\pm0.7\%$ against $14.8\pm0.2\%$ for random sampling, and the 95th percentile $29.5\pm4.2\%$ against $36.2\pm1.4\%$. Equilibrium-residual acquisition reaches the final median error of random sampling after 600 analyses on unseen geometries and after 1{,}000 on unseen loading, i.e.\ with half and five sixths of the FE budget (the diversity-aware variant after 800 in both cases); on the ID set the gain is small ($5.1\pm0.2\%$ against $5.4\pm0.1\%$) and the random-sampling level is reached only at the final budget. Acquisition by the ensemble variance is worse than random sampling on all sets (OOD-G $19.0\pm1.1\%$, p95 $50\pm5\%$). The acquired frames explain the difference. Compared with random sampling (on average 3.0 storeys, 2.5 bays, 70\% fixed bases; seeds 0 and 2), variance acquisition picks small frames (2.6--2.7 storeys, 1.9 bays) with many pinned bases (50\%), for which the dimensionless outputs vary most between ensemble members but which teach little about larger frames. Residual acquisition picks taller and more flexible frames (4.1--4.2 storeys, 55\% fixed bases, median largest drift ratio 1.6\% against 0.5\%), i.e.\ the frames whose force predictions are furthest from equilibrium, and these are also the most informative for the unseen taller geometries. The diversity-aware variant gives the same median errors as plain residual acquisition (OOD-G $12.1\pm0.2\%$, OOD-L $10.3\pm0.4\%$) with a smaller spread between repetitions and slightly lower 95th percentiles; at a batch size of 200 from a pool of 5{,}000, redundancy within a batch is therefore not the limiting factor. These differences are larger than the variation between repetitions, but with five repetitions and one pool they should be read as evidence for this frame family, not as a general ranking of acquisition rules.

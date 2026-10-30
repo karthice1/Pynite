@@ -1,0 +1,64 @@
+\documentclass[preprint,12pt]{elsarticle}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{adjustbox}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta}
+\usepackage[hidelinks]{hyperref}
+\usepackage{lineno}
+
+\newtheorem{proposition}{Proposition}
+\makeatletter\let\inputtable\@@input\makeatother
+\graphicspath{{figures/}}
+\setlength{\emergencystretch}{3em}
+
+\journal{Engineering Structures}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{Equilibrium-projected graph neural network surrogates for linear frame analysis: uncertainty-aware FE referral and residual-guided adaptive learning}
+
+\author[1]{Karthik Research\corref{cor1}}
+\ead{karthikresearchworks@gmail.com}
+\cortext[cor1]{Corresponding author. Author names and affiliations are placeholders to be completed by the authors before submission.}
+\affiliation[1]{organization={Affiliation to be completed},
+            country={Country}}
+
+\input{abstract}
+
+\begin{keyword}
+Graph neural network \sep Surrogate model \sep Static equilibrium \sep Deep ensemble \sep Conformal prediction \sep Out-of-distribution detection \sep Active learning \sep Frame structures
+\end{keyword}
+
+\end{frontmatter}
+
+\input{sec_intro}
+\input{sec_methods}
+\input{sec_results}
+\input{sec_discussion}
+
+
+\section*{Data and code availability}
+All scripts used to generate and verify the PyNite dataset, train the models, run the experiments and produce every figure and table are in the \texttt{research/surrogate} folder of the PyNite fork (\url{https://github.com/karthice1/Pynite}), together with pinned package versions (\texttt{requirements.txt}), the weights of the reported ensemble (\texttt{weights/}) and a one-command reproduction script (\texttt{reproduce.sh}; a \texttt{--quick} option rebuilds all tables and figures from the released weights and result summaries without training any network). The datasets are regenerated deterministically from the seeds in the scripts. [An archived release with a Zenodo DOI will be added before publication.]
+
+\section*{CRediT authorship contribution statement}
+To be completed by the authors.
+
+\section*{Declaration of competing interest}
+The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
+
+\section*{Declaration of generative AI and AI-assisted technologies in the manuscript preparation process}
+During the preparation of this work the authors used an AI assistant (Claude, Anthropic) to write the analysis code, run the experiments and draft the manuscript. All numerical results were produced by the released scripts. After using this tool, the authors reviewed and edited the content as needed and take full responsibility for the content of the published article.
+
+\input{appendix}
+
+\bibliographystyle{elsarticle-num}
+\bibliography{references}
+
+\end{document}

@@ -1,0 +1,38 @@
+{
+ "test_id": {
+  "n_frames": 200,
+  "fe_mean_s": 0.037527873360013474,
+  "fe_median_s": 0.03014791149962548,
+  "features_per_frame_s": 0.001519346029999724,
+  "inference_per_frame_s": 0.00101124628999969,
+  "projection_per_frame_s": 0.00012916629500068667,
+  "single_frame_end_to_end_s": 0.016811025520182737,
+  "batched_per_frame_s": 0.0026597586150001007
+ },
+ "test_oodG": {
+  "n_frames": 200,
+  "fe_mean_s": 0.10468599338505555,
+  "fe_median_s": 0.09809383549963968,
+  "features_per_frame_s": 0.00383413401499638,
+  "inference_per_frame_s": 0.002513367814999583,
+  "projection_per_frame_s": 0.0006137566300003527,
+  "single_frame_end_to_end_s": 0.08226104096011114,
+  "batched_per_frame_s": 0.006961258459996315
+ },
+ "test_oodL": {
+  "n_frames": 200,
+  "fe_mean_s": 0.035105315269947826,
+  "fe_median_s": 0.03054059599980974,
+  "features_per_frame_s": 0.002475134520000211,
+  "inference_per_frame_s": 0.0010514880099981383,
+  "projection_per_frame_s": 0.00014517086499836297,
+  "single_frame_end_to_end_s": 0.02785511514008249,
+  "batched_per_frame_s": 0.003671793394996712
+ },
+ "train": {
+  "one_network_s": 487.29653250500087,
+  "ensemble_s_est": 2436.4826625250043,
+  "fe_training_set_s": 113.04997549499603,
+  "threads": 4
+ }
+}

@@ -1,0 +1,6 @@
+Linear ridge 0s {'test_id': 0.3809, 'test_oodG': 0.8225, 'test_oodL': 0.4427, 'test_real': 0.3551}
+Quadratic ridge 8s {'test_id': 0.1842, 'test_oodG': 0.4457, 'test_oodL': 0.2671, 'test_real': 0.1474}
+Random forest 119s {'test_id': 0.1688, 'test_oodG': 0.3249, 'test_oodL': 0.2417, 'test_real': 0.1354}
+Gradient boosting 2398s {'test_id': 0.1004, 'test_oodG': 0.2247, 'test_oodL': 0.1727, 'test_real': 0.0873}
+MLP 159s {'test_id': 0.1078, 'test_oodG': 0.221, 'test_oodL': 0.1683, 'test_real': 0.0867}
+== baselines done in 2863s
