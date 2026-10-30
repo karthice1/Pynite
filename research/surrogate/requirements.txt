@@ -1,0 +1,8 @@
+# Exact versions used for every result in the manuscript (Python 3.13, Linux x86_64, CPU only).
+# PyNite itself is installed from this repository: pip install -e ../..
+numpy==2.5.3
+scipy==1.18.1
+scikit-learn==1.9.1
+torch==2.15.0
+matplotlib==3.11.2
+openseespy==3.8.0.0

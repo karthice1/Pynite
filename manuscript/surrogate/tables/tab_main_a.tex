@@ -1,0 +1,19 @@
+\multicolumn{7}{l}{\textit{In-distribution (ID) (600 frames)}}\\
+Linear ridge & 53.5 & 56.0 & 38.1 & 61.5 & 20.6 & $4.3\times10^{-1}$\\
+Quadratic ridge & 51.0 & 66.0 & 18.4 & 40.4 & 5.7 & $1.0\times10^{-1}$\\
+Random forest & 33.6 & 40.5 & 16.9 & 31.1 & 6.9 & $1.4\times10^{-1}$\\
+Gradient boosting & 29.0 & 30.2 & 10.0 & 22.3 & 3.2 & $7.4\times10^{-2}$\\
+MLP & 39.5 & 59.9 & 10.8 & 25.4 & 4.9 & $1.2\times10^{-1}$\\
+GNN ensemble, raw forces & \textbf{4.5} & \textbf{4.9} & 2.5 & \textbf{5.9} & 1.8 & $4.2\times10^{-2}$\\
+Proposed (ensemble + var.-weighted proj.) & \textbf{4.5} & \textbf{4.9} & \textbf{2.4} & 6.5 & \textbf{0.6} & $<10^{-12}$\\
+\quad Proposed, 5 independent runs (mean $\pm$ s.d.) & 4.5 $\pm$ 0.2 & 4.6 $\pm$ 0.2 & 2.4 $\pm$ 0.0 & 6.6 $\pm$ 0.1 & 0.6 $\pm$ 0.0 & --\\
+\midrule
+\multicolumn{7}{l}{\textit{Design-driven frames (DES) (300 frames)}}\\
+Linear ridge & 118.3 & 138.4 & 35.5 & 60.6 & 15.1 & $3.7\times10^{-1}$\\
+Quadratic ridge & 93.3 & 150.3 & 14.7 & 25.7 & 4.7 & $7.8\times10^{-2}$\\
+Random forest & 42.9 & 54.0 & 13.5 & 20.7 & 4.9 & $9.6\times10^{-2}$\\
+Gradient boosting & 37.3 & 55.3 & 8.7 & 15.1 & 2.4 & $5.8\times10^{-2}$\\
+MLP & 45.2 & 66.9 & 8.7 & 12.5 & 4.0 & $10.0\times10^{-2}$\\
+GNN ensemble, raw forces & \textbf{4.4} & \textbf{3.0} & 2.2 & 4.6 & 1.4 & $3.3\times10^{-2}$\\
+Proposed (ensemble + var.-weighted proj.) & \textbf{4.4} & \textbf{3.0} & \textbf{2.0} & \textbf{3.4} & \textbf{0.3} & $<10^{-12}$\\
+\quad Proposed, 5 independent runs (mean $\pm$ s.d.) & 4.5 $\pm$ 0.1 & 3.7 $\pm$ 0.4 & 2.0 $\pm$ 0.1 & 3.6 $\pm$ 0.2 & 0.3 $\pm$ 0.0 & --\\

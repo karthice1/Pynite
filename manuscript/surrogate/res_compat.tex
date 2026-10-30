@@ -1,0 +1,20 @@
+\subsection{Displacement--force compatibility}\label{sec:compatresults}
+
+\begin{table}[t]
+\centering
+\caption{Equilibrium and compatibility of the force fields of the proposed ensemble (ensemble 0): medians over the test frames (\%, residuals as fractions). $r_\mathrm{compat}$ and $r_{\mathrm{compat},M}$: Eq.~\eqref{eq:compat}; eq.\ res.: relative nodal out-of-balance force. The displacements are the same in all rows.}\label{tab:compat}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{lrrrrrr}
+\toprule
+Force field & $e_M$ & $e_N$ & $e_V$ & Eq.\ res. & $r_\mathrm{compat}$ & $r_{\mathrm{compat},M}$ \\
+\midrule
+\inputtable{tables/tab_compat.tex}
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+Table~\ref{tab:compat} answers the question whether the projection makes the force field more or less compatible with the predicted displacements. The forces implied by the predicted displacements differ substantially from the predicted forces: the median compatibility residual of the raw ensemble is 47\% on the ID set and 87\% on unseen geometries. Most of this comes from the axial forces, because a displacement error of a few per cent, multiplied by the large axial stiffness $EA/L$, produces axial forces that are far from the true ones; restricted to the end moments the residual is 11\% (ID), 40\% (OOD-G), 18\% (OOD-L) and 4\% (DES). The equilibrium projection hardly changes these numbers. With the variance-weighted metric, $r_{\mathrm{compat},M}$ increases in 68\%, 67\%, 74\% and 69\% of the ID, OOD-G, OOD-L and DES frames, but only by a median factor of 1.01--1.04; with the Euclidean metric the increase is larger (median factor 1.03--1.34) and affects 82--93\% of the frames. The projection therefore slightly increases the incompatibility, as expected for a correction that acts on the forces alone, and the size of the increase follows the size of the force correction.
+
+Recovering the forces from the predicted displacements, as in displacement-based surrogates~\cite{leng2026mcgnn}, gives zero compatibility residual by construction, but much less accurate forces and large equilibrium violations: the median moment error rises from 2.4\% to 11.2\% (ID) and from 7.5\% to 44.2\% (OOD-G), the axial-force errors reach 53\% and 183\%, and the out-of-balance force exceeds the applied load (median residual 1.7 and 9.8). Member forces are second derivatives of the displacement field, so the differentiation amplifies the displacement errors. In this setting, predicting the forces directly and imposing equilibrium is far more accurate than imposing compatibility, which is why the proposed workflow enforces the former and only measures the latter. A field that satisfies both is the FE solution. Using the predicted displacements as the starting point of a Jacobi-preconditioned conjugate-gradient solve of the full stiffness equations did not reduce the number of iterations to a relative residual of $10^{-8}$ (median 27 iterations for ID frames with and without the warm start; 72 for OOD-G), because the initial residual is dominated by the stiff axial DOFs: at the median it is 1.4 times (ID) and 12 times (OOD-G) the norm of the load vector, i.e.\ larger than the residual of a zero initial guess. A compatibility-aware correction that would help in practice would have to treat the axial and flexural parts separately and is left for future work.

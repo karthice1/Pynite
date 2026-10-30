@@ -1,0 +1,56 @@
+%% ---------------------------------------------------------------------------
+\appendix
+
+\section{Feature dictionary}\label{app:features}
+Table~\ref{tab:features} lists the node and member features of the proposed network. Notation: node $k$ at floor level $l$ (0 at the base) on column line $c$; $sb=l-1$ and $sa=l$ are the storeys below and above the node; $s_\mathrm{ref}=sa$ if $l<n_s$ and $sb$ otherwise; $\lambda_\mathrm{W}$, $\lambda_\mathrm{G}$, $H$, $I_\mathrm{ref}$ as in Section~\ref{sec:scaling}; $u_0=\lambda_\mathrm{W}H^3/(EI_\mathrm{ref})$. A feature that refers to a missing neighbour (e.g.\ the column below a base node) is set to zero. For the combined-case ablation, $\lambda_\mathrm{W}$ and $\lambda_\mathrm{G}$ are both replaced by $|\lambda_\mathrm{W}|+\lambda_\mathrm{G}$.
+
+\begin{table}[h]
+\centering
+\caption{Feature dictionary of the proposed network (25 node and 10 member features). Exact: statically exact quantity. Approx.: classical approximation.}\label{tab:features}
+\scriptsize
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{lll}
+\toprule
+Name & Definition & Type \\
+\midrule
+\multicolumn{3}{l}{\emph{Node features}} \\
+\texttt{lev}, \texttt{line} & $l/n_s$, $c/\max(n_b,1)$ & topology \\
+\texttt{is\_base}, \texttt{is\_ext} & $[l=0]$, $[c\in\{0,n_b\}]$ & topology \\
+\texttt{x}, \texttt{y} & $X_k/H$, $Y_k/H$ & geometry \\
+\texttt{n\_st}, \texttt{n\_bay} & $n_s/5$, $n_b/4$ & topology \\
+\texttt{fixed} & 1 for fixed bases, 0 for pinned & supports \\
+\texttt{Px} & $P_{x,k}/\lambda_\mathrm{W}$ & load \\
+\texttt{V\_above} & $V_{s_\mathrm{ref}}/\lambda_\mathrm{W}$, $V_s=\sum_{k\ge s}F_k$ & exact statics \\
+\texttt{OTM\_above} & $\sum_{k\ge s}F_k(Y_{k+1}-Y_s)/(\lambda_\mathrm{W}H)$ at $s=s_\mathrm{ref}$ & exact statics \\
+\texttt{G\_above} & tributary gravity load of column line $c$ from floors $\ge s_\mathrm{ref}+1$, $/\lambda_\mathrm{G}$ & approx.\ (simply supported beams) \\
+\texttt{Ic\_below}, \texttt{Ic\_above} & $I_{c,sb}/I_\mathrm{ref}$, $I_{c,sa}/I_\mathrm{ref}$ & section \\
+\texttt{Ib\_left}, \texttt{Ib\_right} & $I_{b,sb}/I_\mathrm{ref}$ if a beam frames in from the left / right & section \\
+\texttt{Lb\_left}, \texttt{Lb\_right} & bay widths left / right of the line, $/H$ & geometry \\
+\texttt{h\_below}, \texttt{h\_above} & $h_{sb}/H$, $h_{sa}/H$ & geometry \\
+\texttt{rho\_level} & $\rho_{s_\mathrm{ref}}=(n_bI_{b,s}/\bar L_b)/((n_b+1)I_{c,s}/h_s)$ & approx.\ (stiffness ratio) \\
+\texttt{drift\_sb} & $\delta_{s_\mathrm{ref}}/u_0$, $\delta_s=V_s/k_s$, $k_s=(n_b+1)12EI_{c,s}/h_s^3$ ($3EI/h^3$ pinned base) & approx.\ (shear building) \\
+\texttt{disp\_sb} & $\sum_{k\le sb}\delta_k/u_0$ & approx.\ (shear building) \\
+\texttt{w\_trib} & tributary gravity load of floor $l$ on line $c$, $/\lambda_\mathrm{G}$ & approx.\ \\
+\midrule
+\multicolumn{3}{l}{\emph{Member features}} \\
+\texttt{is\_col}, \texttt{is\_beam} & member type indicators & topology \\
+\texttt{storey} & $s/n_s$ & topology \\
+\texttt{L}, \texttt{I}, \texttt{A} & $L/H$, $I/I_\mathrm{ref}$, $AH^2/I_\mathrm{ref}$ & geometry, section \\
+\texttt{wL} & $w_eL_e/\lambda_\mathrm{G}$ (signed) & load \\
+\texttt{rho\_storey}, \texttt{V\_storey}, \texttt{drift\_sb} & $\rho_s$, $V_s/\lambda_\mathrm{W}$, $\delta_s/u_0$ of the member's storey & as above \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\section{Sampling procedure}\label{app:sampling}
+Each frame of the ID, OOD-G and OOD-L sets is drawn with its own seed by the following steps (\texttt{frames.sample\_frame}); the DES frames follow Section~\ref{sec:data} (\texttt{frames.sample\_design\_frame}).
+\begin{enumerate}
+\item Topology. ID and OOD-L: $n_s\sim\mathcal{U}\{1,\dots,5\}$, $n_b\sim\mathcal{U}\{1,\dots,4\}$. OOD-G: with probability 0.5, $n_s\sim\mathcal{U}\{6,7,8\}$ and $n_b\sim\mathcal{U}\{1,\dots,6\}$; otherwise $n_s\sim\mathcal{U}\{1,\dots,8\}$ and $n_b\sim\mathcal{U}\{5,6\}$.
+\item Geometry. $L_b\sim\mathcal{U}(3,9)$ per bay and $h_s\sim\mathcal{U}(2.8,4.5)$ per storey; OOD-G replaces $h_1$ by $\mathcal{U}(4.5,6.0)$ with probability 0.5.
+\item Material and sections. $E\sim\log\mathcal{U}(2.5\times10^7,2.1\times10^8)$; base column $I_{c,1}\sim\log\mathcal{U}(5\times10^{-5},2\times10^{-3})$ with $I_{c,s}=I_{c,1}t^{(s-1)/\max(n_s-1,1)}$, $t\sim\mathcal{U}(0.5,1)$; $I_{b,s}\sim\log\mathcal{U}(5\times10^{-5},2\times10^{-3})$ independently per storey; $r_c,r_b\sim\mathcal{U}(0.08,0.30)$ and $A=I/r^2$.
+\item Supports. Fixed bases with probability 0.7, pinned otherwise.
+\item Gravity load. $w_s\sim\mathcal{U}(5,40)$ per floor on all bays. OOD-L: each bay keeps $w_s$ with probability 0.5 and otherwise only a dead part $d_s w_s$, $d_s\sim\mathcal{U}(0.3,0.6)$.
+\item Lateral load. Roof force $F_\mathrm{roof}\sim\mathcal{U}(5,80)$; profile uniform or inverted triangular (ID, OOD-G) or parabolic or roof-only (OOD-L), each with equal probability; the sign of all floor forces is reversed with probability 0.5.
+\item Analysis. PyNite linear analysis of load cases W and G; the statics check of Section~\ref{sec:data} must pass.
+\end{enumerate}

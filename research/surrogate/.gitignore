@@ -2,3 +2,4 @@ data/
 results/*.pkl
 results_*.log
 __pycache__/
+results/rev/*.pkl

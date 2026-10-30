@@ -112,6 +112,49 @@ def sample_frame(rng: np.random.Generator, scenario: str = 'train') -> dict:
                 profile=str(kind), scenario=scenario)
 
 
+def sample_design_frame(rng: np.random.Generator) -> dict:
+    """Design-driven steel moment frame with correlated sections and loads.
+
+    Used only as an independent test set ('test_real'). Geometry follows
+    common office-building proportions; gravity loads come from area loads on
+    a tributary width (1.2 D + 1.0 L); wind forces come from a uniform pressure
+    on the facade; beams are sized for an L/360 live-load deflection and for
+    a simple-span moment demand, columns for an h/400 storey-drift target
+    under wind (shear-building estimate with a 0.5 beam-flexibility factor)
+    and change section every two storeys. Sections are clipped to the
+    training ranges so that only the parameter *correlations* are new.
+    """
+    E = 200e6
+    n_st, n_bay = int(rng.integers(1, 6)), int(rng.integers(1, 5))
+    bays = rng.choice([6.0, 7.5, 9.0], n_bay)
+    heights = np.full(n_st, rng.uniform(3.2, 3.8))
+    heights[0] = rng.uniform(4.0, 4.5)
+    trib = rng.uniform(4.0, 6.0)                     # tributary width of the frame (m)
+    D, Lq = rng.uniform(3.5, 5.0), rng.uniform(2.0, 3.0)   # kPa
+    w_floor = np.full(n_st, (1.2 * D + 1.0 * Lq) * trib)
+    w_floor[-1] = (1.2 * (D - 1.0) + 1.0 * 1.0) * trib    # lighter roof
+    w = np.repeat(w_floor[:, None], n_bay, axis=1)
+    qw = rng.uniform(0.6, 1.2)                       # wind pressure (kPa)
+    F = np.array([qw * trib * ((heights[s] + (heights[s + 1] if s + 1 < n_st else 0)) / 2) for s in range(n_st)])
+    if rng.random() < 0.5:
+        F = -F
+    Lmax = bays.max()
+    I_defl = 5 * Lq * trib * Lmax ** 4 / (384 * E * Lmax / 360)
+    I_str = (w_floor.max() * Lmax ** 2 / 8) / 250e3 * 0.15            # M / fy * (d/2) with d ~ 0.3 m
+    Ib = np.full(n_st, max(I_defl, I_str))
+    ncol = n_bay + 1
+    V = np.array([np.abs(F[s:]).sum() for s in range(n_st)])
+    Ic = np.array([V[s] * heights[s] ** 3 / (0.5 * 12 * E * ncol * heights[s] / 400) for s in range(n_st)])
+    for s in range(0, n_st, 2):                      # one section per two storeys
+        Ic[s:s + 2] = Ic[s:s + 2].max()
+    Ic = np.clip(np.maximum(Ic, 0.3 * Ib), I_COL_RANGE[0], I_COL_RANGE[1])
+    Ib = np.clip(Ib, I_BEAM_RANGE[0], I_BEAM_RANGE[1])
+    rc, rb = 0.16, 0.18
+    return dict(n_st=n_st, n_bay=n_bay, bays=bays, heights=heights, E=E, Ic=Ic, Ib=Ib,
+                Ac=Ic / rc ** 2, Ab=Ib / rb ** 2, fixed_base=bool(rng.random() < 0.8), w=w, F=F,
+                profile='wind', scenario='real')
+
+
 # ---------------------------------------------------------------------------
 # Topology
 # ---------------------------------------------------------------------------

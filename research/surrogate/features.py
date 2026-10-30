@@ -20,6 +20,10 @@ NODE_FEATS = ['lev', 'line', 'is_base', 'is_ext', 'x', 'y', 'n_st', 'n_bay', 'fi
               'rho_level', 'drift_sb', 'disp_sb', 'w_trib']
 EDGE_FEATS = ['is_col', 'is_beam', 'storey', 'L', 'I', 'A', 'wL', 'rho_storey',
               'V_storey', 'drift_sb']
+# Conventional graph-learning inputs (no statics features, no load scaling):
+# physical coordinates, supports and loads; log section properties.
+NODE_FEATS_RAW = ['x', 'y', 'is_base', 'fixed', 'Px']
+EDGE_FEATS_RAW = ['is_col', 'is_beam', 'L', 'log10E', 'log10I', 'log10A', 'w']
 
 
 def graph(rec: dict, mode: str = 'split') -> dict:
@@ -29,6 +33,9 @@ def graph(rec: dict, mode: str = 'split') -> dict:
     (G) cases are scaled by their own intensities lamW (signed base shear) and
     lamG (total gravity load) and predicted as separate unit responses.
     mode='total': a single combined case scaled by lamW_abs + lamG (ablation).
+    mode='raw': conventional GNN inputs and targets in physical units (single
+    combined case, no statics features, no dimensional scaling); the network
+    normaliser then standardises inputs and targets over the training set.
     """
     p = rec['p']
     t = F.topology(p)
@@ -44,6 +51,8 @@ def graph(rec: dict, mode: str = 'split') -> dict:
     if mode == 'split':
         cases, lams = ['W', 'G'], [lamW, lamG]
         lat_scale, grav_scale = lamW, lamG
+    elif mode == 'raw':
+        return _graph_raw(rec, p, t)
     else:
         lam = abs(lamW) + lamG
         cases, lams = ['T'], [lam]
@@ -139,8 +148,37 @@ def graph(rec: dict, mode: str = 'split') -> dict:
         tc = F.case_topology(t, case) if case != 'T' else t
         Bc, p0c = F.equilibrium_system(tc)
         ds.append((tc['P'].ravel() - p0c)[free] / row_scale / lm)
-    out.update(C=C, d=ds)
+    out.update(C=C, d=ds, B=B, p0=None)
     return out
+
+
+def _graph_raw(rec, p, t):
+    n = len(t['coords'])
+    X = np.zeros((n, len(NODE_FEATS_RAW)))
+    X[:, 0], X[:, 1] = t['coords'][:, 0], t['coords'][:, 1]
+    X[:, 2] = t['level'] == 0
+    X[:, 3] = float(p['fixed_base'])
+    X[:, 4] = t['P'][:, 0]
+    Ef = np.stack([t['mtype'] == 0, t['mtype'] == 1, t['L'], np.log10(t['E']), np.log10(t['I']),
+                   np.log10(t['A']), t['wg']], axis=1).astype(float)
+    one = np.ones(3)
+    out = dict(x=X, e=Ef, conn=t['conn'], restr=t['restr'], t=t, cases=['T'], usc=[one], qsc=[one],
+               H=float(np.mean(p['heights'])), mode='raw')
+    if 'u_W' in rec:
+        out['u_true'] = rec['u_W'] + rec['u_G']
+        out['q_true'] = rec['q_W'] + rec['q_G']
+        out['y_u'], out['y_q'] = out['u_true'].copy(), out['q_true'].copy()
+    B, p0 = F.equilibrium_system(t)
+    free = ~t['restr'].ravel()
+    out.update(C=B[free], d=[(t['P'].ravel() - p0)[free]], B=B, p0=p0)
+    return out
+
+
+def total_p0(g):
+    """Constant term of the equilibrium map for the combined (W + G) loading."""
+    if g.get('p0') is None:
+        g['p0'] = F.equilibrium_system(g['t'])[1]
+    return g['p0']
 
 
 def physical(g, y_u, y_q):

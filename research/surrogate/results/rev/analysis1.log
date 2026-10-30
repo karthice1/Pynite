@@ -1,0 +1,24 @@
+raw {'val': 0.0248, 'test_id': 0.0246, 'test_oodG': 0.0826, 'test_oodL': 0.0909, 'test_real': 0.0218} compat {'val': 0.4713, 'test_id': 0.4723, 'test_oodG': 0.8748, 'test_oodL': 0.5902, 'test_real': 0.1509}
+euclidean {'val': 0.0402, 'test_id': 0.0405, 'test_oodG': 0.1257, 'test_oodL': 0.1084, 'test_real': 0.0391} compat {'val': 0.4714, 'test_id': 0.4703, 'test_oodG': 0.8758, 'test_oodL': 0.5904, 'test_real': 0.1493}
+variance-weighted {'val': 0.0235, 'test_id': 0.0236, 'test_oodG': 0.0751, 'test_oodL': 0.0873, 'test_real': 0.02} compat {'val': 0.4693, 'test_id': 0.4698, 'test_oodG': 0.8756, 'test_oodL': 0.5904, 'test_real': 0.1486}
+recovered {'val': 0.1169, 'test_id': 0.1125, 'test_oodG': 0.4417, 'test_oodL': 0.1864, 'test_real': 0.0354} compat {'val': 0.0, 'test_id': 0.0, 'test_oodG': 0.0, 'test_oodL': 0.0, 'test_real': 0.0}
+== variants done in 152s
+1e-08 {'test_id': (0.0236, '6.8e+04'), 'test_oodG': (0.0751, '2.3e+05'), 'test_oodL': (0.0873, '3.6e+05'), 'test_real': (0.02, '4.4e+04')}
+1e-06 {'test_id': (0.0236, '6.8e+04'), 'test_oodG': (0.0751, '2.3e+05'), 'test_oodL': (0.0873, '3.6e+05'), 'test_real': (0.02, '4.4e+04')}
+0.0001 {'test_id': (0.0236, '6.8e+04'), 'test_oodG': (0.0751, '2.3e+05'), 'test_oodL': (0.0873, '9.4e+04'), 'test_real': (0.02, '3.9e+04')}
+0.01 {'test_id': (0.0239, '2.3e+04'), 'test_oodG': (0.0763, '9.2e+04'), 'test_oodL': (0.0883, '2.4e+04'), 'test_real': (0.0192, '1.9e+04')}
+1.0 {'test_id': (0.0394, '4.4e+03'), 'test_oodG': (0.1151, '2.3e+04'), 'test_oodL': (0.1049, '7.6e+03'), 'test_real': (0.0383, '1.9e+03')}
+additive 1e-6 {'test_id': (0.0236, '6.8e+04'), 'test_oodG': (0.0751, '2.3e+05'), 'test_oodL': (0.0873, '3.3e+05'), 'test_real': (0.02, '4.3e+04')}
+euclidean {'test_id': (0.0405, '4.4e+03'), 'test_oodG': (0.1257, '1.5e+04'), 'test_oodL': (0.1084, '3.6e+03'), 'test_real': (0.0391, '1.7e+03')}
+== sensitivity done in 325s
+geometry {'val': 0.01, 'test_id': 0.018333333333333333, 'test_oodG': 0.6816666666666666, 'test_oodL': 0.015, 'test_real': 0.0}
+load {'val': 0.01, 'test_id': 0.015, 'test_oodG': 0.09333333333333334, 'test_oodL': 0.665, 'test_real': 0.06333333333333334}
+combined {'val': 0.01, 'test_id': 0.016666666666666666, 'test_oodG': 0.785, 'test_oodL': 0.7516666666666667, 'test_real': 0.19666666666666666}
+0.05 {'test_id': (0.278, 0.03464203233256351), 'test_oodG': (0.98, 0.16666666666666666), 'test_oodL': (0.785, 0.05426356589147287), 'test_real': (0.373, 0.0)}
+0.1 {'test_id': (0.022, 0.013628620102214651), 'test_oodG': (0.857, 0.011627906976744186), 'test_oodL': (0.753, 0.013513513513513514), 'test_real': (0.197, 0.0)}
+== ood done in 25s
+test_id {'iters_cold_med': 27.0, 'iters_warm_med': 27.0, 'ratio_med': 1.0}
+test_oodG {'iters_cold_med': 72.0, 'iters_warm_med': 72.0, 'ratio_med': 1.0}
+test_oodL {'iters_cold_med': 27.5, 'iters_warm_med': 27.5, 'ratio_med': 1.0}
+test_real {'iters_cold_med': 27.0, 'iters_warm_med': 26.5, 'ratio_med': 1.0}
+== pcg done in 2s
