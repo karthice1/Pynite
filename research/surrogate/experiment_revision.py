@@ -56,6 +56,7 @@ def jobs():
     J += [(f'raw_s{k}', {}, 'raw', k) for k in range(3)]
     J += [(f'disp_s{k}', dict(disp_only=True), 'split', k) for k in range(3)]
     J += [(f'depth4_s{k}', dict(steps=4), 'split', k) for k in range(3)]
+    J += [(f'nostat_s{k}', {}, 'nostat', k) for k in range(3)]     # second revision
     return J
 
 

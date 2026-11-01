@@ -44,7 +44,7 @@ Name & Definition & Type \\
 \end{table}
 
 \section{Sampling procedure}\label{app:sampling}
-Each frame of the ID, OOD-G and OOD-L sets is drawn with its own seed by the following steps (\texttt{frames.sample\_frame}); the DES frames follow Section~\ref{sec:data} (\texttt{frames.sample\_design\_frame}).
+Each frame of the ID, OOD-G and OOD-L sets is drawn with its own seed by the following steps (\texttt{frames.sample\_frame}); the DES frames are generated as described in \ref{app:des}.
 \begin{enumerate}
 \item Topology. ID and OOD-L: $n_s\sim\mathcal{U}\{1,\dots,5\}$, $n_b\sim\mathcal{U}\{1,\dots,4\}$. OOD-G: with probability 0.5, $n_s\sim\mathcal{U}\{6,7,8\}$ and $n_b\sim\mathcal{U}\{1,\dots,6\}$; otherwise $n_s\sim\mathcal{U}\{1,\dots,8\}$ and $n_b\sim\mathcal{U}\{5,6\}$.
 \item Geometry. $L_b\sim\mathcal{U}(3,9)$ per bay and $h_s\sim\mathcal{U}(2.8,4.5)$ per storey; OOD-G replaces $h_1$ by $\mathcal{U}(4.5,6.0)$ with probability 0.5.
@@ -54,3 +54,36 @@ Each frame of the ID, OOD-G and OOD-L sets is drawn with its own seed by the fol
 \item Lateral load. Roof force $F_\mathrm{roof}\sim\mathcal{U}(5,80)$; profile uniform or inverted triangular (ID, OOD-G) or parabolic or roof-only (OOD-L), each with equal probability; the sign of all floor forces is reversed with probability 0.5.
 \item Analysis. PyNite linear analysis of load cases W and G; the statics check of Section~\ref{sec:data} must pass.
 \end{enumerate}
+
+\section{Design-informed synthetic frames (DES)}\label{app:des}
+Each of the 300 DES frames is generated with its own seed ($9\times10^6+k$, $k=0,\dots,299$; \texttt{frames.sample\_design\_frame}, called by \texttt{experiment\_validation.py}) as follows. Units are kN and m; $\mathcal{U}$ denotes a uniform distribution.
+\begin{enumerate}
+\item Topology. $n_s\sim\mathcal{U}\{1,\dots,5\}$, $n_b\sim\mathcal{U}\{1,\dots,4\}$ (realised counts for 1--5 storeys: 58, 62, 64, 50, 66; for 1--4 bays: 74, 76, 73, 77).
+\item Geometry. Each bay width is drawn from $\{6.0, 7.5, 9.0\}$ with equal probability; all storeys above the first have the same height $h\sim\mathcal{U}(3.2,3.8)$ and the first storey $h_1\sim\mathcal{U}(4.0,4.5)$.
+\item Gravity load. Tributary width $b\sim\mathcal{U}(4,6)$, dead load $D\sim\mathcal{U}(3.5,5.0)$\,kPa, live load $L_q\sim\mathcal{U}(2.0,3.0)$\,kPa. Floor line load $w=(1.2D+1.0L_q)\,b$ on every bay; roof line load $w_\mathrm{roof}=(1.2(D-1.0)+1.0\cdot1.0)\,b$.
+\item Lateral load. Wind pressure $q_w\sim\mathcal{U}(0.6,1.2)$\,kPa; the force at floor $s$ is $F_s=q_w\,b\,(h_s+h_{s+1})/2$ with $h_{n_s+1}=0$; all forces change sign with probability 0.5.
+\item Beam sizing (one section for all floors). With $L_{\max}$ the largest bay, $I_\mathrm{defl}=5L_q b L_{\max}^4/(384E\,L_{\max}/360)$ (live-load deflection $L/360$) and $I_\mathrm{str}=0.15\,(w_{\max}L_{\max}^2/8)/f_y$ with $f_y=250$\,MPa (simple-span moment, section depth about 0.3\,m); $I_b=\max(I_\mathrm{defl},I_\mathrm{str})$.
+\item Column sizing. Storey shear $V_s=\sum_{k\ge s}|F_k|$; $I_{c,s}=V_s h_s^3/(0.5\cdot12E(n_b+1)\,h_s/400)$, i.e.\ the shear-building drift equals $h_s/400$ with the column stiffness halved for beam flexibility; within each pair of storeys $(1,2),(3,4),\dots$ the larger value is used for both; finally $I_{c,s}\ge0.3I_b$.
+\item Clipping. $I_c$ and $I_b$ are clipped to $[5\times10^{-5}, 2\times10^{-3}]$\,m$^4$, the training range (28\% of the frames have at least one clipped column section, 0.3\% a clipped beam section). Areas follow from radii of gyration $r_c=0.16$\,m and $r_b=0.18$\,m, $A=I/r^2$.
+\item Supports. Fixed bases with probability 0.8, pinned otherwise.
+\item Analysis. PyNite linear analysis of cases W and G; the statics check of Section~\ref{sec:data} must pass. No frame is rejected.
+\end{enumerate}
+
+\section{Confidence intervals of the tabular baselines}\label{app:baselineci}
+\begin{table}[h]
+\centering
+\caption{Median relative errors (\%) of the tabular baselines with 95\% frame-bootstrap confidence intervals (2{,}000 resamples) on the four test sets.}\label{tab:baselineci}
+\scriptsize
+\setlength{\tabcolsep}{2pt}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{lcccccccc}
+\toprule
+ & \multicolumn{2}{c}{ID} & \multicolumn{2}{c}{OOD-G} & \multicolumn{2}{c}{OOD-L} & \multicolumn{2}{c}{DES}\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}
+Model & $e_{u_x}$ & $e_M$ & $e_{u_x}$ & $e_M$ & $e_{u_x}$ & $e_M$ & $e_{u_x}$ & $e_M$\\
+\midrule
+\inputtable{tables/tab_baseline_ci.tex}
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}

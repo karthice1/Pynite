@@ -10,13 +10,13 @@ All numbers in this section are produced by the released scripts. Unless stated 
 \end{figure}
 
 \subsection{Dataset}
-The 5{,}000-frame pool contains frames with 3 to 45 members (18 on average), the OOD-G set frames with 11 to 104 members (56 on average) and the DES set frames with 3 to 45 members (18 on average); Fig.~\ref{fig:frames} shows one frame of each set. A PyNite analysis of one frame (both load cases, including model construction and result extraction) took 37.5\,ms on average for the ID frames and 104.7\,ms for the larger OOD-G frames (Section~\ref{sec:cost}). Because sections and loads of the ID, OOD-G and OOD-L frames are sampled independently and are not sized for serviceability, the median largest inter-storey drift ratio is 0.46\% (ID) and 0.79\% (OOD-G), and 15\% and 25\% of these frames exceed 2\%. The design-driven frames are stiffer, with a median largest drift ratio of 0.18\%; 29\% of them exceed $h/400$ because the column sizing uses a simplified shear-building estimate. Since all models predict dimensionless responses that are exactly invariant to the load intensities and to $E$ (Section~\ref{sec:scaling}), the relative errors reported below do not depend on the load magnitudes.
+The 5{,}000-frame pool contains frames with 3 to 45 members (18 on average), the OOD-G set frames with 11 to 104 members (56 on average) and the DES set frames with 3 to 45 members (18 on average); Fig.~\ref{fig:frames} shows one frame of each set. A PyNite analysis of one frame (both load cases, including model construction and result extraction) took 37.5\,ms on average for the ID frames and 104.7\,ms for the larger OOD-G frames (Section~\ref{sec:cost}). Because sections and loads of the ID, OOD-G and OOD-L frames are sampled independently and are not sized for serviceability, the median largest inter-storey drift ratio is 0.46\% (ID) and 0.79\% (OOD-G), and 15\% and 25\% of these frames exceed 2\%. The design-informed frames are stiffer, with a median largest drift ratio of 0.18\%; 29\% of them exceed $h/400$ because the column sizing uses a simplified shear-building estimate. Since all models predict dimensionless responses that are exactly invariant to the load intensities and to $E$ (Section~\ref{sec:scaling}), the relative errors reported below do not depend on the load magnitudes.
 
 \subsection{Accuracy on seen and unseen frames}\label{sec:accuracy}
 
 \begin{table}[p]
 \centering
-\caption{Prediction errors on the in-distribution and design-driven test sets (medians over the frames, in \%, except the 95th percentile (p95) of $e_M$; last column: median relative nodal out-of-balance force). Bold: best value per column and set. The last row of each block gives the proposed surrogate as mean $\pm$ standard deviation of the per-run values over five independent training runs.}\label{tab:main}
+\caption{Prediction errors on the in-distribution and design-informed test sets (medians over the frames, in \%, except the 95th percentile (p95) of $e_M$; last column: median relative nodal out-of-balance force). Bold: best value per column and set. The last row of each block gives the proposed surrogate as mean $\pm$ standard deviation of the per-run values over five independent training runs.}\label{tab:main}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
 \begin{adjustbox}{max width=\textwidth}
@@ -46,7 +46,7 @@ Model & $e_{u_x}$ & $e_\mathrm{drift}$ & $e_M$ & $e_M$ (p95) & $e_N$ & Out-of-ba
 \end{adjustbox}
 \end{table}
 
-Tables~\ref{tab:main} and~\ref{tab:mainood} compare the proposed surrogate with the five tabular baselines, and Fig.~\ref{fig:cdf} shows the full error distributions. On the in-distribution test set the proposed surrogate reaches median errors of 4.5\% for the horizontal displacement field, 4.9\% for the governing drift ratio, 2.4\% for the end-moment field and 0.6\% for the axial forces. The best baseline, gradient boosting, has 29.0\%, 30.2\%, 10.0\% and 3.2\%, so the graph surrogate is about four times more accurate for the member forces and six times more accurate for the displacements, although the baselines receive the same mechanics-informed features, targets and boundary conditions. The gap is largest for displacements, which depend on the stiffness of the whole frame and not only on local quantities. The design-driven frames, whose parameter correlations were never seen in training, are predicted as accurately as the ID frames: median errors of 4.4\% ($u_x$), 3.0\% (drift) and 2.0\% (moments), with a 95th percentile of the moment error of only 3.4\%, against 8.7\% (moments) and 37\% ($u_x$) for the best baselines.
+Tables~\ref{tab:main} and~\ref{tab:mainood} compare the proposed surrogate with the five tabular baselines, and Fig.~\ref{fig:cdf} shows the full error distributions. On the in-distribution test set the proposed surrogate reaches median errors of 4.5\% for the horizontal displacement field, 4.9\% for the governing drift ratio, 2.4\% for the end-moment field and 0.6\% for the axial forces. The best baseline, gradient boosting, has 29.0\%, 30.2\%, 10.0\% and 3.2\%, so the graph surrogate is about four times more accurate for the member forces and six times more accurate for the displacements, although the baselines receive the same mechanics-informed features, targets and boundary conditions. The gap is largest for displacements, which depend on the stiffness of the whole frame and not only on local quantities. The design-informed frames, whose parameter correlations were never seen in training, are predicted as accurately as the ID frames: median errors of 4.4\% ($u_x$), 3.0\% (drift) and 2.0\% (moments), with a 95th percentile of the moment error of only 3.4\%, against 8.7\% (moments) and 37\% ($u_x$) for the best baselines.
 
 \begin{figure}[p]
 \centering
@@ -149,7 +149,25 @@ Model & Eq.\ res. & $e_M$ proj. & $r_{\mathrm{compat},M}$ & Eq.\ res. & $e_M$ pr
 
 Table~\ref{tab:graph} compares single networks, so that the architecture is separated from the ensemble and the projection. Four findings stand out.
 
-\emph{Mechanics-informed inputs and the load-case split matter more than the architecture.} The conventional GNN with physical inputs and targets has more than twice the displacement error of the proposed network on ID frames (14.3\% against 6.7\%) and 2.4--3.9 times on the unseen and design-driven sets, and 1.5 times the moment error on ID and OOD-G frames, although its moment error on unseen load patterns is lower (8.4\% against 10.0\%). Replacing the load-case split by a single combined load scale roughly doubles the displacement errors (12.5\% ID, 26.0\% OOD-G, 34.9\% DES) and raises the moment errors by up to 3.5 points (OOD-L unchanged), confirming the scaling argument of Section~\ref{sec:scaling}: in the combined case the lateral sway is masked by the much larger gravity scale.
+\begin{table}[t]
+\centering
+\caption{Feature ablation (single networks, mean $\pm$ standard deviation of the median errors over three seeds, \%).}\label{tab:featabl}
+\footnotesize
+\setlength{\tabcolsep}{2.5pt}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{lccc rrrrrrrr}
+\toprule
+& & & & \multicolumn{2}{c}{ID} & \multicolumn{2}{c}{OOD-G} & \multicolumn{2}{c}{OOD-L} & \multicolumn{2}{c}{DES}\\
+\cmidrule(lr){5-6}\cmidrule(lr){7-8}\cmidrule(lr){9-10}\cmidrule(lr){11-12}
+Variant & Scaling & Statics feat. & Separate cases & $e_{u_x}$ & $e_M$ & $e_{u_x}$ & $e_M$ & $e_{u_x}$ & $e_M$ & $e_{u_x}$ & $e_M$\\
+\midrule
+\inputtable{tables/tab_feature_ablation.tex}
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\emph{Dimensionless scaling and the load-case split, not the statics features, carry most of the gain.} The feature ablation (Table~\ref{tab:featabl}) separates the three ingredients. Going from the conventional GNN (A) to dimensionless, load-case-separated inputs and targets without any statics features (B) halves the displacement errors (14.3\%$\to$6.9\% ID, 34.2\%$\to$14.9\% OOD-G, 27.9\%$\to$8.4\% DES) and reduces the moment errors by 1.5 points (ID) and 5.1 points (OOD-G), but only by 0.4 points on DES frames, while on unseen load patterns the moment error rises from 8.4\% to 9.3\%; because A and B differ in several respects at once, this gain is attributed to scaling and load-case separation jointly. Adding the statics features (B$\to$D) changes the errors much less: on ID, OOD-G and DES frames the displacement and moment errors fall by 0.2--1.2 points, on unseen load patterns the displacement error falls from 12.0\% to 8.1\%, but the moment error rises from 9.3\% to 10.0\%. Removing the load-case split while keeping the statics features (C) roughly doubles the displacement errors (12.5\% ID, 26.0\% OOD-G, 34.9\% DES) and raises the moment errors by up to 3.5 points, confirming the scaling argument of Section~\ref{sec:scaling}: in the combined case the lateral sway is masked by the much larger gravity scale. The improvement over a conventional GNN is therefore due mainly to the combined use of dimensionless scaling and load-case separation; the statics features add a smaller, mainly displacement-related benefit, which is clearest under unseen load patterns.
 
 \emph{The StructGNN-style network is a strong competitor.} With the same inputs and targets it reaches displacement errors similar to or lower than the proposed network (6.3\% ID, 12.3\% OOD-G, 7.1\% OOD-L) and slightly higher moment errors on ID, OOD-G and DES frames (4.2\%, 11.9\% and 3.9\% against 3.7\%, 11.3\% and 3.3\%); on unseen load patterns it is marginally better (9.7\% against 10.0\%). Its storey pseudo nodes and height-dependent depth carry global information quickly, which helps the displacements, at seven times the training cost (77 against 11 minutes per network on one thread). The proposed network with global pooling or with 16 message-passing steps gains in the same way (OOD-G displacement error 11.1\% and 11.8\% against 14.1\%) at little or no cost in moment accuracy. The accuracy of a single network is therefore not what distinguishes the proposed framework; the distinguishing elements are the exact constraints, the uncertainty estimate and its use, which are evaluated in the following sections and could equally be wrapped around a StructGNN-style network.
 

@@ -28,7 +28,7 @@ FIG, TAB = os.path.join(OUT, 'figures'), os.path.join(OUT, 'tables')
 RES = 'results/revision'
 TESTS = ['test_id', 'test_oodG', 'test_oodL', 'test_real']
 LAB = {'test_id': 'In-distribution (ID)', 'test_oodG': 'Unseen geometries (OOD-G)',
-       'test_oodL': 'Unseen loading (OOD-L)', 'test_real': 'Design-driven frames (DES)'}
+       'test_oodL': 'Unseen loading (OOD-L)', 'test_real': 'Design-informed frames (DES)'}
 ABBR = {'test_id': 'ID', 'test_oodG': 'OOD-G', 'test_oodL': 'OOD-L', 'test_real': 'DES'}
 NFR = {'test_id': 600, 'test_oodG': 600, 'test_oodL': 600, 'test_real': 300}
 BASE = ['Linear ridge', 'Quadratic ridge', 'Random forest', 'Gradient boosting', 'MLP']
@@ -229,7 +229,7 @@ def uq(G, P0, ood):
             ax.plot(100 * c['fr'], 100 * np.array(c['curves'][lab]), st, color=col, lw=1.3, label=lab)
         if ood is not None:
             for tau, mk in (('0.05', 'o'), ('0.1', 's')):
-                pol = ood['policy'][tau][s]
+                pol = ood['runs'][0]['policy'][tau][s]
                 if pol['accepted_p95'] is not None:
                     ax.plot(100 * pol['referred_total'], 100 * pol['accepted_p95'], mk, color='k', ms=5, mfc='none',
                             label=f'Two-stage rule, $\\tau$={int(100 * float(tau))}%')
@@ -246,7 +246,8 @@ def uq(G, P0, ood):
         ax.loglog(c['sc'], c['err'], '.', ms=3, alpha=0.5, color=COL[PROP])
         if ood is not None:
             x = np.logspace(np.log10(c['sc'].min()), np.log10(c['sc'].max()), 50)
-            ax.plot(x, ood['conformal_qhat'] * x, 'r--', lw=1, label=f"conformal bound $\\hat a s$ ($\\hat a$={ood['conformal_qhat']:.2f})")
+            qh = ood['runs'][0]['qhat']
+            ax.plot(x, qh * x, 'r--', lw=1, label=f"conformal bound $\\hat a s$ ($\\hat a$={qh:.2f})")
         lim = [min(ax.get_xlim()[0], ax.get_ylim()[0]), max(ax.get_xlim()[1], ax.get_ylim()[1])]
         ax.plot(lim, lim, 'k-', lw=0.5)
         ax.set_title(f"{LAB[s]} ($\\rho_s$={out[s]['spearman_spread']:.2f})")
@@ -433,6 +434,7 @@ GRAPH_ORDER = [
     ('Leng-style, residual weight 1e-4', 'Leng-style, residual weight $10^{-4}$'),
     ('Soft equilibrium penalty', 'Proposed + soft equilibrium penalty'),
     ('No load-case superposition', 'Proposed, no load-case split'),
+    ('No statics features', 'Proposed, no statics features'),
     ('Depth 4', 'Depth 4'), ('Depth 12', 'Depth 12'), ('Depth 16', 'Depth 16'),
 ]
 
@@ -454,7 +456,7 @@ def tab_graph(gr):
     write('tab_graph.tex', lines)
     # equilibrium residuals and projected moment errors of the graph baselines
     lines = []
-    for key, lab in GRAPH_ORDER[:9]:
+    for key, lab in GRAPH_ORDER[:10]:
         if key not in gr:
             continue
         R, Pj = gr[key]['raw'], gr[key]['projected']
@@ -476,11 +478,12 @@ def tab_compat(var):
              ('variance-weighted', 'Variance-weighted projection'), ('recovered', 'Recovered from $\\hat{\\mathbf{u}}$')]
     lines = []
     for s in TESTS:
-        lines.append(r'\multicolumn{7}{l}{\textit{' + LAB[s] + r'}}\\')
+        lines.append(r'\multicolumn{8}{l}{\textit{' + LAB[s] + r'}}\\')
         for k, lab in names:
             v = var[k][s]
             lines.append(f"{lab} & {pct(v['e_M']['med'])} & {pct(v['e_N']['med'])} & {pct(v['e_V']['med'])} & "
-                         f"{sci(v['eq_res']['med'])} & {pct(v['compat']['med'])} & {pct(v['compat_M']['med'])}" + r'\\')
+                         f"{sci(v['eq_res']['med'])} & {pct(v['compat']['med'])} & {pct(v['compat_M']['med'])} & "
+                         f"{pct(v['compat_N']['med'])}" + r'\\')
         lines.append(r'\midrule')
     write('tab_compat.tex', lines[:-1])
 
@@ -500,21 +503,73 @@ def tab_sensitivity(sen):
     write('tab_sensitivity.tex', lines)
 
 
-def tab_ood(ood):
+def tab_ood(cal):
+    sets = ['cal_conf'] + TESTS
     lines = []
     for grp, lab in (('geometry', 'Geometry descriptors'), ('load', 'Load-pattern descriptors'), ('combined', 'Combined (used)')):
-        lines.append(lab + ' & ' + ' & '.join(pct(ood[grp]['flagged'][s]) for s in ['val'] + TESTS) + r'\\')
+        lines.append(lab + ' & ' + ' & '.join(pct(cal['groups'][grp]['flagged'][s]) for s in sets) + r'\\')
     write('tab_ood_domain.tex', lines)
+    runs = cal['runs']
+
+    def ms(vals, d=1):
+        v = [x for x in vals if x is not None]
+        if not v:
+            return '--'
+        return f"{100 * np.mean(v):.{d}f} $\\pm$ {100 * np.std(v, ddof=1):.{d}f}"
     lines = []
     for tau in ('0.05', '0.1'):
         for s in TESTS:
-            p = ood['policy'][tau][s]
-            f = lambda x, d=1: '--' if x is None else pct(x, d)
-            lines.append((f"{int(100 * float(tau))}\\%" if s == 'test_id' else '') + f" & {ABBR[s]} & {f(p['referred_domain'])} & "
-                         f"{f(p['referred_spread'])} & {f(p['referred_total'])} & {f(p['coverage_in_domain'])} & "
-                         f"{f(p['accepted_violation'])} & {f(p['accepted_p95'])} & {f(p['all_p95'])}" + r'\\')
+            P = [r['policy'][tau][s] for r in runs]
+            lines.append((f"{int(100 * float(tau))}\\%" if s == 'test_id' else '') + f" & {ABBR[s]} & {pct(P[0]['referred_domain'])} & "
+                         f"{ms([p['referred_spread'] for p in P])} & {ms([p['referred_total'] for p in P])} & "
+                         f"{ms([r['coverage_in_domain'][s] for r in runs])} & {ms([p['accepted_violation'] for p in P])} & "
+                         f"{ms([p['joint_violation'] for p in P])} & {ms([p['accepted_p95'] for p in P])}" + r'\\')
         lines.append(r'\midrule')
     write('tab_ood_policy.tex', lines[:-1])
+    keys = [('e_M', '$e_M$ (calibrated)'), ('e_Mmax', r'$e_{M,\max}$'), ('e_Nmax', r'$e_{N,\max}$'), ('e_N', '$e_N$'),
+            ('e_V', '$e_V$'), ('e_R', '$e_R$'), ('e_dx', '$e_{u_x}$'), ('e_rz', r'$e_\theta$'), ('e_drift', r'$e_\mathrm{drift}$'),
+            ('e_defl', r'$e_\mathrm{defl}$')]
+    lines = []
+    for k, lab in keys:
+        cells = []
+        for s in TESTS:
+            P = [r['policy']['0.1'][s] for r in runs]
+            v = [p['accepted_violation'] for p in P] if k == 'e_M' else [p['other'][k] for p in P]
+            cells.append(ms(v))
+        lines.append(lab + ' & ' + ' & '.join(cells) + r'\\')
+    write('tab_ood_other.tex', lines)
+
+
+def tab_baseline_ci(base):
+    lines = []
+    for n in BASE:
+        if n not in base:
+            continue
+        cells = []
+        for s in TESTS:
+            for k in ('e_dx', 'e_M'):
+                b = base[n][s][k]
+                cells.append(f"{pct(b['med'])} [{pct(b['med_ci'][0])}, {pct(b['med_ci'][1])}]")
+        lines.append(n + ' & ' + ' & '.join(cells) + r'\\')
+    write('tab_baseline_ci.tex', lines)
+
+
+def tab_feature_ablation(gr):
+    rows = [('A', 'No', 'No', 'No', 'Conventional GNN (physical inputs)'),
+            ('B', 'Yes', 'No', 'Yes', 'No statics features'),
+            ('C', 'Yes', 'Yes', 'No', 'No load-case superposition'),
+            ('D', 'Yes', 'Yes', 'Yes', 'Proposed, single network (depth 8)')]
+    lines = []
+    for v, sc, st, sp, key in rows:
+        if key not in gr:
+            continue
+        R = gr[key]['raw']
+        cells = []
+        for s in TESTS:
+            cells += [f"{100 * R[s]['e_dx']['med_mean']:.1f} $\\pm$ {100 * R[s]['e_dx']['med_std']:.1f}",
+                      f"{100 * R[s]['e_M']['med_mean']:.1f} $\\pm$ {100 * R[s]['e_M']['med_std']:.1f}"]
+        lines.append(f"{v} & {sc} & {st} & {sp} & " + ' & '.join(cells) + r'\\')
+    write('tab_feature_ablation.tex', lines)
 
 
 def tab_baseline_proj(base):
@@ -601,7 +656,7 @@ def fig_depth(gr):
 def main():
     os.makedirs(FIG, exist_ok=True); os.makedirs(TAB, exist_ok=True)
     D, G, P0, BP = load()
-    var, runs, gr, base, sen, ood = J('variants'), J('runs'), J('graphs'), J('baselines'), J('sensitivity'), J('ood')
+    var, runs, gr, base, sen, ood = J('variants'), J('runs'), J('graphs'), J('baselines'), J('sensitivity'), J('calibration')
     dataset_stats(D)
     tab_validation()
     fig_frames(D)
@@ -625,9 +680,9 @@ def main():
     if ood:
         tab_ood(ood)
     if base:
-        tab_baseline_proj(base)
+        tab_baseline_proj(base); tab_baseline_ci(base)
     if gr:
-        tab_graph(gr); fig_depth(gr)
+        tab_graph(gr); fig_depth(gr); tab_feature_ablation(gr)
     if os.path.exists('results/timing.json'):
         tab_timing(u)
 

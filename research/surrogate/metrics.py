@@ -22,7 +22,7 @@ norm over all entries of the frame):
 * compat / compat_M: ||q - q_c(u_hat)|| / ||q_c(u_hat)||, where q_c(u_hat)
   are the basic forces implied by the predicted displacement field through
   the element stiffness relations; moments are divided by H, compat_M uses
-  the end moments only.
+  the end moments only and compat_N the axial forces only.
 """
 
 from __future__ import annotations
@@ -111,7 +111,8 @@ def compat_residual(g, u_hat, q_hat):
     sc = np.array([1.0, 1 / g['H'], 1 / g['H']])
     full = _rel(q_hat * sc, qc * sc)
     mom = _rel(q_hat[:, 1:], qc[:, 1:])
-    return full, mom
+    ax = _rel(q_hat[:, 0], qc[:, 0])
+    return full, mom, ax
 
 
 def frame_metrics_phys(g, u_hat, q_hat, compat=True):
@@ -139,7 +140,7 @@ def frame_metrics_phys(g, u_hat, q_hat, compat=True):
         df_hat, df = beam_midspan_deflection(g, u_hat), beam_midspan_deflection(g, u)
         out['e_defl'] = abs(np.abs(df_hat).max() - np.abs(df).max()) / np.abs(df).max()
     if compat:
-        out['compat'], out['compat_M'] = compat_residual(g, u_hat, q_hat)
+        out['compat'], out['compat_M'], out['compat_N'] = compat_residual(g, u_hat, q_hat)
     return out
 
 

@@ -35,7 +35,7 @@ SPLITS = ['val', 'test_id', 'test_oodG', 'test_oodL', 'test_real']
 TESTS = SPLITS[1:]
 OUT = 'results/revision'
 KEYS = ['e_dx', 'e_dy', 'e_rz', 'e_drift', 'e_defl', 'e_M', 'e_N', 'e_V', 'e_R', 'e_Mmax', 'e_Nmax',
-        'gov_top1', 'gov_top3', 'eq_res', 'compat', 'compat_M']
+        'gov_top1', 'gov_top3', 'eq_res', 'compat', 'compat_M', 'compat_N']
 N_BOOT = 2000
 _cache = {}
 
@@ -208,6 +208,7 @@ GRAPH_VARIANTS = {
     'Leng-style, residual weight 1e-4': ('dispK4', 'split', [0, 1, 2]),
     'Soft equilibrium penalty': ('soft', 'split', [0, 1, 2]),
     'No load-case superposition': ('nosup', 'total', [0, 1, 2]),
+    'No statics features': ('nostat', 'nostat', [0, 1, 2]),
 }
 
 

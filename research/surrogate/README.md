@@ -16,10 +16,13 @@ an independent direct-stiffness solver. Units: kN, m.
 | `metrics.py` | Error metrics (definitions in the module docstring), equilibrium and compatibility residuals |
 | `experiment_main.py` | Ensemble 0, tabular baselines, projection variants, ablations |
 | `experiment_adaptive.py` | Adaptive FE sampling: random, ensemble variance, equilibrium residual, residual + diversity (`python experiment_adaptive.py <threads> <seed>`) |
-| `experiment_revision.py` | Ensembles 1-4, graph baselines, depth ablation, adaptive seeds 2-4 and diversity rule |
+| `experiment_revision.py` | Ensembles 1-4, graph baselines, feature and depth ablations, adaptive seeds 2-4 and diversity rule |
 | `analysis_revision.py` | Projection variants, compatibility, multi-run statistics, Σ sensitivity, OOD domain check + conformal referral, CG warm start -> `results/revision/*.json` |
 | `experiment_timing.py` | Timing of PyNite, DSM, OpenSeesPy and the surrogate on an idle machine (5 repeats) |
+| `experiment_calibration.py` | Two-stage FE referral with separate domain- and conformal-calibration sets (2 x 1,000 new ID frames), five ensembles -> `results/revision/calibration.json` |
 | `export_weights.py` | Writes / loads the pretrained ensemble checkpoints in `weights/` |
+| `export_parameters.py` | Writes the input parameters of every frame to `release/frame_parameters.json.gz` |
+| `verify_from_parameters.py` | Cross-checks PyNite against the DSM solver and OpenSeesPy directly from the released parameters |
 | `make_figures_rev.py` | Writes all figures and tables of the manuscript |
 | `reproduce.sh` | One-command reproduction (see below) |
 | `make_figures.py` | Figures of the first submission (superseded, kept for reference) |
@@ -28,14 +31,20 @@ an independent direct-stiffness solver. Units: kN, m.
 
 ```bash
 cd research/surrogate
-bash reproduce.sh            # everything from scratch, about 10-12 h on a 4-core CPU, no GPU
-bash reproduce.sh --quick    # no training: rebuilds the reported ensemble from weights/ and
-                             # recomputes every table and figure; multi-run statistics, graph
-                             # baselines and adaptive curves come from the committed JSON
+bash reproduce.sh            # full reproduction from scratch (the definitive route),
+                             # about 11-13 h on a 4-core CPU, no GPU
+bash reproduce.sh --quick    # report regeneration only: rebuilds ensemble 0 from weights/ and
+                             # recomputes what depends on it; multi-run statistics, graph
+                             # baselines, adaptive curves and the five-run referral calibration
+                             # are read from the committed JSON, so this is not an independent
+                             # reproduction of those experiments
+python verify_from_parameters.py test_des 50   # quick cross-solver check, no dataset needed
 ```
 
 Dependencies are pinned in `requirements.txt` (Python 3.13). `data/`, `results/*.pkl` and
 `results/rev/*.pkl` are not committed: they are regenerated deterministically from the seeds. The
 JSON files in `results/`, `results/revision/` and `results/adaptive/` hold the numbers reported in
 the paper. `results/timing.json` is the timing used in the manuscript; `results/timing_v1.json` is
-the measurement of the first submission.
+the measurement of the first submission. `results/revision/ood.json` holds the referral rule of the
+first revision (domain threshold and conformal quantile both fitted on the validation set); it is
+superseded by `calibration.json`.

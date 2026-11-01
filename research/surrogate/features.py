@@ -24,6 +24,9 @@ EDGE_FEATS = ['is_col', 'is_beam', 'storey', 'L', 'I', 'A', 'wL', 'rho_storey',
 # physical coordinates, supports and loads; log section properties.
 NODE_FEATS_RAW = ['x', 'y', 'is_base', 'fixed', 'Px']
 EDGE_FEATS_RAW = ['is_col', 'is_beam', 'L', 'log10E', 'log10I', 'log10A', 'w']
+# Statics-derived features (exact or approximate) removed in the 'nostat' ablation
+STATICS_NODE = ['V_above', 'OTM_above', 'G_above', 'rho_level', 'drift_sb', 'disp_sb', 'w_trib']
+STATICS_EDGE = ['rho_storey', 'V_storey', 'drift_sb']
 
 
 def graph(rec: dict, mode: str = 'split') -> dict:
@@ -36,7 +39,14 @@ def graph(rec: dict, mode: str = 'split') -> dict:
     mode='raw': conventional GNN inputs and targets in physical units (single
     combined case, no statics features, no dimensional scaling); the network
     normaliser then standardises inputs and targets over the training set.
+    mode='nostat': as 'split' without the statics-derived features (ablation).
     """
+    if mode == 'nostat':
+        g = graph(rec, 'split')
+        g['x'] = g['x'][:, [i for i, f in enumerate(NODE_FEATS) if f not in STATICS_NODE]]
+        g['e'] = g['e'][:, [i for i, f in enumerate(EDGE_FEATS) if f not in STATICS_EDGE]]
+        g['mode'] = 'nostat'
+        return g
     p = rec['p']
     t = F.topology(p)
     H = float(np.mean(p['heights']))
