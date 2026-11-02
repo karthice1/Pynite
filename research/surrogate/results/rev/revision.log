@@ -1,0 +1,156 @@
+random 0 200 96s {'test_id': (0.2557, 0.1199), 'test_oodG': (0.312, 0.2454), 'test_oodL': (0.2589, 0.1772)}
+random 1 400 318s {'test_id': (0.1772, 0.0861), 'test_oodG': (0.2296, 0.1987), 'test_oodL': (0.1896, 0.1483)}
+random 2 600 488s {'test_id': (0.1376, 0.0715), 'test_oodG': (0.2086, 0.1845), 'test_oodL': (0.1599, 0.1289)}
+random 3 800 715s {'test_id': (0.1191, 0.0644), 'test_oodG': (0.1811, 0.1689), 'test_oodL': (0.1275, 0.1228)}
+random 4 1000 978s {'test_id': (0.1076, 0.0594), 'test_oodG': (0.1855, 0.1513), 'test_oodL': (0.1134, 0.1213)}
+random 5 1200 557s {'test_id': (0.0956, 0.0537), 'test_oodG': (0.1672, 0.1486), 'test_oodL': (0.107, 0.1134)}
+done adaptive seed 2 random 4265s
+ensemble variance 0 200 95s {'test_id': (0.2557, 0.1199), 'test_oodG': (0.312, 0.2454), 'test_oodL': (0.2589, 0.1772)}
+done story_s2 4465s
+ensemble variance 1 400 139s {'test_id': (0.1867, 0.0994), 'test_oodG': (0.2533, 0.2398), 'test_oodL': (0.1809, 0.1672)}
+done story_s1 4599s
+equilibrium residual 0 200 91s {'test_id': (0.2557, 0.1199), 'test_oodG': (0.312, 0.2454), 'test_oodL': (0.2589, 0.1772)}
+done story_s0 4603s
+random 0 200 91s {'test_id': (0.3241, 0.1121), 'test_oodG': (0.3635, 0.2319), 'test_oodL': (0.2958, 0.1702)}
+ensemble variance 0 200 92s {'test_id': (0.3241, 0.1121), 'test_oodG': (0.3635, 0.2319), 'test_oodL': (0.2958, 0.1702)}
+ensemble variance 2 600 321s {'test_id': (0.1873, 0.0892), 'test_oodG': (0.2713, 0.228), 'test_oodL': (0.172, 0.1428)}
+equilibrium residual 1 400 268s {'test_id': (0.2458, 0.0928), 'test_oodG': (0.251, 0.192), 'test_oodL': (0.2481, 0.1519)}
+ensemble variance 1 400 192s {'test_id': (0.229, 0.1059), 'test_oodG': (0.2829, 0.2607), 'test_oodL': (0.2269, 0.1761)}
+random 1 400 241s {'test_id': (0.2031, 0.0826), 'test_oodG': (0.3005, 0.1955), 'test_oodL': (0.1967, 0.1319)}
+ensemble variance 3 800 304s {'test_id': (0.1595, 0.0763), 'test_oodG': (0.2298, 0.223), 'test_oodL': (0.1608, 0.1361)}
+equilibrium residual 2 600 312s {'test_id': (0.1883, 0.0725), 'test_oodG': (0.2559, 0.1549), 'test_oodL': (0.2074, 0.1273)}
+ensemble variance 2 600 248s {'test_id': (0.1943, 0.0885), 'test_oodG': (0.3139, 0.2395), 'test_oodL': (0.1904, 0.1469)}
+random 2 600 366s {'test_id': (0.1421, 0.0703), 'test_oodG': (0.2218, 0.1723), 'test_oodL': (0.1493, 0.1269)}
+ensemble variance 3 800 304s {'test_id': (0.16, 0.0777), 'test_oodG': (0.2489, 0.2279), 'test_oodL': (0.1594, 0.1385)}
+ensemble variance 4 1000 429s {'test_id': (0.1335, 0.0716), 'test_oodG': (0.232, 0.2131), 'test_oodL': (0.1425, 0.134)}
+equilibrium residual 3 800 448s {'test_id': (0.142, 0.0636), 'test_oodG': (0.197, 0.1306), 'test_oodL': (0.1547, 0.1112)}
+random 3 800 370s {'test_id': (0.1165, 0.0614), 'test_oodG': (0.1881, 0.1617), 'test_oodL': (0.1264, 0.1193)}
+ensemble variance 4 1000 387s {'test_id': (0.1386, 0.0699), 'test_oodG': (0.2927, 0.2105), 'test_oodL': (0.1356, 0.1311)}
+ensemble variance 5 1200 472s {'test_id': (0.1253, 0.0604), 'test_oodG': (0.2125, 0.1864), 'test_oodL': (0.128, 0.1206)}
+done adaptive seed 2 ensemble variance 2103s
+random 4 1000 449s {'test_id': (0.1058, 0.0584), 'test_oodG': (0.1865, 0.1546), 'test_oodL': (0.1145, 0.1181)}
+equilibrium residual 0 200 93s {'test_id': (0.3241, 0.1121), 'test_oodG': (0.3635, 0.2319), 'test_oodL': (0.2958, 0.1702)}
+equilibrium residual 4 1000 543s {'test_id': (0.1229, 0.0549), 'test_oodG': (0.1769, 0.1232), 'test_oodL': (0.1313, 0.1097)}
+ensemble variance 5 1200 464s {'test_id': (0.1257, 0.0633), 'test_oodG': (0.2662, 0.2093), 'test_oodL': (0.1273, 0.124)}
+done adaptive seed 3 ensemble variance 2060s
+equilibrium residual 1 400 189s {'test_id': (0.2459, 0.0947), 'test_oodG': (0.2887, 0.1927), 'test_oodL': (0.2319, 0.1388)}
+random 0 200 103s {'test_id': (0.2662, 0.1192), 'test_oodG': (0.3455, 0.243), 'test_oodL': (0.2871, 0.1772)}
+random 5 1200 586s {'test_id': (0.1015, 0.0549), 'test_oodG': (0.1692, 0.1481), 'test_oodL': (0.1052, 0.1115)}
+done adaptive seed 3 random 2478s
+random 1 400 177s {'test_id': (0.1789, 0.0859), 'test_oodG': (0.2652, 0.1882), 'test_oodL': (0.1833, 0.1457)}
+equilibrium residual 2 600 343s {'test_id': (0.1799, 0.07), 'test_oodG': (0.216, 0.1514), 'test_oodL': (0.2034, 0.1193)}
+ensemble variance 0 200 89s {'test_id': (0.2662, 0.1192), 'test_oodG': (0.3455, 0.243), 'test_oodL': (0.2871, 0.1772)}
+equilibrium residual 5 1200 740s {'test_id': (0.1099, 0.0506), 'test_oodG': (0.1586, 0.1198), 'test_oodL': (0.1258, 0.1049)}
+done adaptive seed 2 equilibrium residual 2825s
+random 2 600 283s {'test_id': (0.1452, 0.0746), 'test_oodG': (0.221, 0.1759), 'test_oodL': (0.1543, 0.1284)}
+ensemble variance 1 400 164s {'test_id': (0.2494, 0.1029), 'test_oodG': (0.3383, 0.2529), 'test_oodL': (0.2653, 0.1638)}
+equilibrium residual 0 200 93s {'test_id': (0.2662, 0.1192), 'test_oodG': (0.3455, 0.243), 'test_oodL': (0.2871, 0.1772)}
+equilibrium residual 3 800 497s {'test_id': (0.1556, 0.0678), 'test_oodG': (0.1905, 0.1461), 'test_oodL': (0.1736, 0.1263)}
+equilibrium residual 1 400 171s {'test_id': (0.2425, 0.0934), 'test_oodG': (0.3266, 0.1965), 'test_oodL': (0.2447, 0.1466)}
+ensemble variance 2 600 234s {'test_id': (0.1864, 0.0879), 'test_oodG': (0.3296, 0.2126), 'test_oodL': (0.1868, 0.1429)}
+random 3 800 433s {'test_id': (0.1257, 0.0641), 'test_oodG': (0.1982, 0.1766), 'test_oodL': (0.1308, 0.1212)}
+equilibrium residual 2 600 299s {'test_id': (0.1722, 0.0714), 'test_oodG': (0.2394, 0.139), 'test_oodL': (0.1842, 0.1204)}
+ensemble variance 3 800 286s {'test_id': (0.1498, 0.0771), 'test_oodG': (0.2906, 0.2209), 'test_oodL': (0.1467, 0.1375)}
+equilibrium residual 4 1000 547s {'test_id': (0.133, 0.06), 'test_oodG': (0.1848, 0.1358), 'test_oodL': (0.1387, 0.1142)}
+random 4 1000 454s {'test_id': (0.1141, 0.06), 'test_oodG': (0.1841, 0.1632), 'test_oodL': (0.1215, 0.1165)}
+ensemble variance 4 1000 372s {'test_id': (0.1382, 0.0706), 'test_oodG': (0.2392, 0.2035), 'test_oodL': (0.1502, 0.128)}
+equilibrium residual 3 800 428s {'test_id': (0.1342, 0.0619), 'test_oodG': (0.1973, 0.1342), 'test_oodL': (0.1441, 0.1106)}
+equilibrium residual 5 1200 646s {'test_id': (0.1203, 0.0532), 'test_oodG': (0.1686, 0.1322), 'test_oodL': (0.1293, 0.1048)}
+done adaptive seed 3 equilibrium residual 2555s
+random 5 1200 548s {'test_id': (0.0957, 0.0527), 'test_oodG': (0.1681, 0.1458), 'test_oodL': (0.1099, 0.1146)}
+done adaptive seed 4 random 2284s
+ensemble variance 5 1200 466s {'test_id': (0.1162, 0.0611), 'test_oodG': (0.2473, 0.1802), 'test_oodL': (0.1269, 0.1205)}
+done adaptive seed 4 ensemble variance 1924s
+diverse equilibrium residual 0 200 119s {'test_id': (0.2601, 0.1093), 'test_oodG': (0.3743, 0.2332), 'test_oodL': (0.2751, 0.1667)}
+diverse equilibrium residual 0 200 121s {'test_id': (0.2595, 0.1161), 'test_oodG': (0.3226, 0.2489), 'test_oodL': (0.2706, 0.1707)}
+equilibrium residual 4 1000 592s {'test_id': (0.1153, 0.0551), 'test_oodG': (0.1905, 0.1155), 'test_oodL': (0.1383, 0.1045)}
+diverse equilibrium residual 0 200 121s {'test_id': (0.2557, 0.1199), 'test_oodG': (0.312, 0.2454), 'test_oodL': (0.2589, 0.1772)}
+diverse equilibrium residual 1 400 266s {'test_id': (0.2321, 0.0899), 'test_oodG': (0.3107, 0.1885), 'test_oodL': (0.2456, 0.1417)}
+diverse equilibrium residual 1 400 256s {'test_id': (0.2272, 0.0865), 'test_oodG': (0.2891, 0.1834), 'test_oodL': (0.2226, 0.1421)}
+diverse equilibrium residual 1 400 218s {'test_id': (0.2295, 0.0886), 'test_oodG': (0.2512, 0.1832), 'test_oodL': (0.2193, 0.1459)}
+diverse equilibrium residual 2 600 334s {'test_id': (0.186, 0.0756), 'test_oodG': (0.2408, 0.1641), 'test_oodL': (0.1785, 0.1319)}
+diverse equilibrium residual 2 600 314s {'test_id': (0.186, 0.0691), 'test_oodG': (0.2679, 0.1582), 'test_oodL': (0.177, 0.1208)}
+diverse equilibrium residual 2 600 325s {'test_id': (0.2038, 0.0736), 'test_oodG': (0.2832, 0.1613), 'test_oodL': (0.184, 0.1293)}
+equilibrium residual 5 1200 690s {'test_id': (0.1132, 0.0487), 'test_oodG': (0.1798, 0.115), 'test_oodL': (0.1289, 0.1037)}
+done adaptive seed 4 equilibrium residual 2679s
+diverse equilibrium residual 0 200 89s {'test_id': (0.3241, 0.1121), 'test_oodG': (0.3635, 0.2319), 'test_oodL': (0.2958, 0.1702)}
+diverse equilibrium residual 3 800 456s {'test_id': (0.1612, 0.0672), 'test_oodG': (0.1996, 0.1483), 'test_oodL': (0.1626, 0.112)}
+diverse equilibrium residual 3 800 440s {'test_id': (0.1466, 0.0627), 'test_oodG': (0.2032, 0.1481), 'test_oodL': (0.1467, 0.113)}
+diverse equilibrium residual 3 800 446s {'test_id': (0.1495, 0.0632), 'test_oodG': (0.2064, 0.1331), 'test_oodL': (0.1579, 0.1131)}
+diverse equilibrium residual 1 400 219s {'test_id': (0.2391, 0.0868), 'test_oodG': (0.2696, 0.1842), 'test_oodL': (0.2399, 0.1369)}
+diverse equilibrium residual 2 600 303s {'test_id': (0.171, 0.0733), 'test_oodG': (0.222, 0.1497), 'test_oodL': (0.1884, 0.1261)}
+diverse equilibrium residual 4 1000 544s {'test_id': (0.1298, 0.0588), 'test_oodG': (0.188, 0.1312), 'test_oodL': (0.14, 0.1106)}
+diverse equilibrium residual 4 1000 546s {'test_id': (0.1268, 0.0594), 'test_oodG': (0.1817, 0.1352), 'test_oodL': (0.1467, 0.1062)}
+diverse equilibrium residual 4 1000 535s {'test_id': (0.1293, 0.0572), 'test_oodG': (0.2037, 0.1257), 'test_oodL': (0.1442, 0.1109)}
+diverse equilibrium residual 3 800 432s {'test_id': (0.1393, 0.0625), 'test_oodG': (0.2205, 0.1316), 'test_oodL': (0.158, 0.1148)}
+diverse equilibrium residual 5 1200 650s {'test_id': (0.1177, 0.0521), 'test_oodG': (0.1679, 0.1216), 'test_oodL': (0.1349, 0.1038)}
+done adaptive seed 0 diverse equilibrium residual 2591s
+diverse equilibrium residual 5 1200 651s {'test_id': (0.1064, 0.0497), 'test_oodG': (0.1664, 0.1222), 'test_oodL': (0.1214, 0.1053)}
+done adaptive seed 1 diverse equilibrium residual 2589s
+diverse equilibrium residual 5 1200 661s {'test_id': (0.1128, 0.0522), 'test_oodG': (0.1608, 0.1233), 'test_oodL': (0.1325, 0.107)}
+done adaptive seed 2 diverse equilibrium residual 2592s
+diverse equilibrium residual 0 200 127s {'test_id': (0.2662, 0.1192), 'test_oodG': (0.3455, 0.243), 'test_oodL': (0.2871, 0.1772)}
+diverse equilibrium residual 4 1000 588s {'test_id': (0.1235, 0.055), 'test_oodG': (0.1887, 0.1216), 'test_oodL': (0.1368, 0.108)}
+diverse equilibrium residual 1 400 201s {'test_id': (0.239, 0.0857), 'test_oodG': (0.3204, 0.183), 'test_oodL': (0.2522, 0.1409)}
+diverse equilibrium residual 2 600 307s {'test_id': (0.1699, 0.0717), 'test_oodG': (0.2175, 0.1467), 'test_oodL': (0.2066, 0.124)}
+diverse equilibrium residual 5 1200 653s {'test_id': (0.1029, 0.0536), 'test_oodG': (0.1725, 0.1177), 'test_oodL': (0.1206, 0.1028)}
+done adaptive seed 3 diverse equilibrium residual 2469s
+diverse equilibrium residual 3 800 423s {'test_id': (0.1455, 0.0613), 'test_oodG': (0.2206, 0.1374), 'test_oodL': (0.167, 0.1117)}
+done depth16_s0 1328s
+done depth16_s1 1319s
+diverse equilibrium residual 4 1000 521s {'test_id': (0.1219, 0.0563), 'test_oodG': (0.1802, 0.128), 'test_oodL': (0.1352, 0.1048)}
+done depth16_s2 1261s
+done depth12_s0 976s
+/home/claude/Pynite/research/surrogate/gnn.py:253: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/Context.cpp:916.)
+  b['K'].append(torch.sparse_coo_tensor(idx, torch.as_tensor(v * us_c[c], dtype=torch.float32),
+diverse equilibrium residual 5 1200 629s {'test_id': (0.107, 0.0508), 'test_oodG': (0.1723, 0.1189), 'test_oodL': (0.1247, 0.0968)}
+done adaptive seed 4 diverse equilibrium residual 2467s
+done depth12_s1 1015s
+/home/claude/Pynite/research/surrogate/gnn.py:253: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/Context.cpp:916.)
+  b['K'].append(torch.sparse_coo_tensor(idx, torch.as_tensor(v * us_c[c], dtype=torch.float32),
+/home/claude/Pynite/research/surrogate/gnn.py:253: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/Context.cpp:916.)
+  b['K'].append(torch.sparse_coo_tensor(idx, torch.as_tensor(v * us_c[c], dtype=torch.float32),
+done dispK_s0 743s
+/home/claude/Pynite/research/surrogate/gnn.py:264: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/Context.cpp:916.)
+  b['C'].append(torch.sparse_coo_tensor(idx, torch.as_tensor(v, dtype=torch.float32), (roff, coff)).coalesce())
+done dispK_s1 724s
+done dispK_s2 723s
+/home/claude/Pynite/research/surrogate/gnn.py:264: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/Context.cpp:916.)
+  b['C'].append(torch.sparse_coo_tensor(idx, torch.as_tensor(v, dtype=torch.float32), (roff, coff)).coalesce())
+done depth12_s2 1001s
+done soft_s1 754s
+done soft_s2 755s
+done pool_s0 764s
+done pool_s1 780s
+done pool_s2 750s
+done ens1_m0 686s
+done ens1_m1 697s
+done ens1_m2 681s
+done ens1_m3 671s
+done ens1_m4 677s
+done ens2_m0 664s
+done ens2_m1 672s
+done ens2_m2 672s
+done ens2_m4 661s
+done ens2_m3 681s
+done ens3_m0 661s
+done ens3_m1 664s
+done ens3_m2 656s
+done ens3_m3 658s
+done ens3_m4 662s
+done ens4_m1 661s
+done ens4_m0 669s
+done ens4_m2 659s
+done ens4_m3 669s
+done nosup_s2 645s
+done nosup_s1 647s
+done ens4_m4 654s
+done raw_s0 640s
+done raw_s1 671s
+done disp_s0 660s
+done raw_s2 673s
+done disp_s1 661s
+done depth4_s0 393s
+done depth4_s1 400s
+done depth4_s2 391s
+done disp_s2 653s

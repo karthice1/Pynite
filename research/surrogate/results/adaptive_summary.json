@@ -1,0 +1,62 @@
+{
+ "test_id": {
+  "random": {
+   "final_med": 0.05383109871603042,
+   "n_to_random_final": 1200,
+   "final_p95": 0.1328998055651976,
+   "n_seeds": 2
+  },
+  "ensemble variance": {
+   "final_med": 0.06034878941512562,
+   "n_to_random_final": null,
+   "final_p95": 0.14902542628849816,
+   "n_seeds": 2
+  },
+  "equilibrium residual": {
+   "final_med": 0.05217622208644434,
+   "n_to_random_final": 1200,
+   "final_p95": 0.129401950505351,
+   "n_seeds": 2
+  }
+ },
+ "test_oodG": {
+  "random": {
+   "final_med": 0.1493820353359736,
+   "n_to_random_final": 1200,
+   "final_p95": 0.3619602597162817,
+   "n_seeds": 2
+  },
+  "ensemble variance": {
+   "final_med": 0.18753798634801444,
+   "n_to_random_final": null,
+   "final_p95": 0.49769065324360406,
+   "n_seeds": 2
+  },
+  "equilibrium residual": {
+   "final_med": 0.11802586465023779,
+   "n_to_random_final": 600,
+   "final_p95": 0.2709973807785184,
+   "n_seeds": 2
+  }
+ },
+ "test_oodL": {
+  "random": {
+   "final_med": 0.11766831468740598,
+   "n_to_random_final": 1200,
+   "final_p95": 0.2535803648851796,
+   "n_seeds": 2
+  },
+  "ensemble variance": {
+   "final_med": 0.12534201940879233,
+   "n_to_random_final": null,
+   "final_p95": 0.28732461306313073,
+   "n_seeds": 2
+  },
+  "equilibrium residual": {
+   "final_med": 0.10590236652306129,
+   "n_to_random_final": 800,
+   "final_p95": 0.21691051310776815,
+   "n_seeds": 2
+  }
+ }
+}

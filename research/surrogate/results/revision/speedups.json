@@ -1,0 +1,17 @@
+{
+ "test_id": {
+  "speedup_pynite": 12.392877259177999,
+  "speedup_dsm": 0.5554890958575229,
+  "speedup_opensees": 0.4408214092100895
+ },
+ "test_oodG": {
+  "speedup_pynite": 14.0346740653653,
+  "speedup_dsm": 0.34064617969544037,
+  "speedup_opensees": 0.3978738234652197
+ },
+ "test_oodL": {
+  "speedup_pynite": 12.594465257144321,
+  "speedup_dsm": 0.6476043732825383,
+  "speedup_opensees": 0.49978144429124227
+ }
+}

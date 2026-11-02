@@ -1,0 +1,22 @@
+{
+ "test_id": {
+  "iters_cold_med": 27.0,
+  "iters_warm_med": 27.0,
+  "ratio_med": 1.0
+ },
+ "test_oodG": {
+  "iters_cold_med": 72.0,
+  "iters_warm_med": 72.0,
+  "ratio_med": 1.0
+ },
+ "test_oodL": {
+  "iters_cold_med": 27.5,
+  "iters_warm_med": 27.5,
+  "ratio_med": 1.0
+ },
+ "test_real": {
+  "iters_cold_med": 27.0,
+  "iters_warm_med": 26.5,
+  "ratio_med": 1.0
+ }
+}

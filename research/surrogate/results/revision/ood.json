@@ -1,0 +1,121 @@
+{
+ "alpha_domain": 0.01,
+ "alpha_conformal": 0.1,
+ "geometry": {
+  "threshold": 21.531427306332787,
+  "flagged": {
+   "val": 0.01,
+   "test_id": 0.018333333333333333,
+   "test_oodG": 0.6816666666666666,
+   "test_oodL": 0.015,
+   "test_real": 0.0
+  }
+ },
+ "load": {
+  "threshold": 10.137298200082068,
+  "flagged": {
+   "val": 0.01,
+   "test_id": 0.015,
+   "test_oodG": 0.09333333333333334,
+   "test_oodL": 0.665,
+   "test_real": 0.06333333333333334
+  }
+ },
+ "combined": {
+  "threshold": 26.39871446239826,
+  "flagged": {
+   "val": 0.01,
+   "test_id": 0.016666666666666666,
+   "test_oodG": 0.785,
+   "test_oodL": 0.7516666666666667,
+   "test_real": 0.19666666666666666
+  }
+ },
+ "conformal_qhat": 1.4127900463190801,
+ "policy": {
+  "0.05": {
+   "test_id": {
+    "referred_domain": 0.016666666666666666,
+    "referred_spread": 0.26166666666666666,
+    "referred_total": 0.2783333333333333,
+    "coverage_in_domain": 0.9016949152542373,
+    "accepted_violation": 0.03464203233256351,
+    "accepted_p95": 0.04518305430462456,
+    "accepted_max": 0.16325491400518857,
+    "all_p95": 0.06508889555010695
+   },
+   "test_oodG": {
+    "referred_domain": 0.785,
+    "referred_spread": 0.195,
+    "referred_total": 0.98,
+    "coverage_in_domain": 0.937984496124031,
+    "accepted_violation": 0.16666666666666666,
+    "accepted_p95": 0.06394604117571107,
+    "accepted_max": 0.07716371466527538,
+    "all_p95": 0.22645050865261984
+   },
+   "test_oodL": {
+    "referred_domain": 0.7516666666666667,
+    "referred_spread": 0.03333333333333333,
+    "referred_total": 0.785,
+    "coverage_in_domain": 0.8389261744966443,
+    "accepted_violation": 0.05426356589147287,
+    "accepted_p95": 0.04944387591123049,
+    "accepted_max": 0.07280321680377089,
+    "all_p95": 0.21411526450670068
+   },
+   "test_real": {
+    "referred_domain": 0.19666666666666666,
+    "referred_spread": 0.17666666666666667,
+    "referred_total": 0.37333333333333335,
+    "coverage_in_domain": 0.991701244813278,
+    "accepted_violation": 0.0,
+    "accepted_p95": 0.029020905245773335,
+    "accepted_max": 0.035232835475376,
+    "all_p95": 0.0342058704165691
+   }
+  },
+  "0.1": {
+   "test_id": {
+    "referred_domain": 0.016666666666666666,
+    "referred_spread": 0.005,
+    "referred_total": 0.021666666666666667,
+    "coverage_in_domain": 0.9016949152542373,
+    "accepted_violation": 0.013628620102214651,
+    "accepted_p95": 0.0632627783361692,
+    "accepted_max": 0.18561249699393914,
+    "all_p95": 0.06508889555010695
+   },
+   "test_oodG": {
+    "referred_domain": 0.785,
+    "referred_spread": 0.07166666666666667,
+    "referred_total": 0.8566666666666667,
+    "coverage_in_domain": 0.937984496124031,
+    "accepted_violation": 0.011627906976744186,
+    "accepted_p95": 0.07710120219264918,
+    "accepted_max": 0.10954751171594174,
+    "all_p95": 0.22645050865261984
+   },
+   "test_oodL": {
+    "referred_domain": 0.7516666666666667,
+    "referred_spread": 0.0016666666666666668,
+    "referred_total": 0.7533333333333333,
+    "coverage_in_domain": 0.8389261744966443,
+    "accepted_violation": 0.013513513513513514,
+    "accepted_p95": 0.06738489121009979,
+    "accepted_max": 0.14589897360237436,
+    "all_p95": 0.21411526450670068
+   },
+   "test_real": {
+    "referred_domain": 0.19666666666666666,
+    "referred_spread": 0.0,
+    "referred_total": 0.19666666666666666,
+    "coverage_in_domain": 0.991701244813278,
+    "accepted_violation": 0.0,
+    "accepted_p95": 0.03447668569590352,
+    "accepted_max": 0.04826069505567897,
+    "all_p95": 0.0342058704165691
+   }
+  }
+ }
+}

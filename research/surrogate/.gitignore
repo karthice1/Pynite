@@ -1,0 +1,7 @@
+data/
+results/*.pkl
+results_*.log
+__pycache__/
+results/rev/*.pkl
+results/rev/weights/
+results/timing_rerun.json

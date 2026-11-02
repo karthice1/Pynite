@@ -1,0 +1,5 @@
+raw {'val': 0.0248, 'test_id': 0.0246, 'test_oodG': 0.0826, 'test_oodL': 0.0909, 'test_real': 0.0218} compat {'val': 0.4713, 'test_id': 0.4723, 'test_oodG': 0.8748, 'test_oodL': 0.5902, 'test_real': 0.1509}
+euclidean {'val': 0.0402, 'test_id': 0.0405, 'test_oodG': 0.1257, 'test_oodL': 0.1084, 'test_real': 0.0391} compat {'val': 0.4714, 'test_id': 0.4703, 'test_oodG': 0.8758, 'test_oodL': 0.5904, 'test_real': 0.1493}
+variance-weighted {'val': 0.0235, 'test_id': 0.0236, 'test_oodG': 0.0751, 'test_oodL': 0.0873, 'test_real': 0.02} compat {'val': 0.4693, 'test_id': 0.4698, 'test_oodG': 0.8756, 'test_oodL': 0.5904, 'test_real': 0.1486}
+recovered {'val': 0.1169, 'test_id': 0.1125, 'test_oodG': 0.4417, 'test_oodL': 0.1864, 'test_real': 0.0354} compat {'val': 0.0, 'test_id': 0.0, 'test_oodG': 0.0, 'test_oodL': 0.0, 'test_real': 0.0}
+== variants done in 121s

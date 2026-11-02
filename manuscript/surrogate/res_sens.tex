@@ -1,0 +1,20 @@
+\subsection{Sensitivity of the projection to the variance floor}\label{sec:sensitivity}
+
+\begin{table}[t]
+\centering
+\caption{Sensitivity of the variance-weighted projection to the regularisation of $\boldsymbol{\Sigma}$ (ensemble 0): median moment error $e_M$ (\%) and largest condition number of $\mathbf{C}\boldsymbol{\Sigma}\mathbf{C}^{\mathsf T}$ over the frames of each set.}\label{tab:sensitivity}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{lrrrrrrrr}
+\toprule
+& \multicolumn{2}{c}{ID} & \multicolumn{2}{c}{OOD-G} & \multicolumn{2}{c}{OOD-L} & \multicolumn{2}{c}{DES}\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}
+$\boldsymbol{\Sigma}$ & $e_M$ & $\kappa_{\max}$ & $e_M$ & $\kappa_{\max}$ & $e_M$ & $\kappa_{\max}$ & $e_M$ & $\kappa_{\max}$ \\
+\midrule
+\inputtable{tables/tab_sensitivity.tex}
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+Table~\ref{tab:sensitivity} varies the floor of the variance-weighted metric. For floors between $10^{-8}\bar\sigma^2$ and $10^{-4}\bar\sigma^2$, and for the additive form of Eq.~\eqref{eq:sigmareg}, the median moment errors are identical to two decimals on every set (2.36, 7.51, 8.73 and 2.00\%), so the results do not depend on $\varepsilon$ in this range. A floor of $10^{-2}\bar\sigma^2$ changes them by at most 0.12 percentage points, while a floor equal to the mean variance, which makes the metric nearly uniform, moves the errors most of the way towards the Euclidean projection (3.9\% ID, 11.5\% OOD-G). The largest condition number of $\mathbf{C}\boldsymbol{\Sigma}\mathbf{C}^{\mathsf T}$ over all 2{,}100 test frames is $3.6\times10^{5}$ (median $4\times10^{3}$ on ID frames, $3.5\times10^{4}$ on OOD-G frames), which is harmless for the direct LU solve in double precision: the projected fields satisfy equilibrium to a relative residual below $10^{-12}$ in every frame.
