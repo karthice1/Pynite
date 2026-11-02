@@ -30,6 +30,12 @@ def main():
     if os.path.exists('data/calibration.pkl'):
         sets.update(pickle.load(open('data/calibration.pkl', 'rb')))
     out = {s: [_clean(r['p']) for r in recs] for s, recs in sets.items()}
+    # reproduce.sh --quick does not regenerate the two calibration sets: keep the ones in the
+    # existing file instead of dropping them
+    if 'cal_domain' not in out and os.path.exists('release/frame_parameters.json.gz'):
+        with gzip.open('release/frame_parameters.json.gz', 'rt') as fh:
+            old = json.load(fh)
+        out.update({s: old[s] for s in ('cal_domain', 'cal_conf') if s in old})
     os.makedirs('release', exist_ok=True)
     with gzip.open('release/frame_parameters.json.gz', 'wt') as fh:
         json.dump(out, fh)

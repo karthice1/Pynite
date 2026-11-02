@@ -1,6 +1,9 @@
 """Wall-clock cost of PyNite vs. the surrogate, measured serially on an idle machine.
 
-    python experiment_timing.py [--skip-train]     # writes results/timing.json
+    python experiment_timing.py [--skip-train] [--out FILE]   # writes results/timing.json
+
+reproduce.sh --quick passes --out results/timing_rerun.json so that a re-measurement on another
+machine does not overwrite the timing reported in the manuscript.
 
 Every per-frame time is measured REPEATS times; the mean and the standard
 deviation over the repetitions are reported. Besides PyNite, two other
@@ -28,6 +31,7 @@ import solvers as S
 TESTS = ['test_id', 'test_oodG', 'test_oodL']
 N_FRAMES = 200
 REPEATS = 5
+OUT = sys.argv[sys.argv.index('--out') + 1] if '--out' in sys.argv else 'results/timing.json'
 
 
 def per_frame(fn, items):
@@ -77,7 +81,7 @@ def main():
     # Training cost of one network on the main training set (the ensemble trains five)
     if '--skip-train' in sys.argv:
         out['train'] = json.load(open('results/timing.json'))['train']
-        json.dump(out, open('results/timing.json', 'w'), indent=1)
+        json.dump(out, open(OUT, 'w'), indent=1)
         return
     train = [FT.graph(r) for r in D['pool'][:3000]]
     t0 = time.perf_counter(); gnn.train_model(train, seed=0, epochs=150); t_net = time.perf_counter() - t0
@@ -87,7 +91,7 @@ def main():
     fe_train = (time.perf_counter() - t0) / 200 * 3000
     out['train'] = dict(one_network_s=t_net, ensemble_s_est=5 * t_net, fe_training_set_s=fe_train, threads=4)
     print(out['train'])
-    json.dump(out, open('results/timing.json', 'w'), indent=1)
+    json.dump(out, open(OUT, 'w'), indent=1)
 
 
 if __name__ == '__main__':

@@ -37,7 +37,8 @@ bash reproduce.sh --quick    # report regeneration only: rebuilds ensemble 0 fro
                              # recomputes what depends on it; multi-run statistics, graph
                              # baselines, adaptive curves and the five-run referral calibration
                              # are read from the committed JSON, so this is not an independent
-                             # reproduction of those experiments
+                             # reproduction of those experiments; the local timing is written
+                             # to results/timing_rerun.json
 python verify_from_parameters.py test_des 50   # quick cross-solver check, no dataset needed
 ```
 

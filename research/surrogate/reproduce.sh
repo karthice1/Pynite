@@ -29,5 +29,9 @@ else
 fi
 python export_parameters.py               # release/frame_parameters.json.gz
 python verify_from_parameters.py          # cross-solver check from the released parameters
-python experiment_timing.py --skip-train  # run on an otherwise idle machine
+if [[ "${1:-}" != "--quick" ]]; then
+  python experiment_timing.py --skip-train  # run on an otherwise idle machine -> results/timing.json
+else
+  python experiment_timing.py --skip-train --out results/timing_rerun.json   # keeps the paper's timing
+fi
 python make_figures_rev.py                # figures and tables -> ../../manuscript/surrogate/

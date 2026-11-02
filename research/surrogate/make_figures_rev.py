@@ -465,7 +465,8 @@ def tab_graph(gr):
             cells += [sci(R[s]['eq_res']['med_mean']), f"{100 * Pj[s]['e_M']['med_mean']:.1f}",
                       f"{100 * R[s]['compat_M']['med_mean']:.1f}"]
         t = gr[key].get('train_s')
-        if key.startswith('Proposed, single') or key in ('Soft equilibrium penalty', 'No load-case superposition'):
+        if not t and (key.startswith('Proposed, single') or key in ('Soft equilibrium penalty', 'No load-case superposition')):
+            # older graphs.json without stored training times: read them from the model files
             tag = {'Soft equilibrium penalty': 'soft_s', 'No load-case superposition': 'nosup_s'}.get(key)
             files = (glob.glob(f'results/rev/{tag}*.pkl') if tag else glob.glob('results/rev/ens[1-4]_m*.pkl'))
             t = [pickle.load(open(f, 'rb'))['train_s'] for f in files]
